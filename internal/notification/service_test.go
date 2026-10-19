@@ -860,16 +860,16 @@ func TestServiceValidation(t *testing.T) {
 	service := newTestService(newTestNotificationRepo(nil, nil))
 	require.NoError(t, service.Start())
 
-	missingKey := domain.Notification{Name: "notifiarr", Type: domain.NotificationTypeNotifiarr, Enabled: true}
-	assert.ErrorIs(t, service.Store(ctx, &missingKey), domain.ErrNotificationInvalid)
-	assert.ErrorIs(t, service.Test(ctx, &missingKey), domain.ErrNotificationInvalid)
+	missingURL := domain.Notification{Name: "webhook", Type: domain.NotificationTypeWebhook, Enabled: true}
+	assert.ErrorIs(t, service.Store(ctx, &missingURL), domain.ErrNotificationInvalid)
+	assert.ErrorIs(t, service.Test(ctx, &missingURL), domain.ErrNotificationInvalid)
 
-	missingKey.Enabled = false
-	require.NoError(t, service.Store(ctx, &missingKey), "disabled notifications are saved as drafts")
+	missingURL.Enabled = false
+	require.NoError(t, service.Store(ctx, &missingURL), "disabled notifications are saved as drafts")
 
-	missingKey.Enabled = true
-	assert.ErrorIs(t, service.Update(ctx, &missingKey), domain.ErrNotificationInvalid)
+	missingURL.Enabled = true
+	assert.ErrorIs(t, service.Update(ctx, &missingURL), domain.ErrNotificationInvalid)
 
-	missingKey.APIKey = "0b6c2a3e-9f1d-4c8a-b7e2-5d4f3a2b1c0d"
-	require.NoError(t, service.Update(ctx, &missingKey))
+	missingURL.Webhook = "https://example.com/hook"
+	require.NoError(t, service.Update(ctx, &missingURL))
 }

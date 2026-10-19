@@ -6,9 +6,8 @@ package stringutils
 const TruncationMarker = " [...] "
 
 // TruncateStr shortens s to at most limit characters by dropping the
-// middle. A failed *arr push wraps its cause last, so keeping only the head
-// would discard the one part worth reading. Discord counts characters rather
-// than bytes.
+// middle. A wrapped error carries its cause last, so keeping only the head
+// would discard the one part worth reading.
 func TruncateStr(s string, limit int) string {
 	if limit <= 0 {
 		return ""

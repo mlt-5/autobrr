@@ -37,13 +37,13 @@ func TestAddNotification(t *testing.T) {
 	page.Open("/settings/notifications")
 	page.AddNew()
 
-	page.Select("Discord")
-	page.Fill("name", "Discord E2E")
-	page.Fill("webhook", "https://discord.com/api/webhooks/e2e")
+	page.Select("Webhook")
+	page.Fill("name", "Webhook E2E")
+	page.Fill("webhook", "https://example.com/hooks/e2e")
 	page.Toggle("events-PUSH_APPROVED")
 	page.Submit()
 
-	page.ExpectRow("Discord E2E")
+	page.ExpectRow("Webhook E2E")
 }
 
 func TestAddAPIKey(t *testing.T) {

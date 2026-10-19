@@ -214,11 +214,6 @@ func cloneNotification(notification *domain.Notification) *domain.Notification {
 		cloned.UsedByFilters[idx].Events = append([]string(nil), filter.Events...)
 	}
 
-	if notification.EventSounds != nil {
-		cloned.EventSounds = make(map[string]string, len(notification.EventSounds))
-		maps.Copy(cloned.EventSounds, notification.EventSounds)
-	}
-
 	return &cloned
 }
 
@@ -518,16 +513,6 @@ func (s *Service) Update(ctx context.Context, notification *domain.Notification)
 		return domain.ErrNotificationBuiltin
 	}
 
-	if domain.IsRedactedString(notification.Password) {
-		notification.Password = existing.Password
-	}
-	if domain.IsRedactedString(notification.Token) {
-		notification.Token = existing.Token
-	}
-	if domain.IsRedactedString(notification.APIKey) {
-		notification.APIKey = existing.APIKey
-	}
-
 	// Disabling must stay possible for rows saved before validation existed.
 	if notification.Enabled {
 		if err := notification.Validate(); err != nil {
@@ -653,24 +638,6 @@ func (s *Service) DeleteFilterNotifications(ctx context.Context, filterID int) e
 
 func (s *Service) newSender(notification *domain.Notification) Sender {
 	switch notification.Type {
-	case domain.NotificationTypeBark:
-		return NewBarkSender(s.log, notification)
-	case domain.NotificationTypeDiscord:
-		return NewDiscordSender(s.log, notification)
-	case domain.NotificationTypeGotify:
-		return NewGotifySender(s.log, notification)
-	case domain.NotificationTypeLunaSea:
-		return NewLunaSeaSender(s.log, notification)
-	case domain.NotificationTypeNotifiarr:
-		return NewNotifiarrSender(s.log, notification)
-	case domain.NotificationTypeNtfy:
-		return NewNtfySender(s.log, notification)
-	case domain.NotificationTypePushover:
-		return NewPushoverSender(s.log, notification)
-	case domain.NotificationTypeShoutrrr:
-		return NewShoutrrrSender(s.log, notification)
-	case domain.NotificationTypeTelegram:
-		return NewTelegramSender(s.log, notification)
 	case domain.NotificationTypeWebhook:
 		return NewWebhookSender(s.log, notification)
 	case domain.NotificationTypeBuiltin:
@@ -710,24 +677,6 @@ func (s *Service) Send(ctx context.Context, payload domain.NotificationPayload) 
 }
 
 func (s *Service) Test(ctx context.Context, notification *domain.Notification) error {
-	if notification.ID > 0 {
-		existing, err := s.repo.FindByID(ctx, notification.ID)
-		if err != nil {
-			s.log.Error().Err(err).Int("notification_id", notification.ID).Msg("could not find notification by id")
-			return err
-		}
-
-		if domain.IsRedactedString(notification.Password) {
-			notification.Password = existing.Password
-		}
-		if domain.IsRedactedString(notification.Token) {
-			notification.Token = existing.Token
-		}
-		if domain.IsRedactedString(notification.APIKey) {
-			notification.APIKey = existing.APIKey
-		}
-	}
-
 	if err := notification.Validate(); err != nil {
 		return err
 	}

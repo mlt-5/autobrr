@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/notification/services/pushover"
 	"github.com/autobrr/autobrr/pkg/errors"
 
 	"github.com/go-chi/chi/v5"
@@ -46,7 +45,6 @@ func (h notificationHandler) Routes(r chi.Router) {
 	r.Get("/", h.list)
 	r.Post("/", h.store)
 	r.Post("/test", h.test)
-	r.Get("/pushover/sounds", h.pushoverSounds)
 
 	r.Route("/inbox", func(r chi.Router) {
 		r.Get("/", h.findInbox)
@@ -180,22 +178,6 @@ func (h notificationHandler) test(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.encoder.NoContent(w)
-}
-
-func (h notificationHandler) pushoverSounds(w http.ResponseWriter, r *http.Request) {
-	apiToken := r.URL.Query().Get("token")
-	if apiToken == "" {
-		h.encoder.BadRequestErr(w, errors.New("token parameter is required"))
-		return
-	}
-
-	sounds, err := pushover.GetSounds(r.Context(), apiToken)
-	if err != nil {
-		h.encoder.Error(w, err)
-		return
-	}
-
-	h.encoder.StatusResponse(w, http.StatusOK, sounds)
 }
 
 func (h notificationHandler) findInbox(w http.ResponseWriter, r *http.Request) {

@@ -169,7 +169,7 @@ func validateNordicBytesNotUsed(db *sql.DB, t *testing.T) {
 
 func setupBuiltinNotificationExisting(db *sql.DB) error {
 	_, err := db.Exec(`INSERT INTO notification (name, type, enabled, events, webhook)
-		VALUES ('Discord', 'DISCORD', TRUE, '{PUSH_APPROVED}', 'https://discord.example/hook')`)
+		VALUES ('Hook', 'WEBHOOK', TRUE, '{PUSH_APPROVED}', 'https://hook.example/notify')`)
 
 	return err
 }
@@ -200,9 +200,9 @@ func validateBuiltinNotificationKeepsExisting(db *sql.DB, t *testing.T) {
 	validateBuiltinNotification(db, t)
 
 	var webhook string
-	err := db.QueryRow(`SELECT webhook FROM notification WHERE type = 'DISCORD'`).Scan(&webhook)
+	err := db.QueryRow(`SELECT webhook FROM notification WHERE name = 'Hook'`).Scan(&webhook)
 	require.NoError(t, err)
-	assert.Equal(t, "https://discord.example/hook", webhook)
+	assert.Equal(t, "https://hook.example/notify", webhook)
 }
 
 func setupBuiltinNotificationPresent(db *sql.DB) error {
