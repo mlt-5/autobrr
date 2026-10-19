@@ -299,26 +299,6 @@ export interface RadioFieldsetOption {
 
 export const DownloaderTypeOptions: RadioFieldsetOption[] = [
   {
-    label: "qBittorrent",
-    description: "Add torrents directly to qBittorrent",
-    value: "QBITTORRENT"
-  },
-  {
-    label: "Deluge",
-    description: "Add torrents directly to Deluge",
-    value: "DELUGE_V1"
-  },
-  {
-    label: "Deluge 2",
-    description: "Add torrents directly to Deluge 2",
-    value: "DELUGE_V2"
-  },
-  {
-    label: "rTorrent",
-    description: "Add torrents directly to rTorrent",
-    value: "RTORRENT"
-  },
-  {
     label: "Radarr",
     description: "Send to Radarr and let it decide",
     value: "RADARR"
@@ -356,26 +336,6 @@ export const DownloaderTypeOptions: RadioFieldsetOption[] = [
 ];
 
 export const getDownloaderTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
-  {
-    label: t("options:downloadClient.QBITTORRENT.label"),
-    description: t("options:downloadClient.QBITTORRENT.description"),
-    value: "QBITTORRENT"
-  },
-  {
-    label: t("options:downloadClient.DELUGE_V1.label"),
-    description: t("options:downloadClient.DELUGE_V1.description"),
-    value: "DELUGE_V1"
-  },
-  {
-    label: t("options:downloadClient.DELUGE_V2.label"),
-    description: t("options:downloadClient.DELUGE_V2.description"),
-    value: "DELUGE_V2"
-  },
-  {
-    label: t("options:downloadClient.RTORRENT.label"),
-    description: t("options:downloadClient.RTORRENT.description"),
-    value: "RTORRENT"
-  },
   {
     label: t("options:downloadClient.RADARR.label"),
     description: t("options:downloadClient.RADARR.description"),
@@ -418,10 +378,6 @@ export const ActionTypeOptions: RadioFieldsetOption[] = [
   { label: "Watch dir", description: "Add filtered torrents to a watch directory", value: "WATCH_FOLDER" },
   { label: "Webhook", description: "Run webhook", value: "WEBHOOK" },
   { label: "Exec", description: "Run a custom command after a filter match", value: "EXEC" },
-  { label: "qBittorrent", description: "Add torrents directly to qBittorrent", value: "QBITTORRENT" },
-  { label: "Deluge", description: "Add torrents directly to Deluge", value: "DELUGE_V1" },
-  { label: "Deluge v2", description: "Add torrents directly to Deluge 2", value: "DELUGE_V2" },
-  { label: "rTorrent", description: "Add torrents directly to rTorrent", value: "RTORRENT" },
   { label: "Radarr", description: "Send to Radarr and let it decide", value: "RADARR" },
   { label: "Sonarr", description: "Send to Sonarr and let it decide", value: "SONARR" },
   { label: "Lidarr", description: "Send to Lidarr and let it decide", value: "LIDARR" },
@@ -436,10 +392,6 @@ export const getActionTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
   { label: t("options:actionType.WATCH_FOLDER.label"), description: t("options:actionType.WATCH_FOLDER.description"), value: "WATCH_FOLDER" },
   { label: t("options:actionType.WEBHOOK.label"), description: t("options:actionType.WEBHOOK.description"), value: "WEBHOOK" },
   { label: t("options:actionType.EXEC.label"), description: t("options:actionType.EXEC.description"), value: "EXEC" },
-  { label: t("options:actionType.QBITTORRENT.label"), description: t("options:actionType.QBITTORRENT.description"), value: "QBITTORRENT" },
-  { label: t("options:actionType.DELUGE_V1.label"), description: t("options:actionType.DELUGE_V1.description"), value: "DELUGE_V1" },
-  { label: t("options:actionType.DELUGE_V2.label"), description: t("options:actionType.DELUGE_V2.description"), value: "DELUGE_V2" },
-  { label: t("options:actionType.RTORRENT.label"), description: t("options:actionType.RTORRENT.description"), value: "RTORRENT" },
   { label: t("options:actionType.RADARR.label"), description: t("options:actionType.RADARR.description"), value: "RADARR" },
   { label: t("options:actionType.SONARR.label"), description: t("options:actionType.SONARR.description"), value: "SONARR" },
   { label: t("options:actionType.LIDARR.label"), description: t("options:actionType.LIDARR.description"), value: "LIDARR" },
@@ -454,10 +406,6 @@ export const ActionTypeNameMap: Record<ActionType, string> = {
   "WATCH_FOLDER": "Watch folder",
   "WEBHOOK": "Webhook",
   "EXEC": "Exec",
-  "DELUGE_V1": "Deluge v1",
-  "DELUGE_V2": "Deluge v2",
-  "QBITTORRENT": "qBittorrent",
-  "RTORRENT": "rTorrent",
   "RADARR": "Radarr",
   "SONARR": "Sonarr",
   "LIDARR": "Lidarr",
@@ -472,10 +420,6 @@ export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> =
   "WATCH_FOLDER": t("options:actionType.WATCH_FOLDER.label"),
   "WEBHOOK": t("options:actionType.WEBHOOK.label"),
   "EXEC": t("options:actionType.EXEC.label"),
-  "DELUGE_V1": t("options:actionType.DELUGE_V1.label"),
-  "DELUGE_V2": t("options:actionType.DELUGE_V2.label"),
-  "QBITTORRENT": t("options:actionType.QBITTORRENT.label"),
-  "RTORRENT": t("options:actionType.RTORRENT.label"),
   "RADARR": t("options:actionType.RADARR.label"),
   "SONARR": t("options:actionType.SONARR.label"),
   "LIDARR": t("options:actionType.LIDARR.label"),
@@ -486,10 +430,6 @@ export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> =
 });
 
 export const DOWNLOAD_CLIENTS = [
-  "QBITTORRENT",
-  "DELUGE_V1",
-  "DELUGE_V2",
-  "RTORRENT",
   "RADARR",
   "SONARR",
   "LIDARR",
@@ -497,30 +437,6 @@ export const DOWNLOAD_CLIENTS = [
   "WHISPARR_V3",
   "READARR",
   "SPORTARR"
-];
-
-export const ActionContentLayoutOptions: SelectGenericOption<ActionContentLayout>[] = [
-  { label: "Original", description: "Original", value: "ORIGINAL" },
-  { label: "Create subfolder", description: "Create subfolder", value: "SUBFOLDER_CREATE" },
-  { label: "Don't create subfolder", description: "Don't create subfolder", value: "SUBFOLDER_NONE" }
-];
-
-export const ActionPriorityOptions: SelectGenericOption<ActionPriorityLayout>[] = [
-  { label: "Top of queue", description: "Top of queue", value: "MAX" },
-  { label: "Bottom of queue", description: "Bottom of queue", value: "MIN" },
-  { label: "Disabled", description: "Disabled", value: "" }
-];
-
-export const getRTorrentPriorityOptions = (t: TFunction): SelectGenericOption<ActionPriorityLayout>[] => [
-  { label: t("options:rtorrentPriority.HIGH"), description: t("options:rtorrentPriority.HIGH"), value: "HIGH" },
-  { label: t("options:rtorrentPriority.NORMAL"), description: t("options:rtorrentPriority.NORMAL"), value: "NORMAL" },
-  { label: t("options:rtorrentPriority.LOW"), description: t("options:rtorrentPriority.LOW"), value: "LOW" },
-  { label: t("options:rtorrentPriority.DEFAULT"), description: t("options:rtorrentPriority.DEFAULT"), value: "" }
-];
-
-export const ActionRtorrentRenameOptions: SelectGenericOption<ActionContentLayout>[] = [
-  { label: "No", description: "No", value: "ORIGINAL" },
-  { label: "Yes", description: "Yes", value: "SUBFOLDER_NONE" }
 ];
 
 export interface OptionBasic {
@@ -735,32 +651,6 @@ export const downloadsPerUnitOptions: OptionBasic[] = [
 export const getWindowTypeOptions = (t: TFunction): OptionBasic[] => [
   { label: t("options:maxDownloadsWindowType.FIXED"), value: "FIXED" },
   { label: t("options:maxDownloadsWindowType.ROLLING"), value: "ROLLING" }
-];
-
-export const DownloadRuleConditionOptions: OptionBasic[] = [
-  {
-    label: "Always",
-    value: "ALWAYS"
-  },
-  {
-    label: "Max downloads reached",
-    value: "MAX_DOWNLOADS_REACHED"
-  }
-];
-
-export const DownloaderAuthType: OptionBasic[] = [
-  {
-    label: "None",
-    value: "NONE"
-  },
-  {
-    label: "Basic Auth",
-    value: "BASIC_AUTH"
-  },
-  {
-    label: "Digest Auth",
-    value: "DIGEST_AUTH"
-  }
 ];
 
 const logLevel = ["DEBUG", "INFO", "WARN", "ERROR", "TRACE"] as const;

@@ -19,8 +19,8 @@ import (
 
 func getMockDownloader() domain.Downloader {
 	return domain.Downloader{
-		Name:          "qbitorrent",
-		Type:          domain.DownloaderTypeQbittorrent,
+		Name:          "sonarr",
+		Type:          domain.DownloaderTypeSonarr,
 		Enabled:       true,
 		Host:          "host",
 		Port:          2020,

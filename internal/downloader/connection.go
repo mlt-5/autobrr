@@ -14,10 +14,6 @@ import (
 	"github.com/autobrr/autobrr/pkg/arr/sportarr"
 	"github.com/autobrr/autobrr/pkg/arr/whisparr"
 	"github.com/autobrr/autobrr/pkg/errors"
-
-	"github.com/autobrr/go-deluge"
-	"github.com/autobrr/go-qbittorrent"
-	"github.com/autobrr/go-rtorrent"
 )
 
 func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) error {
@@ -27,14 +23,6 @@ func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) er
 	}
 
 	switch cfg.Type {
-	case domain.DownloaderTypeQbittorrent:
-		return s.testConnectionQbittorrent(ctx, instance)
-
-	case domain.DownloaderTypeDelugeV1, domain.DownloaderTypeDelugeV2:
-		return s.testConnectionDeluge(ctx, instance)
-
-	case domain.DownloaderTypeRTorrent:
-		return s.testConnectionRTorrent(ctx, instance)
 
 	case domain.DownloaderTypeRadarr:
 		return s.testConnectionRadarr(ctx, instance)
@@ -57,94 +45,6 @@ func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) er
 	default:
 		return errors.New("unsupported client: %s", cfg.Type)
 	}
-}
-
-func (s *Service) testConnectionQbittorrent(ctx context.Context, instance *Instance) error {
-	client, err := instance.ClientAs[*qbittorrent.Client]()
-	if err != nil {
-		return err
-	}
-
-	cfg := instance.Config()
-
-	if err := client.LoginCtx(ctx); err != nil {
-		return errors.Wrap(err, "error logging into client: %v", cfg.Host)
-	}
-
-	if _, err := client.GetTorrentsCtx(ctx, qbittorrent.TorrentFilterOptions{Filter: qbittorrent.TorrentFilterAll}); err != nil {
-		return errors.Wrap(err, "error getting torrents: %v", cfg.Host)
-	}
-
-	s.log.Debug().Msg("test client connection for qBittorrent: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionDeluge(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	switch cfg.Type {
-	case domain.DownloaderTypeDelugeV1:
-		client, err := instance.ClientAs[*deluge.Client]()
-		if err != nil {
-			return err
-		}
-
-		// perform connection to Deluge server
-		if err := client.Connect(ctx); err != nil {
-			return errors.Wrap(err, "error logging into client: %v", cfg.Host)
-		}
-		defer client.Close()
-
-		// print daemon version
-		version, err := client.DaemonVersion(ctx)
-		if err != nil {
-			return errors.Wrap(err, "could not get daemon version: %v", cfg.Host)
-		}
-		s.log.Debug().Str("version", version).Msg("test client connection for Deluge: success")
-
-	case domain.DownloaderTypeDelugeV2:
-		client, err := instance.ClientAs[*deluge.ClientV2]()
-		if err != nil {
-			return err
-		}
-
-		// perform connection to Deluge server
-		if err := client.Connect(ctx); err != nil {
-			return errors.Wrap(err, "error logging into client: %v", cfg.Host)
-		}
-		defer client.Close()
-
-		// print daemon version
-		version, err := client.DaemonVersion(ctx)
-		if err != nil {
-			return errors.Wrap(err, "could not get daemon version: %v", cfg.Host)
-		}
-		s.log.Debug().Str("version", version).Msg("test client connection for Deluge: success")
-
-	default:
-		return errors.New("unsupported deluge client version: %s", cfg.Type)
-	}
-
-	return nil
-}
-
-func (s *Service) testConnectionRTorrent(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*rtorrent.Client]()
-	if err != nil {
-		return err
-	}
-
-	name, err := client.Name(ctx)
-	if err != nil {
-		return errors.Wrap(err, "error logging into client: %s", cfg.Host)
-	}
-
-	s.log.Debug().Str("name", name).Msg("test client connection for rTorrent: success")
-
-	return nil
 }
 
 func (s *Service) testConnectionRadarr(ctx context.Context, instance *Instance) error {

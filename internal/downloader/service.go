@@ -5,8 +5,6 @@ package downloader
 
 import (
 	"context"
-	"net/http"
-	"time"
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/pkg/arr/lidarr"
@@ -15,14 +13,7 @@ import (
 	"github.com/autobrr/autobrr/pkg/arr/sonarr"
 	"github.com/autobrr/autobrr/pkg/arr/sportarr"
 	"github.com/autobrr/autobrr/pkg/arr/whisparr"
-	"github.com/autobrr/autobrr/pkg/errors"
-	"github.com/autobrr/autobrr/pkg/sharedhttp"
 
-	"github.com/autobrr/go-deluge"
-	"github.com/autobrr/go-qbittorrent"
-	"github.com/autobrr/go-rtorrent"
-	"github.com/dcarbone/zadapters/zstdlog"
-	"github.com/icholy/digest"
 	"github.com/rs/zerolog"
 )
 
@@ -307,83 +298,6 @@ func (s *Service) initInstance(cfg *domain.Downloader) (*Instance, error) {
 	}
 
 	switch cfg.Type {
-
-	case domain.DownloaderTypeDelugeV1:
-		clientCfg := deluge.Settings{
-			Hostname:             cfg.Host,
-			Port:                 uint(cfg.Port),
-			Login:                cfg.Username,
-			Password:             cfg.Password,
-			DebugServerResponses: true,
-			ReadWriteTimeout:     time.Second * 60,
-		}
-		instance.client = deluge.NewV1(clientCfg)
-
-	case domain.DownloaderTypeDelugeV2:
-		clientCfg := deluge.Settings{
-			Hostname:             cfg.Host,
-			Port:                 uint(cfg.Port),
-			Login:                cfg.Username,
-			Password:             cfg.Password,
-			DebugServerResponses: true,
-			ReadWriteTimeout:     time.Second * 60,
-		}
-		instance.client = deluge.NewV2(clientCfg)
-
-	case domain.DownloaderTypeQbittorrent:
-		clientHost, err := cfg.BuildLegacyHost()
-		if err != nil {
-			return nil, errors.Wrap(err, "error building qBittorrent host url: %v", cfg.Host)
-		}
-
-		clientCfg := qbittorrent.Config{
-			Host:          clientHost,
-			Username:      cfg.Username,
-			Password:      cfg.Password,
-			APIKey:        cfg.Settings.APIKey,
-			TLSSkipVerify: cfg.TLSSkipVerify,
-			Log:           zstdlog.NewStdLoggerWithLevel(s.log.With().Str("type", "qBittorrent").Str("client", cfg.Name).Logger(), zerolog.TraceLevel),
-		}
-
-		if cfg.Settings.Auth.Enabled {
-			clientCfg.BasicUser = cfg.Settings.Auth.Username
-			clientCfg.BasicPass = cfg.Settings.Auth.Password
-		}
-
-		instance.client = qbittorrent.NewClient(clientCfg)
-
-	case domain.DownloaderTypeRTorrent:
-		rtCfg := rtorrent.Config{
-			Addr:          cfg.Host,
-			TLSSkipVerify: cfg.TLSSkipVerify,
-			BasicUser:     cfg.Settings.Auth.Username,
-			BasicPass:     cfg.Settings.Auth.Password,
-			Log:           zstdlog.NewStdLoggerWithLevel(s.log.With().Str("type", "rTorrent").Str("client", cfg.Name).Logger(), zerolog.TraceLevel),
-		}
-
-		//if cfg.Settings.Auth.Enabled {
-		//	rtCfg.BasicUser = cfg.Settings.Auth.Username
-		//	rtCfg.BasicPass = cfg.Settings.Auth.Password
-		//}
-
-		var opts []rtorrent.OptFunc
-		if cfg.Settings.Auth.Type == domain.DownloaderAuthTypeDigest {
-			transport := &digest.Transport{
-				Username:  cfg.Settings.Auth.Username,
-				Password:  cfg.Settings.Auth.Password,
-				Transport: sharedhttp.Transport,
-			}
-
-			if cfg.TLSSkipVerify {
-				transport.Transport = sharedhttp.TransportTLSInsecure
-			}
-
-			httpClient := &http.Client{Transport: transport}
-
-			opts = append(opts, rtorrent.WithCustomClient(httpClient))
-		}
-
-		instance.client = rtorrent.NewClientWithOpts(rtCfg, opts...)
 
 	case domain.DownloaderTypeLidarr:
 		clientCfg := lidarr.Config{

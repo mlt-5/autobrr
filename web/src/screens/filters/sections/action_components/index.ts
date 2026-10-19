@@ -3,7 +3,4 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export * from "./ActionDeluge";
-export * from "./ActionQBittorrent";
-export * from "./ActionRTorrent";
 export * from "./OtherActions";

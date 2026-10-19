@@ -54,7 +54,7 @@ type Action struct {
 // torrent from the indexer once, instead of once per action.
 func (a *Action) NeedsTorrentDownloaded() bool {
 	switch a.Type {
-	case ActionTypeQbittorrent, ActionTypeDelugeV1, ActionTypeDelugeV2, ActionTypeRTorrent, ActionTypeWatchFolder:
+	case ActionTypeWatchFolder:
 		return true
 	default:
 		return false
@@ -159,10 +159,6 @@ type ActionType string
 const (
 	ActionTypeTest        ActionType = "TEST"
 	ActionTypeExec        ActionType = "EXEC"
-	ActionTypeQbittorrent ActionType = "QBITTORRENT"
-	ActionTypeDelugeV1    ActionType = "DELUGE_V1"
-	ActionTypeDelugeV2    ActionType = "DELUGE_V2"
-	ActionTypeRTorrent    ActionType = "RTORRENT"
 	ActionTypeWatchFolder ActionType = "WATCH_FOLDER"
 	ActionTypeWebhook     ActionType = "WEBHOOK"
 	ActionTypeRadarr      ActionType = "RADARR"

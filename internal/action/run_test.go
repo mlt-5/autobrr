@@ -52,9 +52,8 @@ func TestCheckActionPreconditions_DownloadsOncePerRelease(t *testing.T) {
 	release := &domain.Release{TorrentName: "Test.Release-GRP", Protocol: domain.ReleaseProtocolTorrent}
 
 	actions := []*domain.Action{
-		{Name: "qbit", Type: domain.ActionTypeQbittorrent},
-		{Name: "deluge", Type: domain.ActionTypeDelugeV2},
-		{Name: "watch", Type: domain.ActionTypeWatchFolder},
+		{Name: "watch-1", Type: domain.ActionTypeWatchFolder},
+		{Name: "watch-2", Type: domain.ActionTypeWatchFolder},
 	}
 
 	for _, action := range actions {
@@ -79,7 +78,7 @@ func TestCheckActionPreconditions_SkipsDownloadForMagnet(t *testing.T) {
 		MagnetURI:   "magnet:?xt=urn:btih:abc123",
 	}
 
-	err := svc.CheckActionPreconditions(t.Context(), &domain.Action{Type: domain.ActionTypeQbittorrent}, release)
+	err := svc.CheckActionPreconditions(t.Context(), &domain.Action{Type: domain.ActionTypeWatchFolder}, release)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 0, dl.fetches, "magnet releases must not trigger a torrent download")

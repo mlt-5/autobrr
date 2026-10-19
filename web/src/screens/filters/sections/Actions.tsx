@@ -27,9 +27,7 @@ import { DownloadersQueryOptions } from "@api/queries";
 import { FilterHalfRow, FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
 import {
   Arr,
-  Deluge, Exec,
-  QBittorrent,
-  RTorrent,
+  Exec,
   Test,
   WatchFolder, WebHook
 } from "@screens/filters/sections/action_components";
@@ -130,14 +128,6 @@ const TypeForm = (props: ClientActionProps) => {
   const { action } = props;
 
   switch (action.type) {
-  // torrent clients
-  case "QBITTORRENT":
-    return <QBittorrent {...props} />;
-  case "DELUGE_V1":
-  case "DELUGE_V2":
-    return <Deluge {...props} />;
-  case "RTORRENT":
-    return <RTorrent {...props} />;
   // arrs
   case "RADARR":
   case "SONARR":

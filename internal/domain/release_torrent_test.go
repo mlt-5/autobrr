@@ -81,10 +81,6 @@ func TestAction_NeedsTorrentDownloaded(t *testing.T) {
 		actionType ActionType
 		want       bool
 	}{
-		{ActionTypeQbittorrent, true},
-		{ActionTypeDelugeV1, true},
-		{ActionTypeDelugeV2, true},
-		{ActionTypeRTorrent, true},
 		{ActionTypeWatchFolder, true},
 		{ActionTypeRadarr, false},
 		{ActionTypeSonarr, false},

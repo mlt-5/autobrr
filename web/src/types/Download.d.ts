@@ -4,10 +4,6 @@
  */
 
 type DownloaderType =
-  "QBITTORRENT" |
-  "DELUGE_V1" |
-  "DELUGE_V2" |
-  "RTORRENT" |
   "RADARR" |
   "SONARR" |
   "LIDARR" |

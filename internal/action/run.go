@@ -48,15 +48,6 @@ func (s *Service) RunAction(ctx context.Context, action *domain.Action, release 
 	case domain.ActionTypeWebhook:
 		err = s.runWebhook(ctx, action)
 
-	case domain.ActionTypeDelugeV1, domain.ActionTypeDelugeV2:
-		rejections, err = s.runDeluge(ctx, action, release)
-
-	case domain.ActionTypeQbittorrent:
-		rejections, err = s.runQbittorrent(ctx, action, release)
-
-	case domain.ActionTypeRTorrent:
-		rejections, err = s.runRTorrent(ctx, action, release)
-
 	case domain.ActionTypeRadarr:
 		rejections, err = s.runRadarr(ctx, action, release)
 

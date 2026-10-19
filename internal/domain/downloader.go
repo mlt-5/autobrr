@@ -4,10 +4,7 @@
 package domain
 
 import (
-	"cmp"
 	"encoding/json"
-	"fmt"
-	"net/url"
 
 	"github.com/autobrr/autobrr/pkg/errors"
 )
@@ -174,26 +171,18 @@ const (
 type DownloaderType string
 
 const (
-	DownloaderTypeQbittorrent DownloaderType = "QBITTORRENT"
-	DownloaderTypeDelugeV1    DownloaderType = "DELUGE_V1"
-	DownloaderTypeDelugeV2    DownloaderType = "DELUGE_V2"
-	DownloaderTypeRTorrent    DownloaderType = "RTORRENT"
-	DownloaderTypeRadarr      DownloaderType = "RADARR"
-	DownloaderTypeSonarr      DownloaderType = "SONARR"
-	DownloaderTypeLidarr      DownloaderType = "LIDARR"
-	DownloaderTypeWhisparr    DownloaderType = "WHISPARR"
-	DownloaderTypeWhisparrV3  DownloaderType = "WHISPARR_V3"
-	DownloaderTypeReadarr     DownloaderType = "READARR"
-	DownloaderTypeSportarr    DownloaderType = "SPORTARR"
+	DownloaderTypeRadarr     DownloaderType = "RADARR"
+	DownloaderTypeSonarr     DownloaderType = "SONARR"
+	DownloaderTypeLidarr     DownloaderType = "LIDARR"
+	DownloaderTypeWhisparr   DownloaderType = "WHISPARR"
+	DownloaderTypeWhisparrV3 DownloaderType = "WHISPARR_V3"
+	DownloaderTypeReadarr    DownloaderType = "READARR"
+	DownloaderTypeSportarr   DownloaderType = "SPORTARR"
 )
 
 func (t DownloaderType) Valid() error {
 	switch t {
-	case DownloaderTypeQbittorrent,
-		DownloaderTypeDelugeV1,
-		DownloaderTypeDelugeV2,
-		DownloaderTypeRTorrent,
-		DownloaderTypeLidarr,
+	case DownloaderTypeLidarr,
 		DownloaderTypeRadarr,
 		DownloaderTypeReadarr,
 		DownloaderTypeSonarr,
@@ -218,52 +207,6 @@ func (c Downloader) Validate() error {
 	}
 
 	return nil
-}
-
-func (c Downloader) BuildLegacyHost() (string, error) {
-	if c.Type == DownloaderTypeQbittorrent {
-		return c.qbitBuildLegacyHost()
-	}
-	return c.Host, nil
-}
-
-// qbitBuildLegacyHost exists to support older configs
-func (c Downloader) qbitBuildLegacyHost() (string, error) {
-	// parse url
-	u, err := url.Parse(c.Host)
-	if err != nil {
-		return "", err
-	}
-
-	// reset Opaque
-	u.Opaque = ""
-
-	// set scheme
-	scheme := "http"
-	if c.TLS {
-		scheme = "https"
-	}
-	u.Scheme = scheme
-
-	// if host is empty lets use one from settings
-	u.Host = cmp.Or(u.Host, c.Host)
-
-	// reset Path
-	if u.Host == u.Path {
-		u.Path = ""
-	}
-
-	// handle ports
-	if c.Port > 0 {
-		if c.Port == 80 || c.Port == 443 {
-			// skip for regular http and https
-		} else {
-			u.Host = fmt.Sprintf("%v:%v", u.Host, c.Port)
-		}
-	}
-
-	// make into new string and return
-	return u.String(), nil
 }
 
 type ArrTag struct {
