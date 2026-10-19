@@ -131,14 +131,8 @@ func TestAction_CheckMacrosNeedTorrent(t *testing.T) {
 			wantFile:  true,
 		},
 		{
-			name:      "path macro in save path is covered",
-			action:    Action{Type: ActionTypeExec, SavePath: "/data/{{.TorrentPathName}}"},
-			wantBytes: true,
-			wantFile:  true,
-		},
-		{
 			name:      "unrelated macros need nothing",
-			action:    Action{Type: ActionTypeExec, ExecArgs: "--name {{.TorrentName}}", SavePath: "/data/{{.Indexer}}"},
+			action:    Action{Type: ActionTypeExec, ExecArgs: "--name {{.TorrentName}}", WatchFolder: "/data/{{.Indexer}}"},
 			wantBytes: false,
 			wantFile:  false,
 		},

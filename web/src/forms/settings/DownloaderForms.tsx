@@ -42,13 +42,6 @@ interface InitialValuesSettings {
     username: string;
     password: string;
   };
-  rules?: {
-    enabled?: boolean;
-    ignore_slow_torrents?: boolean;
-    ignore_slow_torrents_condition?: IgnoreTorrentsCondition;
-    download_speed_threshold?: number;
-    max_active_downloads?: number;
-  };
   external_download_client_id?: number;
   external_download_client?: string;
 }

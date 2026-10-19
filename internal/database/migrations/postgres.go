@@ -111,6 +111,8 @@ func PostgresMigrations(db *sql.DB, logger zerolog.Logger) *migrator.Migrator {
 	migrate.AddFileMigration("88_irc_update_nordicbytes_network.sql")
 	migrate.AddFileMigration("89_add_notification_inbox.sql")
 	migrate.AddFileMigration("90_add_action_ratio_group.sql")
+	migrate.AddFileMigration("91_remove_torrent_and_usenet_download_clients.sql")
+	migrate.AddFileMigration("92_drop_torrent_client_action_columns.sql")
 
 	return migrate
 }

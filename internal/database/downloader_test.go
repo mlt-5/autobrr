@@ -35,14 +35,6 @@ func getMockDownloader() domain.Downloader {
 				Username: "username",
 				Password: "password",
 			},
-			Rules: domain.DownloaderRules{
-				Enabled:                     true,
-				MaxActiveDownloads:          10,
-				IgnoreSlowTorrents:          false,
-				IgnoreSlowTorrentsCondition: domain.IgnoreSlowTorrentsModeAlways,
-				DownloadSpeedThreshold:      0,
-				UploadSpeedThreshold:        0,
-			},
 			ExternalDownloadClientId: 0,
 			ExternalDownloadClient:   "",
 			Auth: domain.DownloaderAuth{
