@@ -86,7 +86,7 @@ func (i Indexer) MarshalJSON() ([]byte, error) {
 }
 
 func (i Indexer) ImplementationIsFeed() bool {
-	return i.Implementation == IndexerImplementationRSS || i.Implementation == IndexerImplementationTorznab || i.Implementation == IndexerImplementationNewznab
+	return i.Implementation == IndexerImplementationRSS || i.Implementation == IndexerImplementationTorznab
 }
 
 type IndexerMinimal struct {
@@ -176,7 +176,6 @@ type IndexerImplementation string
 const (
 	IndexerImplementationIRC     IndexerImplementation = "irc"
 	IndexerImplementationTorznab IndexerImplementation = "torznab"
-	IndexerImplementationNewznab IndexerImplementation = "newznab"
 	IndexerImplementationRSS     IndexerImplementation = "rss"
 	IndexerImplementationLegacy  IndexerImplementation = ""
 )
@@ -187,8 +186,6 @@ func (i IndexerImplementation) String() string {
 		return "irc"
 	case IndexerImplementationTorznab:
 		return "torznab"
-	case IndexerImplementationNewznab:
-		return "newznab"
 	case IndexerImplementationRSS:
 		return "rss"
 	case IndexerImplementationLegacy:
@@ -362,7 +359,7 @@ func (is IndexerSetting) MarshalJSON() ([]byte, error) {
 	})
 }
 
-// FeedSettings shared Feed settings for Torznab, Newznab and RSS
+// FeedSettings shared Feed settings for Torznab and RSS
 type FeedSettings struct {
 	MinInterval int              `json:"minInterval"`
 	Settings    []IndexerSetting `json:"settings"`

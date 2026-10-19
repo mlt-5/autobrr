@@ -165,7 +165,6 @@ export function FeedUpdateForm({ isOpen, toggle, data}: UpdateFormProps<Feed>) {
             </div>
           </div>
           {values.type === "TORZNAB" && <FormFieldsTorznab feedID={feed.id} />}
-          {values.type === "NEWZNAB" && <FormFieldsNewznab feedID={feed.id} />}
           {values.type === "RSS" && <FormFieldsRSS />}
         </div>
       )}
@@ -212,44 +211,6 @@ function FormFieldsTorznab({ feedID }: { feedID: number }) {
       />
 
       <SelectFieldBasic name="settings.download_type" label={t("forms.feed.downloadType")} options={FeedDownloadTypeOptions} />
-
-      <PasswordFieldWide name="api_key" label={t("forms.feed.apiKey")} />
-
-      <SwitchGroupWide name="tls_skip_verify" label={t("forms.feed.skipTls")} />
-
-      {interval < 15 && <WarningLabel />}
-      <NumberFieldWide name="interval" label={t("forms.feed.refreshInterval")} help={t("forms.feed.refreshIntervalHelp")}/>
-
-      <NumberFieldWide name="timeout" label={t("forms.feed.refreshTimeout")} help={t("forms.feed.refreshTimeoutHelp")}/>
-      <NumberFieldWide name="max_age" label={t("forms.feed.maxAge")} help={t("forms.feed.maxAgeHelp")}/>
-      <NumberFieldWide name="settings.cache_ttl_days" label={t("forms.feed.cacheTTL")} help={t("forms.feed.cacheTTLHelp")}/>
-
-      <FeedCategoriesSection feedID={feedID} />
-    </div>
-  );
-}
-
-function FormFieldsNewznab({ feedID }: { feedID: number }) {
-  const { t } = useTranslation("settings");
-  const interval = useFormValue((v: InitialValues) => v.interval);
-
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-5">
-      <TextFieldWide
-        name="url"
-        label={t("forms.feed.url")}
-        help={t("forms.feed.newznabUrlHelp")}
-        tooltip={
-          <div>
-            <p>{t("forms.feed.urlFormatTitle")}</p>
-            <br/>
-            <ul>
-              <li>{t("forms.feed.prowlarr")}: <code className="text-blue-400">http(s)://url.tld/indexerID/api</code></li>
-              <li>{t("forms.feed.jackett")}: <code className="text-blue-400">http(s)://url.tld/jackett/api/v2.0/indexers/indexerName/results/newznab/</code></li>
-            </ul>
-          </div>
-        }
-      />
 
       <PasswordFieldWide name="api_key" label={t("forms.feed.apiKey")} />
 

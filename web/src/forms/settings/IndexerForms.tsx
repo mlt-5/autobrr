@@ -141,50 +141,7 @@ const TorznabFeedSettingFields = (ind: IndexerDefinition, indexer: string) => {
               help={t("forms.indexer.downloadTypeHelp")}
             />
 
-            <FeedCategoriesDraftSection feedType="TORZNAB" />
-          </div>
-        )}
-      </Fragment>
-    );
-  }
-};
-
-const NewznabFeedSettingFields = (ind: IndexerDefinition, indexer: string) => {
-  const { t } = useTranslation("settings");
-  if (indexer !== "") {
-    return (
-      <Fragment>
-        {ind && ind.implementation == "newznab" && ind.feed && ind.feed.settings && (
-          <div className="">
-            <div className="pt-4 px-4">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white">{t("forms.indexer.newznabTitle")}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-200">
-                {t("forms.indexer.newznabDesc")}
-              </p>
-            </div>
-
-            <TextFieldWide name="name" label={t("forms.indexer.name")} defaultValue="" required={true} />
-
-            <TextFieldWide
-              name="feed.newznab_url"
-              label={t("forms.indexer.url")}
-              required={true}
-              help={t("forms.indexer.newznabUrlHelp")}
-              tooltip={
-                <div>
-                  <p>{t("forms.indexer.urlFormatTitle")}</p>
-                  <br/>
-                  <ul>
-                    <li>{t("forms.indexer.prowlarr")}: <code className="text-blue-400">http(s)://url.tld/indexerID/api</code></li>
-                    <li>{t("forms.indexer.jackett")}: <code className="text-blue-400">http(s)://url.tld/jackett/api/v2.0/indexers/indexerName/results/newznab/</code></li>
-                  </ul>
-                </div>
-              }
-            />
-
-            <PasswordFieldWide name="feed.api_key" label={t("forms.indexer.apiKey")} help={t("forms.indexer.apiKey")} required={true} />
-
-            <FeedCategoriesDraftSection feedType="NEWZNAB" />
+            <FeedCategoriesDraftSection />
           </div>
         )}
       </Fragment>
@@ -234,7 +191,7 @@ const RSSFeedSettingFields = (ind: IndexerDefinition, indexer: string) => {
   }
 };
 
-function FeedCategoriesDraftSection({ feedType }: { feedType: FeedType }) {
+function FeedCategoriesDraftSection() {
   const { t } = useTranslation("settings");
   const values = useFormValue((v: Record<string, unknown>) => ({ feed: v.feed }));
   const form = useFormContext();
@@ -243,16 +200,14 @@ function FeedCategoriesDraftSection({ feedType }: { feedType: FeedType }) {
   const categoriesValue = Array.isArray(feedValues.categories) ? (feedValues.categories as number[]) : [];
   const capsPayload = useMemo(() => parseCapabilitiesPayload(capabilities), [capabilities]);
   const categoriesTree = useMemo(() => extractCategoryTreeFromCaps(capsPayload), [capsPayload]);
-  const url = feedType === "TORZNAB"
-    ? String(feedValues.url ?? "")
-    : String(feedValues.newznab_url ?? feedValues.url ?? "");
+  const url = String(feedValues.url ?? "");
   const apiKey = typeof feedValues.api_key === "string" ? feedValues.api_key : "";
   const hasCaps = Boolean(capabilities);
   const canFetch = url.length > 0;
 
   const fetchCapsMutation = useMutation({
     mutationFn: () => APIClient.feeds.fetchCapsDraft({
-      type: feedType,
+      type: "TORZNAB",
       url,
       api_key: apiKey,
       timeout: 60
@@ -455,7 +410,6 @@ interface IndexerAddIrcValues {
 
 interface IndexerAddFeedValues {
   url?: string;
-  newznab_url?: string;
   api_key?: string;
   categories: number[];
   capabilities: FeedCaps | null;
@@ -537,34 +491,6 @@ function IndexerAddFormPanel({ toggle }: IndexerAddFormPanelProps) {
           enabled: false,
           type: "TORZNAB",
           url: formData.feed.url ?? "",
-          api_key: formData.feed.api_key,
-          interval: 30,
-          timeout: 60,
-          indexer_id: 0,
-          categories: formData.feed.categories ?? [],
-          capabilities: formData.feed.capabilities ?? null,
-          settings: formData.feed.settings
-        };
-
-        mutation.mutate(formData, {
-          onSuccess: (indexer) => {
-            // @eslint-ignore
-            createFeed.indexer_id = indexer.id;
-
-            feedMutation.mutate(createFeed);
-          }
-        });
-        return;
-      }
-
-      case "newznab": {
-        formData.url = formData.feed.url;
-
-        const createFeed: FeedCreate = {
-          name: formData.name,
-          enabled: false,
-          type: "NEWZNAB",
-          url: formData.feed.newznab_url ?? "",
           api_key: formData.feed.api_key,
           interval: 30,
           timeout: 60,
@@ -750,7 +676,6 @@ function IndexerAddFormPanel({ toggle }: IndexerAddFormPanelProps) {
 
           {IrcSettingFields(indexer, identifier)}
           {TorznabFeedSettingFields(indexer, identifier)}
-          {NewznabFeedSettingFields(indexer, identifier)}
           {RSSFeedSettingFields(indexer, identifier)}
 
           {identifier !== "" && (
@@ -1130,7 +1055,7 @@ export function IndexerUpdateForm({ isOpen, toggle, data: indexer }: UpdateFormP
 
           <ProxyFields useProxy={values.use_proxy} />
 
-          {(indexer.implementation === "torznab" || indexer.implementation === "newznab" || indexer.implementation === "rss") && (
+          {(indexer.implementation === "torznab" || indexer.implementation === "rss") && (
             <div className="py-4 pt-6">
               <FeedSettingsBanner />
             </div>

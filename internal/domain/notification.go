@@ -198,7 +198,7 @@ type NotificationPayload struct {
 	ActionType          ActionType
 	ActionClient        string
 	Rejections          []string
-	Protocol            ReleaseProtocol       // torrent, usenet
+	Protocol            ReleaseProtocol
 	Implementation      ReleaseImplementation // irc, rss, api
 	Timestamp           time.Time
 	Sender              string

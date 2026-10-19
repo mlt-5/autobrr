@@ -269,8 +269,8 @@
       "toggleTooltip3": "Consulta quién usa qué en la documentación:"
     },
     "feedSpecific": {
-      "title": "Específico de RSS/Torznab/Newznab",
-      "subtitle": "Estas opciones son solo para feeds como RSS, Torznab y Newznab",
+      "title": "Específico de RSS/Torznab",
+      "subtitle": "Estas opciones son solo para feeds como RSS y Torznab",
       "matchDescription": "Coincidir descripción",
       "matchDescriptionPlaceholder": "ej. *alguna?pelicula*,*alguna?serie*s01*",
       "exceptDescription": "Excepto descripción",

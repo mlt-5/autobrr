@@ -1,7 +1,7 @@
 .TH AUTOBRR 1 "2024-03-24" "autobrr" "User Commands"
 .\" Add comments for maintainers
 .SH NAME
-autobrr \- modern download automation for torrents and usenet
+autobrr \- modern download automation for torrents
 .SH SYNOPSIS
 .SY autobrr
 .OP \-\-config path
@@ -14,9 +14,9 @@ autobrr \- modern download automation for torrents and usenet
 .SH DESCRIPTION
 .B autobrr
 is a download automation tool that monitors IRC announce channels and RSS feeds
-to automatically download desired content from torrent and usenet sources.
+to automatically download desired content from torrent sources.
 .PP
-The application supports over 75 torrent trackers with IRC announces, Newznab,
+The application supports over 100 torrent trackers with IRC announces,
 Torznab and RSS feeds. It features powerful filtering with RegEx support and
 a mobile-friendly web UI.
 .SH OPTIONS
@@ -54,28 +54,10 @@ Path to database file (for db:seed and db:reset)
 Path to SQL seed file (for db:seed and db:reset)
 .SH FEATURES
 .TP
-.B Download Clients
+.B Actions
 .RS
 .IP \[bu] 2
-qBittorrent with built-in re-announce and categories
-.IP \[bu]
-Deluge v1+ and v2+
-.IP \[bu]
-rTorrent
-.IP \[bu]
-Transmission
-.IP \[bu]
-Porla
-.IP \[bu]
-SABnzbd
-.IP \[bu]
 Watch Folder support
-.RE
-.TP
-.B Integration
-.RS
-.IP \[bu] 2
-Sonarr, Radarr, Lidarr, Whisparr, Readarr support
 .IP \[bu]
 Custom script execution
 .IP \[bu]

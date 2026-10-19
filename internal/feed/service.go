@@ -15,7 +15,6 @@ import (
 	"github.com/autobrr/autobrr/internal/events"
 	"github.com/autobrr/autobrr/internal/proxy"
 	"github.com/autobrr/autobrr/pkg/errors"
-	"github.com/autobrr/autobrr/pkg/newznab"
 	"github.com/autobrr/autobrr/pkg/torznab"
 
 	"github.com/robfig/cron/v3"
@@ -437,11 +436,6 @@ func (s *Service) test(ctx context.Context, feed *domain.Feed) error {
 			return err
 		}
 
-	case string(domain.FeedTypeNewznab):
-		if err := s.testNewznab(ctx, feed, subLogger); err != nil {
-			return err
-		}
-
 	case string(domain.FeedTypeRSS):
 		if err := s.testRSS(ctx, feed); err != nil {
 			return err
@@ -524,42 +518,6 @@ func (s *Service) testTorznab(ctx context.Context, feed *domain.Feed, subLogger 
 	return nil
 }
 
-func (s *Service) testNewznab(ctx context.Context, feed *domain.Feed, subLogger zerolog.Logger) error {
-	// setup newznab Client
-	c := newznab.NewClient(newznab.Config{Host: feed.URL, ApiKey: feed.ApiKey, Timeout: time.Duration(feed.Timeout) * time.Second, TLSSkipVerify: feed.TLSSkipVerify, Log: subLogger})
-
-	// add proxy if enabled and exists
-	if feed.UseProxy && feed.Proxy != nil {
-		proxyClient, err := proxy.GetProxiedHTTPClient(feed.Proxy)
-		if err != nil {
-			return errors.Wrap(err, "could not get proxy client")
-		}
-
-		if feed.TLSSkipVerify {
-			if t, ok := proxyClient.Transport.(*http.Transport); ok {
-				t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-			}
-		}
-
-		if feed.Timeout > 0 {
-			proxyClient.Timeout = time.Duration(feed.Timeout) * time.Second
-		}
-		c.WithHTTPClient(proxyClient)
-
-		s.log.Debug().Str("proxy", feed.Proxy.Name).Str("feed", feed.Name).Msg("using proxy for feed")
-	}
-
-	items, err := c.GetFeed(ctx)
-	if err != nil {
-		s.log.Error().Err(err).Msg("error getting newznab feed")
-		return err
-	}
-
-	s.log.Info().Str("feed", feed.Name).Int("items_count", len(items.Channel.Items)).Msg("refreshing newznab feed found items")
-
-	return nil
-}
-
 func (s *Service) start() error {
 	// always run feed cache maintenance job
 	if err := s.createCleanupJob(); err != nil {
@@ -632,9 +590,6 @@ func (s *Service) initializeFeedJob(fi feedInstance) (RefreshFeedJob, error) {
 	switch fi.Implementation {
 	case string(domain.FeedTypeTorznab):
 		job, err = s.createTorznabJob(fi)
-
-	case string(domain.FeedTypeNewznab):
-		job, err = s.createNewznabJob(fi)
 
 	case string(domain.FeedTypeRSS):
 		job, err = s.createRSSJob(fi)
@@ -777,25 +732,6 @@ func (s *Service) createTorznabJob(f feedInstance) (RefreshFeedJob, error) {
 
 	// create job
 	job := NewTorznabJob(f.Feed, f.Name, l, f.URL, client, s.repo, s.cacheRepo, s.releaseSvc)
-
-	return job, nil
-}
-
-func (s *Service) createNewznabJob(f feedInstance) (RefreshFeedJob, error) {
-	s.log.Debug().Str("feed", f.Name).Msg("create newznab job")
-
-	if f.URL == "" {
-		return nil, errors.New("newznab feed requires URL")
-	}
-
-	// setup logger
-	l := s.log.With().Str("feed", f.Name).Int("feed_id", f.Feed.ID).Str("implementation", f.Implementation).Logger()
-
-	// setup newznab Client
-	client := newznab.NewClient(newznab.Config{Host: f.URL, ApiKey: f.ApiKey, Timeout: f.Timeout, TLSSkipVerify: f.Feed.TLSSkipVerify})
-
-	// create job
-	job := NewNewznabJob(f.Feed, f.Name, l, f.URL, client, s.repo, s.cacheRepo, s.releaseSvc)
 
 	return job, nil
 }
@@ -960,32 +896,6 @@ func (s *Service) FetchCaps(ctx context.Context, feed *domain.Feed) (*domain.Fee
 
 		return unifiedCaps, nil
 
-	case string(domain.FeedTypeNewznab):
-		client := newznab.NewClient(newznab.Config{Host: feed.URL, ApiKey: feed.ApiKey, Timeout: time.Duration(feed.Timeout) * time.Second, TLSSkipVerify: feed.TLSSkipVerify})
-
-		if feed.UseProxy && feed.Proxy != nil {
-			proxyClient, err := proxy.GetProxiedHTTPClient(feed.Proxy)
-			if err != nil {
-				return nil, errors.Wrap(err, "could not get proxy client")
-			}
-
-			if feed.TLSSkipVerify {
-				if t, ok := proxyClient.Transport.(*http.Transport); ok {
-					t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-				}
-			}
-
-			client.WithHTTPClient(proxyClient)
-		}
-
-		caps, err := client.GetCaps(ctx)
-		if err != nil {
-			return nil, err
-		}
-
-		unifiedCaps := domain.NewFeedCapabilitiesFromNewznab(caps)
-
-		return unifiedCaps, nil
 	default:
 		return nil, errors.New("unsupported feed type: %s", feed.Type)
 	}

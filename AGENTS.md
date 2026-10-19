@@ -41,7 +41,7 @@ The backend follows a layered architecture with clear separation of concerns:
   - **Infrastructure**: External integrations (`internal/indexer/`, `internal/irc/`, `internal/notification/`)
 
 - **`pkg/`**: Reusable packages and client libraries
-  - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `ptp`, `red`) and the Newznab/Torznab feed clients
+  - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `ptp`, `red`) and the Torznab feed client
   - Utility packages for different indexer APIs
 
 ### Frontend Architecture (React/TypeScript)
@@ -53,12 +53,12 @@ The backend follows a layered architecture with clear separation of concerns:
 - API client in `web/src/api/` with centralized query management
 
 ### Key Domain Concepts
-- **Releases**: Torrent/Usenet releases that get processed through filters
+- **Releases**: Torrent releases that get processed through filters
 - **Filters**: Rules that determine which releases should be downloaded
 - **Actions**: What to do with matched releases (watch folder, exec, webhook)
-- **Indexers**: Torrent trackers and Usenet indexers, defined as YAML in `internal/indexer/definitions/`
+- **Indexers**: Torrent trackers, defined as YAML in `internal/indexer/definitions/`
 - **IRC**: Real-time monitoring of indexer announce channels
-- **Feed**: RSS/Newznab/Torznab feed processing for indexers without IRC
+- **Feed**: RSS/Torznab feed processing for indexers without IRC
 
 ### Database Support
 - **SQLite** (default) and **PostgreSQL** support

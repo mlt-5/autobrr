@@ -269,8 +269,8 @@
       "toggleTooltip3": "Se hvem som bruker hva i dokumentasjonen:"
     },
     "feedSpecific": {
-      "title": "RSS/Torznab/Newznab-spesifikt",
-      "subtitle": "Disse alternativene er kun for feeds som RSS, Torznab og Newznab",
+      "title": "RSS/Torznab-spesifikt",
+      "subtitle": "Disse alternativene er kun for feeds som RSS og Torznab",
       "matchDescription": "Samsvar med beskrivelse",
       "matchDescriptionPlaceholder": "f.eks. *noe?film*,*noe?serie*s01*",
       "exceptDescription": "Ekskluder beskrivelse",
