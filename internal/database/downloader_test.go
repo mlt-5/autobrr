@@ -19,8 +19,8 @@ import (
 
 func getMockDownloader() domain.Downloader {
 	return domain.Downloader{
-		Name:          "qbitorrent",
-		Type:          domain.DownloaderTypeQbittorrent,
+		Name:          "sonarr",
+		Type:          domain.DownloaderTypeSonarr,
 		Enabled:       true,
 		Host:          "host",
 		Port:          2020,
@@ -34,14 +34,6 @@ func getMockDownloader() domain.Downloader {
 				Auth:     true,
 				Username: "username",
 				Password: "password",
-			},
-			Rules: domain.DownloaderRules{
-				Enabled:                     true,
-				MaxActiveDownloads:          10,
-				IgnoreSlowTorrents:          false,
-				IgnoreSlowTorrentsCondition: domain.IgnoreSlowTorrentsModeAlways,
-				DownloadSpeedThreshold:      0,
-				UploadSpeedThreshold:        0,
 			},
 			ExternalDownloadClientId: 0,
 			ExternalDownloadClient:   "",

@@ -489,35 +489,6 @@
       "title": "Instancia",
       "subtitle": "Selecciona la instancia específica que quieres que maneje este filtro de lanzamiento."
     },
-    "common": {
-      "category": "Categoría",
-      "categoryPlaceholder": "ej. categoría",
-      "categoryTooltip": "La categoría ya debe existir.",
-      "savePath": "Ruta de guardado",
-      "savePathPlaceholder": "ej. /ruta/completa/a/carpeta_descarga",
-      "numberNoLimit": "Acepta cualquier número (0 es sin límite)",
-      "limitsTitle": "Límites",
-      "limitsSubtitle": "Configura tus límites de velocidad/ratio/tiempo de siembra",
-      "limitDownloadKib": "Limitar velocidad de descarga (KiB/s)",
-      "limitUploadKib": "Limitar velocidad de subida (KiB/s)",
-      "limitDownloadKb": "Limitar velocidad de descarga (KB/s)",
-      "limitUploadKb": "Limitar velocidad de subida (KB/s)",
-      "ratioLimit": "Límite de ratio",
-      "seedTimeMinutes": "Límite de tiempo de siembra (minutos)",
-      "addPaused": "Agregar pausado",
-      "addPausedDescription": "Agregar torrent como pausado",
-      "skipHashCheck": "Omitir verificación de hash",
-      "skipHashCheckDescription": "Agregar torrent y omitir verificación de hash",
-      "announceTitle": "Anuncio",
-      "announceSubtitle": "Establecer número de reanuncios (si es necesario), eliminar después de Y fallos de anuncio, etc.",
-      "disableReannounce": "Deshabilitar reanuncio",
-      "disableReannounceDescription": "El reanuncio está habilitado por defecto. Deshabilitar si no es necesario",
-      "reannounceInterval": "Intervalo de reanuncio. Ejecutar cada X segundos",
-      "reannounceIntervalPlaceholder": "7 es el valor predeterminado y recomendado",
-      "deleteStalled": "Eliminar estancados",
-      "deleteStalledDescription": "Eliminar torrents estancados después de Y intentos",
-      "reannounceMaxAttempts": "Ejecutar reanuncio Y veces"
-    },
     "test": {
       "alert": "¡Atención!",
       "text": "La acción de prueba no hace nada excepto mostrar si el filtro funciona. Asegúrate de tener la página de Registros abierta mientras pruebas."
@@ -550,54 +521,6 @@
       "overrideClientNameTooltip": "Anular el nombre del cliente de descarga del configurado en Clientes. Útil si tienes múltiples clientes dentro del arr.",
       "overrideClientId": "Anular ID del cliente de descarga para arr OBSOLETO",
       "overrideClientIdTooltip": "Anular el ID del cliente de descarga del configurado en Clientes. Útil si tienes múltiples clientes dentro del arr."
-    },
-    "qbittorrent": {
-      "macrosTooltip": "El campo puede usar macros para transformar/agregar valores de los metadatos:",
-      "tags": "Etiquetas",
-      "tagsPlaceholder": "ej. etiqueta1,etiqueta2",
-      "savePathPlaceholder": "ej. /ruta/completa/a/carpeta_guardado",
-      "savePathTooltip": "Establecer una ruta de guardado personalizada para esta acción. La gestión automática de torrents se encargará de esto si usas qBittorrent con categorías.",
-      "downloadPath": "Ruta de descarga",
-      "downloadPathPlaceholder": "ej. /ruta/completa/a/carpeta_descarga",
-      "downloadPathTooltip": "Establecer una ruta de descarga (incompleta) personalizada para esta acción. La gestión automática de torrents se encargará de esto si usas qBittorrent con categorías.",
-      "rulesTitle": "Reglas",
-      "rulesSubtitle": "Configura las reglas de tu cliente de torrents",
-      "ignoreRules": "Ignorar reglas existentes del cliente",
-      "ignoreRulesDescription": "Elegir ignorar las reglas establecidas en la Configuración del Cliente.",
-      "contentLayout": "Disposición del contenido",
-      "contentLayoutDefault": "Seleccionar disposición de contenido",
-      "priority": "Prioridad",
-      "priorityDefault": "Deshabilitado",
-      "priorityTooltip": "La cola de torrents se habilitará automáticamente si está deshabilitada. Asegúrate de establecer tus límites preferidos en tu cliente.",
-      "firstLastPiece": "Descargar primeras y últimas piezas primero",
-      "firstLastPieceDescription": "Agregar torrent y descargar primeras y últimas piezas primero"
-    },
-    "deluge": {
-      "label": "Etiqueta",
-      "labelPlaceholder": "ej. etiqueta1 (debe existir en Deluge para funcionar)",
-      "skipHashCheckTooltip": "Esto solo funcionará en Deluge v2."
-    },
-    "transmission": {
-      "label": "Etiquetas del torrent",
-      "labelPlaceholder": "ej. etiqueta1,etiqueta2"
-    },
-    "rtorrent": {
-      "label": "Etiqueta",
-      "labelPlaceholder": "ej. etiqueta1,etiqueta2",
-      "renameToPath": "No agregar nombre del torrent a la ruta",
-      "renameDefault": "No",
-      "priority": "Prioridad",
-      "priorityDefault": "Predeterminada",
-      "priorityTooltip": "Prioridad de ancho de banda de rTorrent. Los torrents con mayor prioridad reciben una parte mayor de los slots de subida y descarga.",
-      "ratioGroup": "Grupo de ratio",
-      "ratioGroupPlaceholder": "ej. rat_0",
-      "ratioGroupTooltip": "Grupo de ratio de ruTorrent al que se añade el torrent. El plugin de ratio nombra sus grupos rat_0 a rat_7, en el orden en que aparecen en la configuración de ratio de ruTorrent. Déjalo vacío para usar el grupo de ratio predeterminado."
-    },
-    "porla": {
-      "preset": "Preset",
-      "presetPlaceholder": "ej. default",
-      "presetTooltip": "Un nombre de preset sensible a mayúsculas configurado en Porla.",
-      "savePathPlaceholder": "ej. /ruta/completa/a/datos/torrent"
     }
   },
   "addForm": {

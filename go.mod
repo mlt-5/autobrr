@@ -15,9 +15,6 @@ require (
 	github.com/alexedwards/scs/v2 v2.9.0
 	github.com/alphadose/haxmap v1.4.1
 	github.com/autobrr/go-cache v1.0.0-rc1
-	github.com/autobrr/go-deluge v1.4.0
-	github.com/autobrr/go-qbittorrent v1.19.0
-	github.com/autobrr/go-rtorrent v1.13.0
 	github.com/autobrr/go-torrent v1.1.1
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/avast/retry-go/v4 v4.7.0
@@ -32,8 +29,6 @@ require (
 	github.com/go-chi/render v1.0.3
 	github.com/gosimple/slug v1.15.0
 	github.com/hashicorp/go-version v1.9.0
-	github.com/hekmon/transmissionrpc/v3 v3.0.0
-	github.com/icholy/digest v1.2.0
 	github.com/lib/pq v1.12.3
 	github.com/magiconair/properties v1.18.12
 	github.com/maniartech/signals v1.3.1
@@ -69,22 +64,18 @@ require (
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
-	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
 	github.com/eclipse/paho.golang v0.23.0 // indirect
-	github.com/gdm85/go-rencode v0.1.8 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
-	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hekmon/cunits/v2 v2.1.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect

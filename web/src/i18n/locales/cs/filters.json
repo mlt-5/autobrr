@@ -489,35 +489,6 @@
         "title": "Instance",
         "subtitle": "Vyberte konkrétní instanci, která má tento filtr zpracovat."
       },
-      "common": {
-        "category": "Kategorie",
-        "categoryPlaceholder": "např. kategorie",
-        "categoryTooltip": "Kategorie musí již existovat.",
-        "savePath": "Cesta k uložení",
-        "savePathPlaceholder": "např. /full/path/to/download_folder",
-        "numberNoLimit": "Akceptuje jakékoli číslo (0 je neomezeno)",
-        "limitsTitle": "Limity",
-        "limitsSubtitle": "Nastavte své limity rychlosti/share ratio/času seedování",
-        "limitDownloadKib": "Omezit rychlost downloadu (KiB/s)",
-        "limitUploadKib": "Omezit rychlost uploadu (KiB/s)",
-        "limitDownloadKb": "Omezit rychlost downloadu (KB/s)",
-        "limitUploadKb": "Omezit rychlost uploadu (KB/s)",
-        "ratioLimit": "Omezit poměr sdílení",
-        "seedTimeMinutes": "Omezit čas seedování (minuty)",
-        "addPaused": "Přidat jako pozastavené",
-        "addPausedDescription": "Přidat torrent jako pozastavený",
-        "skipHashCheck": "Přeskočit hashování",
-        "skipHashCheckDescription": "Přidat torrent a přeskočit hashování",
-        "announceTitle": "Oznámení",
-        "announceSubtitle": "Nastavte počet opakovaného oznámení (pokud je to potřeba), smazat po Y-tém selhání oznámení atd.",
-        "disableReannounce": "Zakázat opakované oznámení",
-        "disableReannounceDescription": "Opakované oznámení je povoleno ve výchozím nastavení. Zakázat, pokud to není potřeba",
-        "reannounceInterval": "Interval opakovaného oznámení. Spustit každých X sekund",
-        "reannounceIntervalPlaceholder": "7 je výchozí a doporučené",
-        "deleteStalled": "Smazat pozastavené",
-        "deleteStalledDescription": "Smazat pozastavené torrenty po Y pokusech",
-        "reannounceMaxAttempts": "Spustit opakované oznámení Y krát"
-      },
       "test": {
         "alert": "Upozornění!",
         "text": "Testovací akce nic neprovede, kromě toho, aby ukázala, zda filtr funguje. Ujistěte se, že máte otevřenou stránku Logy při testování."
@@ -550,54 +521,6 @@
         "overrideClientNameTooltip": "Přepsat název downloadovacího klienta z toho, který je nastaven v klientech. Užitečné, pokud máte více klientů uvnitř arr.",
         "overrideClientId": "Přepsat ID downloadovacího klienta pro arr ZASTARALÉ",
         "overrideClientIdTooltip": "Přepsat ID downloadovacího klienta z toho, který je nastaven v klientech. Užitečné, pokud máte více klientů uvnitř arr."
-      },
-      "qbittorrent": {
-        "macrosTooltip": "Toto pole může používat makra k transformaci/přidání hodnot z metadat:",
-        "tags": "Tagy",
-        "tagsPlaceholder": "např. tag1,tag2",
-        "savePathPlaceholder": "např. /full/path/to/save_folder",
-        "savePathTooltip": "Nastavte pro tuto akci vlastní cestu k uložení. Správa automatických torrentů se o to postará, pokud používáte qBittorrent s kategoriemi.",
-        "downloadPath": "Cesta k downloadu",
-        "downloadPathPlaceholder": "např. /full/path/to/download_folder",
-        "downloadPathTooltip": "Nastavte pro tuto akci vlastní cestu k nekompletnímu stahovaní. Správa automatických torrentů se o to postará, pokud používáte qBittorrent s kategoriemi.",
-        "rulesTitle": "Pravidla",
-        "rulesSubtitle": "Nastavte pravidla pro vašeho torrent klienta",
-        "ignoreRules": "Ignorovat existující pravidla klienta",
-        "ignoreRulesDescription": "Vyberte, aby se ignorovala pravidla nastavená v Nastavení klienta.",
-        "contentLayout": "Rozvržení obsahu",
-        "contentLayoutDefault": "Vybrat rozvržení obsahu",
-        "priority": "Priorita",
-        "priorityDefault": "Vypnuto",
-        "priorityTooltip": "Torrentová fronta bude pro vás povolena, pokud je vypnutá. Ujistěte se, že jste pro to nastavili své předvolby ve vašem klientovi.",
-        "firstLastPiece": "Stáhnout nejdříve první a poslední části",
-        "firstLastPieceDescription": "Přidat torrent a nejprve stáhnout první a poslední části torrentu"
-      },
-      "deluge": {
-        "label": "Štítky",
-        "labelPlaceholder": "např. label1 (pro fungování musí již existovat v Deluge)",
-        "skipHashCheckTooltip": "Toto bude fungovat pouze na Deluge v2."
-      },
-      "transmission": {
-        "label": "Torrent štítky",
-        "labelPlaceholder": "např. label1,label2"
-      },
-      "rtorrent": {
-        "label": "Štítky",
-        "labelPlaceholder": "např. label1,label2",
-        "renameToPath": "Nepřidávat název torrentu do cesty",
-        "renameDefault": "Ne",
-        "priority": "Priorita",
-        "priorityDefault": "Výchozí",
-        "priorityTooltip": "Priorita šířky pásma v rTorrentu. Torrenty s vyšší prioritou dostanou větší podíl slotů pro odesílání a stahování.",
-        "ratioGroup": "Skupina ratia",
-        "ratioGroupPlaceholder": "např. rat_0",
-        "ratioGroupTooltip": "Skupina ratia v ruTorrentu, do které se torrent přidá. Plugin ratio pojmenovává skupiny rat_0 až rat_7 v pořadí, v jakém jsou uvedeny v nastavení ratia v ruTorrentu. Ponechte prázdné pro použití výchozí skupiny ratia."
-      },
-      "porla": {
-        "preset": "Předvolba",
-        "presetPlaceholder": "např. default",
-        "presetTooltip": "Název předvolby jako je nastavený v Porla, ignoruje velikost písmen.",
-        "savePathPlaceholder": "např. /full/path/to/torrent/data"
       }
     },
     "addForm": {

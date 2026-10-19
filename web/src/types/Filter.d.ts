@@ -97,26 +97,6 @@ interface Action {
   exec_cmd?: string;
   exec_args?: string;
   watch_folder?: string;
-  category?: string;
-  tags?: string;
-  label?: string;
-  save_path?: string;
-  download_path?: string;
-  paused?: boolean;
-  ignore_rules?: boolean;
-  first_last_piece_prio?: boolean;
-  skip_hash_check?: boolean;
-  content_layout?: ActionContentLayout;
-  priority?: ActionPriorityLayout;
-  ratio_group?: string;
-  limit_upload_speed?: number;
-  limit_download_speed?: number;
-  limit_ratio?: number;
-  limit_seed_time?: number;
-  reannounce_skip: boolean;
-  reannounce_delete: boolean;
-  reannounce_interval: number;
-  reannounce_max_attempts: number;
   webhook_host: string,
   webhook_type: string;
   webhook_method: string;
@@ -127,10 +107,6 @@ interface Action {
   client_id?: number;
   filter_id?: number;
 }
-
-type ActionContentLayout = "ORIGINAL" | "SUBFOLDER_CREATE" | "SUBFOLDER_NONE" | "";
-
-type ActionPriorityLayout = "MAX" | "MIN" | "LOW" | "NORMAL" | "HIGH" | "";
 
 type ActionType = "TEST" | "EXEC" | "WATCH_FOLDER" | "WEBHOOK" | DownloaderType;
 

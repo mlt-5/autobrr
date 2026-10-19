@@ -81,17 +81,9 @@ func TestAction_NeedsTorrentDownloaded(t *testing.T) {
 		actionType ActionType
 		want       bool
 	}{
-		{ActionTypeQbittorrent, true},
-		{ActionTypeDelugeV1, true},
-		{ActionTypeDelugeV2, true},
-		{ActionTypeRTorrent, true},
-		{ActionTypeTransmission, true},
-		{ActionTypePorla, true},
-		{ActionTypeAria2, true},
 		{ActionTypeWatchFolder, true},
 		{ActionTypeRadarr, false},
 		{ActionTypeSonarr, false},
-		{ActionTypeSabnzbd, false},
 		{ActionTypeExec, false},
 		{ActionTypeWebhook, false},
 		{ActionTypeTest, false},
@@ -139,14 +131,8 @@ func TestAction_CheckMacrosNeedTorrent(t *testing.T) {
 			wantFile:  true,
 		},
 		{
-			name:      "path macro in save path is covered",
-			action:    Action{Type: ActionTypeExec, SavePath: "/data/{{.TorrentPathName}}"},
-			wantBytes: true,
-			wantFile:  true,
-		},
-		{
 			name:      "unrelated macros need nothing",
-			action:    Action{Type: ActionTypeExec, ExecArgs: "--name {{.TorrentName}}", SavePath: "/data/{{.Indexer}}"},
+			action:    Action{Type: ActionTypeExec, ExecArgs: "--name {{.TorrentName}}", WatchFolder: "/data/{{.Indexer}}"},
 			wantBytes: false,
 			wantFile:  false,
 		},

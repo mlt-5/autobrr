@@ -26,15 +26,10 @@ import { TitleSubtitle } from "@components/headings";
 import { DownloadersQueryOptions } from "@api/queries";
 import { FilterHalfRow, FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
 import {
-  Aria2,
   Arr,
-  Deluge, Exec,
-  NZBGet,
-  Porla,
-  QBittorrent,
-  RTorrent,
-  SABnzbd, Test,
-  Transmission, WatchFolder, WebHook
+  Exec,
+  Test,
+  WatchFolder, WebHook
 } from "@screens/filters/sections/action_components";
 
 export function Actions() {
@@ -53,25 +48,6 @@ export function Actions() {
     watch_folder: "",
     exec_cmd: "",
     exec_args: "",
-    category: "",
-    tags: "",
-    label: "",
-    save_path: "",
-    paused: false,
-    ignore_rules: false,
-    first_last_piece_prio: false,
-    skip_hash_check: false,
-    content_layout: "",
-    priority: "",
-    ratio_group: "",
-    limit_upload_speed: 0,
-    limit_download_speed: 0,
-    limit_ratio: 0,
-    limit_seed_time: 0,
-    reannounce_skip: false,
-    reannounce_delete: false,
-    reannounce_interval: 7,
-    reannounce_max_attempts: 25,
     filter_id: values.id,
     webhook_host: "",
     webhook_type: "",
@@ -133,20 +109,6 @@ const TypeForm = (props: ClientActionProps) => {
   const { action } = props;
 
   switch (action.type) {
-  // torrent clients
-  case "QBITTORRENT":
-    return <QBittorrent {...props} />;
-  case "DELUGE_V1":
-  case "DELUGE_V2":
-    return <Deluge {...props} />;
-  case "RTORRENT":
-    return <RTorrent {...props} />;
-  case "TRANSMISSION":
-    return <Transmission {...props} />;
-  case "PORLA":
-    return <Porla {...props} />;
-  case "ARIA2":
-    return <Aria2 {...props} />;
   // arrs
   case "RADARR":
   case "SONARR":
@@ -156,11 +118,6 @@ const TypeForm = (props: ClientActionProps) => {
   case "READARR":
   case "SPORTARR":
     return <Arr {...props} />;
-  // nzb
-  case "SABNZBD":
-    return <SABnzbd {...props} />;
-  case "NZBGET":
-    return <NZBGet {...props} />;
   // autobrr actions
   case "TEST":
     return <Test />;

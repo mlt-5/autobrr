@@ -45,26 +45,6 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 			"a.exec_cmd",
 			"a.exec_args",
 			"a.watch_folder",
-			"a.category",
-			"a.tags",
-			"a.label",
-			"a.save_path",
-			"a.download_path",
-			"a.paused",
-			"a.ignore_rules",
-			"a.first_last_piece_prio",
-			"a.skip_hash_check",
-			"a.content_layout",
-			"a.priority",
-			"a.ratio_group",
-			"a.limit_download_speed",
-			"a.limit_upload_speed",
-			"a.limit_ratio",
-			"a.limit_seed_time",
-			"a.reannounce_skip",
-			"a.reannounce_delete",
-			"a.reannounce_interval",
-			"a.reannounce_max_attempts",
 			"a.webhook_host",
 			"a.webhook_type",
 			"a.webhook_method",
@@ -96,35 +76,17 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, category, tags, label, savePath, downloadPath, contentLayout, priorityLayout, ratioGroup, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-		var limitUl, limitDl, limitSeedTime sql.NullInt64
-		var limitRatio sql.NullFloat64
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
 
 		var externalClientID, clientID sql.NullInt32
-		var paused, ignoreRules sql.NullBool
 
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &category, &tags, &label, &savePath, &downloadPath, &paused, &ignoreRules, &a.FirstLastPiecePrio, &a.SkipHashCheck, &contentLayout, &priorityLayout, &ratioGroup, &limitDl, &limitUl, &limitRatio, &limitSeedTime, &a.ReAnnounceSkip, &a.ReAnnounceDelete, &a.ReAnnounceInterval, &a.ReAnnounceMaxAttempts, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
 		a.ExecCmd = execCmd.String
 		a.ExecArgs = execArgs.String
 		a.WatchFolder = watchFolder.String
-		a.Category = category.String
-		a.Tags = tags.String
-		a.Label = label.String
-		a.SavePath = savePath.String
-		a.DownloadPath = downloadPath.String
-		a.Paused = paused.Bool
-		a.IgnoreRules = ignoreRules.Bool
-		a.ContentLayout = domain.ActionContentLayout(contentLayout.String)
-		a.PriorityLayout = domain.PriorityLayout(priorityLayout.String)
-		a.RatioGroup = ratioGroup.String
-
-		a.LimitDownloadSpeed = limitDl.Int64
-		a.LimitUploadSpeed = limitUl.Int64
-		a.LimitRatio = limitRatio.Float64
-		a.LimitSeedTime = limitSeedTime.Int64
 
 		a.WebhookHost = webhookHost.String
 		a.WebhookType = webhookType.String
@@ -155,26 +117,6 @@ func (r *ActionRepo) findByFilterIDWithClient(ctx context.Context, filterID int,
 			"a.exec_cmd",
 			"a.exec_args",
 			"a.watch_folder",
-			"a.category",
-			"a.tags",
-			"a.label",
-			"a.save_path",
-			"a.download_path",
-			"a.paused",
-			"a.ignore_rules",
-			"a.first_last_piece_prio",
-			"a.skip_hash_check",
-			"a.content_layout",
-			"a.priority",
-			"a.ratio_group",
-			"a.limit_download_speed",
-			"a.limit_upload_speed",
-			"a.limit_ratio",
-			"a.limit_seed_time",
-			"a.reannounce_skip",
-			"a.reannounce_delete",
-			"a.reannounce_interval",
-			"a.reannounce_max_attempts",
 			"a.webhook_host",
 			"a.webhook_type",
 			"a.webhook_method",
@@ -219,39 +161,21 @@ func (r *ActionRepo) findByFilterIDWithClient(ctx context.Context, filterID int,
 		var a domain.Action
 		var c domain.Downloader
 
-		var execCmd, execArgs, watchFolder, category, tags, label, savePath, downloadPath, contentLayout, priorityLayout, ratioGroup, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-		var limitUl, limitDl, limitSeedTime sql.NullInt64
-		var limitRatio sql.NullFloat64
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
 
 		var externalClientID, clientID sql.NullInt32
-		var paused, ignoreRules sql.NullBool
 
 		var clientClientId, clientPort sql.Null[int32]
 		var clientName, clientType, clientHost, clientUsername, clientPassword, clientSettings sql.Null[string]
 		var clientEnabled, clientTLS, clientTLSSkip sql.Null[bool]
 
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &category, &tags, &label, &savePath, &downloadPath, &paused, &ignoreRules, &a.FirstLastPiecePrio, &a.SkipHashCheck, &contentLayout, &priorityLayout, &ratioGroup, &limitDl, &limitUl, &limitRatio, &limitSeedTime, &a.ReAnnounceSkip, &a.ReAnnounceDelete, &a.ReAnnounceInterval, &a.ReAnnounceMaxAttempts, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &clientClientId, &clientName, &clientType, &clientEnabled, &clientHost, &clientPort, &clientTLS, &clientTLSSkip, &clientUsername, &clientPassword, &clientSettings); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &clientClientId, &clientName, &clientType, &clientEnabled, &clientHost, &clientPort, &clientTLS, &clientTLSSkip, &clientUsername, &clientPassword, &clientSettings); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
 		a.ExecCmd = execCmd.String
 		a.ExecArgs = execArgs.String
 		a.WatchFolder = watchFolder.String
-		a.Category = category.String
-		a.Tags = tags.String
-		a.Label = label.String
-		a.SavePath = savePath.String
-		a.DownloadPath = downloadPath.String
-		a.Paused = paused.Bool
-		a.IgnoreRules = ignoreRules.Bool
-		a.ContentLayout = domain.ActionContentLayout(contentLayout.String)
-		a.PriorityLayout = domain.PriorityLayout(priorityLayout.String)
-		a.RatioGroup = ratioGroup.String
-
-		a.LimitDownloadSpeed = limitDl.Int64
-		a.LimitUploadSpeed = limitUl.Int64
-		a.LimitRatio = limitRatio.Float64
-		a.LimitSeedTime = limitSeedTime.Int64
 
 		a.WebhookHost = webhookHost.String
 		a.WebhookType = webhookType.String
@@ -333,26 +257,6 @@ func (r *ActionRepo) findByFilterIDTx(ctx context.Context, tx *Tx, filterID int,
 			"exec_cmd",
 			"exec_args",
 			"watch_folder",
-			"category",
-			"tags",
-			"label",
-			"save_path",
-			"download_path",
-			"paused",
-			"ignore_rules",
-			"first_last_piece_prio",
-			"skip_hash_check",
-			"content_layout",
-			"priority",
-			"ratio_group",
-			"limit_download_speed",
-			"limit_upload_speed",
-			"limit_ratio",
-			"limit_seed_time",
-			"reannounce_skip",
-			"reannounce_delete",
-			"reannounce_interval",
-			"reannounce_max_attempts",
 			"webhook_host",
 			"webhook_type",
 			"webhook_method",
@@ -384,35 +288,17 @@ func (r *ActionRepo) findByFilterIDTx(ctx context.Context, tx *Tx, filterID int,
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, category, tags, label, savePath, downloadPath, contentLayout, priorityLayout, ratioGroup, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-		var limitUl, limitDl, limitSeedTime sql.NullInt64
-		var limitRatio sql.NullFloat64
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
 
 		var externalClientID, clientID sql.NullInt32
-		var paused, ignoreRules sql.NullBool
 
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &category, &tags, &label, &savePath, &downloadPath, &paused, &ignoreRules, &a.FirstLastPiecePrio, &a.SkipHashCheck, &contentLayout, &priorityLayout, &ratioGroup, &limitDl, &limitUl, &limitRatio, &limitSeedTime, &a.ReAnnounceSkip, &a.ReAnnounceDelete, &a.ReAnnounceInterval, &a.ReAnnounceMaxAttempts, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
 		a.ExecCmd = execCmd.String
 		a.ExecArgs = execArgs.String
 		a.WatchFolder = watchFolder.String
-		a.Category = category.String
-		a.Tags = tags.String
-		a.Label = label.String
-		a.SavePath = savePath.String
-		a.DownloadPath = downloadPath.String
-		a.Paused = paused.Bool
-		a.IgnoreRules = ignoreRules.Bool
-		a.ContentLayout = domain.ActionContentLayout(contentLayout.String)
-		a.PriorityLayout = domain.PriorityLayout(priorityLayout.String)
-		a.RatioGroup = ratioGroup.String
-
-		a.LimitDownloadSpeed = limitDl.Int64
-		a.LimitUploadSpeed = limitUl.Int64
-		a.LimitRatio = limitRatio.Float64
-		a.LimitSeedTime = limitSeedTime.Int64
 
 		a.WebhookHost = webhookHost.String
 		a.WebhookType = webhookType.String
@@ -492,26 +378,6 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 			"exec_cmd",
 			"exec_args",
 			"watch_folder",
-			"category",
-			"tags",
-			"label",
-			"save_path",
-			"download_path",
-			"paused",
-			"ignore_rules",
-			"first_last_piece_prio",
-			"skip_hash_check",
-			"content_layout",
-			"priority",
-			"ratio_group",
-			"limit_download_speed",
-			"limit_upload_speed",
-			"limit_ratio",
-			"limit_seed_time",
-			"reannounce_skip",
-			"reannounce_delete",
-			"reannounce_interval",
-			"reannounce_max_attempts",
 			"webhook_host",
 			"webhook_type",
 			"webhook_method",
@@ -538,31 +404,12 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, category, tags, label, savePath, downloadPath, contentLayout, priorityLayout, ratioGroup, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-		var limitUl, limitDl, limitSeedTime sql.NullInt64
-		var limitRatio sql.NullFloat64
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
 		var externalClientID, clientID sql.NullInt32
-		var paused, ignoreRules sql.NullBool
 
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &category, &tags, &label, &savePath, &downloadPath, &paused, &ignoreRules, &a.FirstLastPiecePrio, &a.SkipHashCheck, &contentLayout, &priorityLayout, &ratioGroup, &limitDl, &limitUl, &limitRatio, &limitSeedTime, &a.ReAnnounceSkip, &a.ReAnnounceDelete, &a.ReAnnounceInterval, &a.ReAnnounceMaxAttempts, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
-
-		a.Category = category.String
-		a.Tags = tags.String
-		a.Label = label.String
-		a.SavePath = savePath.String
-		a.DownloadPath = downloadPath.String
-		a.Paused = paused.Bool
-		a.IgnoreRules = ignoreRules.Bool
-		a.ContentLayout = domain.ActionContentLayout(contentLayout.String)
-		a.PriorityLayout = domain.PriorityLayout(priorityLayout.String)
-		a.RatioGroup = ratioGroup.String
-
-		a.LimitDownloadSpeed = limitDl.Int64
-		a.LimitUploadSpeed = limitUl.Int64
-		a.LimitRatio = limitRatio.Float64
-		a.LimitSeedTime = limitSeedTime.Int64
 
 		a.WebhookHost = webhookHost.String
 		a.WebhookType = webhookType.String
@@ -593,26 +440,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 			"exec_cmd",
 			"exec_args",
 			"watch_folder",
-			"category",
-			"tags",
-			"label",
-			"save_path",
-			"download_path",
-			"paused",
-			"ignore_rules",
-			"first_last_piece_prio",
-			"skip_hash_check",
-			"content_layout",
-			"priority",
-			"ratio_group",
-			"limit_download_speed",
-			"limit_upload_speed",
-			"limit_ratio",
-			"limit_seed_time",
-			"reannounce_skip",
-			"reannounce_delete",
-			"reannounce_interval",
-			"reannounce_max_attempts",
 			"webhook_host",
 			"webhook_type",
 			"webhook_method",
@@ -637,13 +464,10 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 
 	var a domain.Action
 
-	var execCmd, execArgs, watchFolder, category, tags, label, savePath, downloadPath, contentLayout, priorityLayout, ratioGroup, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-	var limitUl, limitDl, limitSeedTime sql.NullInt64
-	var limitRatio sql.NullFloat64
+	var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
 	var externalClientID, clientID, filterID sql.NullInt32
-	var paused, ignoreRules sql.NullBool
 
-	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &category, &tags, &label, &savePath, &downloadPath, &paused, &ignoreRules, &a.FirstLastPiecePrio, &a.SkipHashCheck, &contentLayout, &priorityLayout, &ratioGroup, &limitDl, &limitUl, &limitRatio, &limitSeedTime, &a.ReAnnounceSkip, &a.ReAnnounceDelete, &a.ReAnnounceInterval, &a.ReAnnounceMaxAttempts, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &filterID); err != nil {
+	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &filterID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.ErrRecordNotFound
 		}
@@ -654,21 +478,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 	a.ExecCmd = execCmd.String
 	a.ExecArgs = execArgs.String
 	a.WatchFolder = watchFolder.String
-	a.Category = category.String
-	a.Tags = tags.String
-	a.Label = label.String
-	a.SavePath = savePath.String
-	a.DownloadPath = downloadPath.String
-	a.Paused = paused.Bool
-	a.IgnoreRules = ignoreRules.Bool
-	a.ContentLayout = domain.ActionContentLayout(contentLayout.String)
-	a.PriorityLayout = domain.PriorityLayout(priorityLayout.String)
-	a.RatioGroup = ratioGroup.String
-
-	a.LimitDownloadSpeed = limitDl.Int64
-	a.LimitUploadSpeed = limitUl.Int64
-	a.LimitRatio = limitRatio.Float64
-	a.LimitSeedTime = limitSeedTime.Int64
 
 	a.WebhookHost = webhookHost.String
 	a.WebhookType = webhookType.String
@@ -739,26 +548,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			"exec_cmd",
 			"exec_args",
 			"watch_folder",
-			"category",
-			"tags",
-			"label",
-			"save_path",
-			"download_path",
-			"paused",
-			"ignore_rules",
-			"first_last_piece_prio",
-			"skip_hash_check",
-			"content_layout",
-			"priority",
-			"ratio_group",
-			"limit_upload_speed",
-			"limit_download_speed",
-			"limit_ratio",
-			"limit_seed_time",
-			"reannounce_skip",
-			"reannounce_delete",
-			"reannounce_interval",
-			"reannounce_max_attempts",
 			"webhook_host",
 			"webhook_type",
 			"webhook_method",
@@ -775,26 +564,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			toNullString(action.ExecCmd),
 			toNullString(action.ExecArgs),
 			toNullString(action.WatchFolder),
-			toNullString(action.Category),
-			toNullString(action.Tags),
-			toNullString(action.Label),
-			toNullString(action.SavePath),
-			toNullString(action.DownloadPath),
-			action.Paused,
-			action.IgnoreRules,
-			action.FirstLastPiecePrio,
-			action.SkipHashCheck,
-			toNullString(string(action.ContentLayout)),
-			toNullString(string(action.PriorityLayout)),
-			toNullString(action.RatioGroup),
-			toNullInt64(action.LimitUploadSpeed),
-			toNullInt64(action.LimitDownloadSpeed),
-			toNullFloat64(action.LimitRatio),
-			toNullInt64(action.LimitSeedTime),
-			action.ReAnnounceSkip,
-			action.ReAnnounceDelete,
-			action.ReAnnounceInterval,
-			action.ReAnnounceMaxAttempts,
 			toNullString(action.WebhookHost),
 			toNullString(action.WebhookType),
 			toNullString(action.WebhookMethod),
@@ -829,26 +598,6 @@ func (r *ActionRepo) Update(ctx context.Context, action domain.Action) (*domain.
 		Set("exec_cmd", toNullString(action.ExecCmd)).
 		Set("exec_args", toNullString(action.ExecArgs)).
 		Set("watch_folder", toNullString(action.WatchFolder)).
-		Set("category", toNullString(action.Category)).
-		Set("tags", toNullString(action.Tags)).
-		Set("label", toNullString(action.Label)).
-		Set("save_path", toNullString(action.SavePath)).
-		Set("download_path", toNullString(action.DownloadPath)).
-		Set("paused", action.Paused).
-		Set("ignore_rules", action.IgnoreRules).
-		Set("first_last_piece_prio", action.FirstLastPiecePrio).
-		Set("skip_hash_check", action.SkipHashCheck).
-		Set("content_layout", toNullString(string(action.ContentLayout))).
-		Set("priority", toNullString(string(action.PriorityLayout))).
-		Set("ratio_group", toNullString(action.RatioGroup)).
-		Set("limit_upload_speed", toNullInt64(action.LimitUploadSpeed)).
-		Set("limit_download_speed", toNullInt64(action.LimitDownloadSpeed)).
-		Set("limit_ratio", toNullFloat64(action.LimitRatio)).
-		Set("limit_seed_time", toNullInt64(action.LimitSeedTime)).
-		Set("reannounce_skip", action.ReAnnounceSkip).
-		Set("reannounce_delete", action.ReAnnounceDelete).
-		Set("reannounce_interval", action.ReAnnounceInterval).
-		Set("reannounce_max_attempts", action.ReAnnounceMaxAttempts).
 		Set("webhook_host", toNullString(action.WebhookHost)).
 		Set("webhook_type", toNullString(action.WebhookType)).
 		Set("webhook_method", toNullString(action.WebhookMethod)).
@@ -898,26 +647,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 				Set("exec_cmd", toNullString(action.ExecCmd)).
 				Set("exec_args", toNullString(action.ExecArgs)).
 				Set("watch_folder", toNullString(action.WatchFolder)).
-				Set("category", toNullString(action.Category)).
-				Set("tags", toNullString(action.Tags)).
-				Set("label", toNullString(action.Label)).
-				Set("save_path", toNullString(action.SavePath)).
-				Set("download_path", toNullString(action.DownloadPath)).
-				Set("paused", action.Paused).
-				Set("ignore_rules", action.IgnoreRules).
-				Set("first_last_piece_prio", action.FirstLastPiecePrio).
-				Set("skip_hash_check", action.SkipHashCheck).
-				Set("content_layout", toNullString(string(action.ContentLayout))).
-				Set("priority", toNullString(string(action.PriorityLayout))).
-				Set("ratio_group", toNullString(action.RatioGroup)).
-				Set("limit_upload_speed", toNullInt64(action.LimitUploadSpeed)).
-				Set("limit_download_speed", toNullInt64(action.LimitDownloadSpeed)).
-				Set("limit_ratio", toNullFloat64(action.LimitRatio)).
-				Set("limit_seed_time", toNullInt64(action.LimitSeedTime)).
-				Set("reannounce_skip", action.ReAnnounceSkip).
-				Set("reannounce_delete", action.ReAnnounceDelete).
-				Set("reannounce_interval", action.ReAnnounceInterval).
-				Set("reannounce_max_attempts", action.ReAnnounceMaxAttempts).
 				Set("webhook_host", toNullString(action.WebhookHost)).
 				Set("webhook_type", toNullString(action.WebhookType)).
 				Set("webhook_method", toNullString(action.WebhookMethod)).
@@ -949,26 +678,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					"exec_cmd",
 					"exec_args",
 					"watch_folder",
-					"category",
-					"tags",
-					"label",
-					"save_path",
-					"download_path",
-					"paused",
-					"ignore_rules",
-					"first_last_piece_prio",
-					"skip_hash_check",
-					"content_layout",
-					"priority",
-					"ratio_group",
-					"limit_upload_speed",
-					"limit_download_speed",
-					"limit_ratio",
-					"limit_seed_time",
-					"reannounce_skip",
-					"reannounce_delete",
-					"reannounce_interval",
-					"reannounce_max_attempts",
 					"webhook_host",
 					"webhook_type",
 					"webhook_method",
@@ -985,26 +694,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					toNullString(action.ExecCmd),
 					toNullString(action.ExecArgs),
 					toNullString(action.WatchFolder),
-					toNullString(action.Category),
-					toNullString(action.Tags),
-					toNullString(action.Label),
-					toNullString(action.SavePath),
-					toNullString(action.DownloadPath),
-					action.Paused,
-					action.IgnoreRules,
-					action.FirstLastPiecePrio,
-					action.SkipHashCheck,
-					toNullString(string(action.ContentLayout)),
-					toNullString(string(action.PriorityLayout)),
-					toNullString(action.RatioGroup),
-					toNullInt64(action.LimitUploadSpeed),
-					toNullInt64(action.LimitDownloadSpeed),
-					toNullFloat64(action.LimitRatio),
-					toNullInt64(action.LimitSeedTime),
-					action.ReAnnounceSkip,
-					action.ReAnnounceDelete,
-					action.ReAnnounceInterval,
-					action.ReAnnounceMaxAttempts,
 					toNullString(action.WebhookHost),
 					toNullString(action.WebhookType),
 					toNullString(action.WebhookMethod),

@@ -10,41 +10,7 @@
     "FIXED": "固定（按日历重置）",
     "ROLLING": "滚动（滑动窗口）"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "默认",
-    "LOW": "低",
-    "NORMAL": "普通",
-    "HIGH": "高"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "直接添加种子到 qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "直接添加种子到 Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "直接添加种子到 Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "直接添加种子到 rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "直接添加种子到 Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "直接添加种子到 Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "直接添加种子到 aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "发送到 Radarr，由它决定如何处理"
@@ -68,14 +34,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "发送到 Readarr，由它决定如何处理"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "直接添加 nzb 到 SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "直接添加 nzb 到 NZBGet"
     }
   },
   "actionType": {
@@ -95,34 +53,6 @@
       "label": "Exec",
       "description": "在过滤器命中后运行自定义命令"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "直接添加种子到 qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "直接添加种子到 Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "直接添加种子到 Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "直接添加种子到 rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "直接添加种子到 Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "直接添加种子到 Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "直接添加种子到 aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "发送到 Radarr，由它决定如何处理"
@@ -146,14 +76,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "发送到 Readarr，由它决定如何处理"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "添加到 SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "添加到 NZBGet"
     }
   },
   "pushStatus": {

@@ -4,11 +4,7 @@
 package domain
 
 import (
-	"cmp"
 	"encoding/json"
-	"fmt"
-	"net/url"
-	"strings"
 
 	"github.com/autobrr/autobrr/pkg/errors"
 )
@@ -30,7 +26,6 @@ type Downloader struct {
 func (c Downloader) MarshalJSON() ([]byte, error) {
 	redactedSettings := DownloaderSettings{
 		APIKey:                   RedactString(c.Settings.APIKey),
-		Rules:                    c.Settings.Rules,
 		ExternalDownloadClientId: c.Settings.ExternalDownloadClientId,
 		ExternalDownloadClient:   c.Settings.ExternalDownloadClient,
 		Auth: DownloaderAuth{
@@ -59,12 +54,11 @@ func (c Downloader) MarshalJSON() ([]byte, error) {
 }
 
 type DownloaderSettings struct {
-	APIKey                   string          `json:"apikey,omitempty"`
-	Basic                    BasicAuth       `json:"basic"` // Deprecated: Use Auth instead
-	Rules                    DownloaderRules `json:"rules"`
-	ExternalDownloadClientId int             `json:"external_download_client_id,omitempty"`
-	ExternalDownloadClient   string          `json:"external_download_client,omitempty"`
-	Auth                     DownloaderAuth  `json:"auth"`
+	APIKey                   string         `json:"apikey,omitempty"`
+	Basic                    BasicAuth      `json:"basic"` // Deprecated: Use Auth instead
+	ExternalDownloadClientId int            `json:"external_download_client_id,omitempty"`
+	ExternalDownloadClient   string         `json:"external_download_client,omitempty"`
+	Auth                     DownloaderAuth `json:"auth"`
 }
 
 // MarshalJSON Custom method to translate Basic into Auth without including Basic in JSON output
@@ -116,9 +110,8 @@ func (dcs *DownloaderSettings) UnmarshalJSON(data []byte) error {
 type DownloaderAuthType string
 
 const (
-	DownloaderAuthTypeNone   DownloaderAuthType = "NONE"
-	DownloaderAuthTypeBasic  DownloaderAuthType = "BASIC_AUTH"
-	DownloaderAuthTypeDigest DownloaderAuthType = "DIGEST_AUTH"
+	DownloaderAuthTypeNone  DownloaderAuthType = "NONE"
+	DownloaderAuthTypeBasic DownloaderAuthType = "BASIC_AUTH"
 )
 
 type DownloaderAuth struct {
@@ -139,15 +132,6 @@ type DownloaderAuth struct {
 //	})
 //}
 
-type DownloaderRules struct {
-	Enabled                     bool                        `json:"enabled"`
-	MaxActiveDownloads          int                         `json:"max_active_downloads"`
-	IgnoreSlowTorrents          bool                        `json:"ignore_slow_torrents"`
-	IgnoreSlowTorrentsCondition IgnoreSlowTorrentsCondition `json:"ignore_slow_torrents_condition,omitempty"`
-	DownloadSpeedThreshold      int64                       `json:"download_speed_threshold"`
-	UploadSpeedThreshold        int64                       `json:"upload_speed_threshold"`
-}
-
 type BasicAuth struct {
 	Auth     bool   `json:"auth,omitempty"`
 	Username string `json:"username,omitempty"`
@@ -165,46 +149,21 @@ type BasicAuth struct {
 //	})
 //}
 
-type IgnoreSlowTorrentsCondition string
-
-const (
-	IgnoreSlowTorrentsModeAlways     IgnoreSlowTorrentsCondition = "ALWAYS"
-	IgnoreSlowTorrentsModeMaxReached IgnoreSlowTorrentsCondition = "MAX_DOWNLOADS_REACHED"
-)
-
 type DownloaderType string
 
 const (
-	DownloaderTypeQbittorrent  DownloaderType = "QBITTORRENT"
-	DownloaderTypeDelugeV1     DownloaderType = "DELUGE_V1"
-	DownloaderTypeDelugeV2     DownloaderType = "DELUGE_V2"
-	DownloaderTypeRTorrent     DownloaderType = "RTORRENT"
-	DownloaderTypeTransmission DownloaderType = "TRANSMISSION"
-	DownloaderTypePorla        DownloaderType = "PORLA"
-	DownloaderTypeAria2        DownloaderType = "ARIA2"
-	DownloaderTypeRadarr       DownloaderType = "RADARR"
-	DownloaderTypeSonarr       DownloaderType = "SONARR"
-	DownloaderTypeLidarr       DownloaderType = "LIDARR"
-	DownloaderTypeWhisparr     DownloaderType = "WHISPARR"
-	DownloaderTypeWhisparrV3   DownloaderType = "WHISPARR_V3"
-	DownloaderTypeReadarr      DownloaderType = "READARR"
-	DownloaderTypeSportarr     DownloaderType = "SPORTARR"
-	DownloaderTypeSabnzbd      DownloaderType = "SABNZBD"
-	DownloaderTypeNzbget       DownloaderType = "NZBGET"
+	DownloaderTypeRadarr     DownloaderType = "RADARR"
+	DownloaderTypeSonarr     DownloaderType = "SONARR"
+	DownloaderTypeLidarr     DownloaderType = "LIDARR"
+	DownloaderTypeWhisparr   DownloaderType = "WHISPARR"
+	DownloaderTypeWhisparrV3 DownloaderType = "WHISPARR_V3"
+	DownloaderTypeReadarr    DownloaderType = "READARR"
+	DownloaderTypeSportarr   DownloaderType = "SPORTARR"
 )
 
 func (t DownloaderType) Valid() error {
 	switch t {
-	case DownloaderTypeQbittorrent,
-		DownloaderTypeDelugeV1,
-		DownloaderTypeDelugeV2,
-		DownloaderTypeRTorrent,
-		DownloaderTypeTransmission,
-		DownloaderTypePorla,
-		DownloaderTypeAria2,
-		DownloaderTypeNzbget,
-		DownloaderTypeSabnzbd,
-		DownloaderTypeLidarr,
+	case DownloaderTypeLidarr,
 		DownloaderTypeRadarr,
 		DownloaderTypeReadarr,
 		DownloaderTypeSonarr,
@@ -229,103 +188,6 @@ func (c Downloader) Validate() error {
 	}
 
 	return nil
-}
-
-func (c Downloader) BuildLegacyHost() (string, error) {
-	if c.Type == DownloaderTypeQbittorrent {
-		return c.qbitBuildLegacyHost()
-	}
-	if c.Type == DownloaderTypeTransmission {
-		return c.transmissionBuildLegacyHost()
-	}
-	return c.Host, nil
-}
-
-// qbitBuildLegacyHost exists to support older configs
-func (c Downloader) qbitBuildLegacyHost() (string, error) {
-	// parse url
-	u, err := url.Parse(c.Host)
-	if err != nil {
-		return "", err
-	}
-
-	// reset Opaque
-	u.Opaque = ""
-
-	// set scheme
-	scheme := "http"
-	if c.TLS {
-		scheme = "https"
-	}
-	u.Scheme = scheme
-
-	// if host is empty lets use one from settings
-	u.Host = cmp.Or(u.Host, c.Host)
-
-	// reset Path
-	if u.Host == u.Path {
-		u.Path = ""
-	}
-
-	// handle ports
-	if c.Port > 0 {
-		if c.Port == 80 || c.Port == 443 {
-			// skip for regular http and https
-		} else {
-			u.Host = fmt.Sprintf("%v:%v", u.Host, c.Port)
-		}
-	}
-
-	// make into new string and return
-	return u.String(), nil
-}
-
-// transmissionBuildLegacyHost builds the full Transmission RPC URL from host, port, and tls settings
-func (c Downloader) transmissionBuildLegacyHost() (string, error) {
-	// parse url
-	u, err := url.Parse(c.Host)
-	if err != nil {
-		return "", err
-	}
-
-	// reset Opaque
-	u.Opaque = ""
-
-	// set scheme
-	scheme := "http"
-	if c.TLS {
-		scheme = "https"
-	}
-	u.Scheme = scheme
-
-	// if host is empty lets use one from settings
-	u.Host = cmp.Or(u.Host, c.Host)
-
-	// reset Path if it's the same as Host (means Host was just a hostname)
-	if u.Host == u.Path {
-		u.Path = ""
-	}
-
-	// handle ports
-	if c.Port > 0 {
-		if c.Port == 80 || c.Port == 443 {
-			// skip for regular http and https
-		} else {
-			u.Host = fmt.Sprintf("%v:%v", u.Host, c.Port)
-		}
-	}
-
-	// Ensure path ends with /rpc
-	if !strings.HasSuffix(u.Path, "/rpc") {
-		path, err := url.JoinPath(u.Path, "/rpc")
-		if err != nil {
-			return "", err
-		}
-		u.Path = path
-	}
-
-	// make into new string and return
-	return u.String(), nil
 }
 
 type ArrTag struct {

@@ -299,41 +299,6 @@ export interface RadioFieldsetOption {
 
 export const DownloaderTypeOptions: RadioFieldsetOption[] = [
   {
-    label: "qBittorrent",
-    description: "Add torrents directly to qBittorrent",
-    value: "QBITTORRENT"
-  },
-  {
-    label: "Deluge",
-    description: "Add torrents directly to Deluge",
-    value: "DELUGE_V1"
-  },
-  {
-    label: "Deluge 2",
-    description: "Add torrents directly to Deluge 2",
-    value: "DELUGE_V2"
-  },
-  {
-    label: "rTorrent",
-    description: "Add torrents directly to rTorrent",
-    value: "RTORRENT"
-  },
-  {
-    label: "Transmission",
-    description: "Add torrents directly to Transmission",
-    value: "TRANSMISSION"
-  },
-  {
-    label: "Porla",
-    description: "Add torrents directly to Porla",
-    value: "PORLA"
-  },
-  {
-    label: "aria2",
-    description: "Add torrents directly to aria2",
-    value: "ARIA2"
-  },
-  {
     label: "Radarr",
     description: "Send to Radarr and let it decide",
     value: "RADARR"
@@ -367,57 +332,10 @@ export const DownloaderTypeOptions: RadioFieldsetOption[] = [
     label: "Sportarr",
     description: "Send to Sportarr and let it decide",
     value: "SPORTARR"
-  },
-  {
-    label: "SABnzbd",
-    description: "Add nzbs directly to SABnzbd",
-    value: "SABNZBD",
-    type: "nzb"
-  },
-  {
-    label: "NZBGet",
-    description: "Add nzbs directly to NZBGet",
-    value: "NZBGET",
-    type: "nzb"
   }
 ];
 
 export const getDownloaderTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
-  {
-    label: t("options:downloadClient.QBITTORRENT.label"),
-    description: t("options:downloadClient.QBITTORRENT.description"),
-    value: "QBITTORRENT"
-  },
-  {
-    label: t("options:downloadClient.DELUGE_V1.label"),
-    description: t("options:downloadClient.DELUGE_V1.description"),
-    value: "DELUGE_V1"
-  },
-  {
-    label: t("options:downloadClient.DELUGE_V2.label"),
-    description: t("options:downloadClient.DELUGE_V2.description"),
-    value: "DELUGE_V2"
-  },
-  {
-    label: t("options:downloadClient.RTORRENT.label"),
-    description: t("options:downloadClient.RTORRENT.description"),
-    value: "RTORRENT"
-  },
-  {
-    label: t("options:downloadClient.TRANSMISSION.label"),
-    description: t("options:downloadClient.TRANSMISSION.description"),
-    value: "TRANSMISSION"
-  },
-  {
-    label: t("options:downloadClient.PORLA.label"),
-    description: t("options:downloadClient.PORLA.description"),
-    value: "PORLA"
-  },
-  {
-    label: t("options:downloadClient.ARIA2.label"),
-    description: t("options:downloadClient.ARIA2.description"),
-    value: "ARIA2"
-  },
   {
     label: t("options:downloadClient.RADARR.label"),
     description: t("options:downloadClient.RADARR.description"),
@@ -452,18 +370,6 @@ export const getDownloaderTypeOptions = (t: TFunction): RadioFieldsetOption[] =>
     label: t("options:downloadClient.SPORTARR.label"),
     description: t("options:downloadClient.SPORTARR.description"),
     value: "SPORTARR"
-  },
-  {
-    label: t("options:downloadClient.SABNZBD.label"),
-    description: t("options:downloadClient.SABNZBD.description"),
-    value: "SABNZBD",
-    type: "nzb"
-  },
-  {
-    label: t("options:downloadClient.NZBGET.label"),
-    description: t("options:downloadClient.NZBGET.description"),
-    value: "NZBGET",
-    type: "nzb"
   }
 ];
 
@@ -472,22 +378,13 @@ export const ActionTypeOptions: RadioFieldsetOption[] = [
   { label: "Watch dir", description: "Add filtered torrents to a watch directory", value: "WATCH_FOLDER" },
   { label: "Webhook", description: "Run webhook", value: "WEBHOOK" },
   { label: "Exec", description: "Run a custom command after a filter match", value: "EXEC" },
-  { label: "qBittorrent", description: "Add torrents directly to qBittorrent", value: "QBITTORRENT" },
-  { label: "Deluge", description: "Add torrents directly to Deluge", value: "DELUGE_V1" },
-  { label: "Deluge v2", description: "Add torrents directly to Deluge 2", value: "DELUGE_V2" },
-  { label: "rTorrent", description: "Add torrents directly to rTorrent", value: "RTORRENT" },
-  { label: "Transmission", description: "Add torrents directly to Transmission", value: "TRANSMISSION" },
-  { label: "Porla", description: "Add torrents directly to Porla", value: "PORLA" },
-  { label: "aria2", description: "Add torrents directly to aria2", value: "ARIA2" },
   { label: "Radarr", description: "Send to Radarr and let it decide", value: "RADARR" },
   { label: "Sonarr", description: "Send to Sonarr and let it decide", value: "SONARR" },
   { label: "Lidarr", description: "Send to Lidarr and let it decide", value: "LIDARR" },
   { label: "Whisparr (v2)", description: "Send to Whisparr and let it decide", value: "WHISPARR" },
   { label: "Whisparr (v3)", description: "Send to Whisparr and let it decide", value: "WHISPARR_V3" },
   { label: "Readarr", description: "Send to Readarr and let it decide", value: "READARR" },
-  { label: "Sportarr", description: "Send to Sportarr and let it decide", value: "SPORTARR" },
-  { label: "SABnzbd", description: "Add to SABnzbd", value: "SABNZBD" },
-  { label: "NZBGet", description: "Add to NZBGet", value: "NZBGET" }
+  { label: "Sportarr", description: "Send to Sportarr and let it decide", value: "SPORTARR" }
 ];
 
 export const getActionTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
@@ -495,22 +392,13 @@ export const getActionTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
   { label: t("options:actionType.WATCH_FOLDER.label"), description: t("options:actionType.WATCH_FOLDER.description"), value: "WATCH_FOLDER" },
   { label: t("options:actionType.WEBHOOK.label"), description: t("options:actionType.WEBHOOK.description"), value: "WEBHOOK" },
   { label: t("options:actionType.EXEC.label"), description: t("options:actionType.EXEC.description"), value: "EXEC" },
-  { label: t("options:actionType.QBITTORRENT.label"), description: t("options:actionType.QBITTORRENT.description"), value: "QBITTORRENT" },
-  { label: t("options:actionType.DELUGE_V1.label"), description: t("options:actionType.DELUGE_V1.description"), value: "DELUGE_V1" },
-  { label: t("options:actionType.DELUGE_V2.label"), description: t("options:actionType.DELUGE_V2.description"), value: "DELUGE_V2" },
-  { label: t("options:actionType.RTORRENT.label"), description: t("options:actionType.RTORRENT.description"), value: "RTORRENT" },
-  { label: t("options:actionType.TRANSMISSION.label"), description: t("options:actionType.TRANSMISSION.description"), value: "TRANSMISSION" },
-  { label: t("options:actionType.PORLA.label"), description: t("options:actionType.PORLA.description"), value: "PORLA" },
-  { label: t("options:actionType.ARIA2.label"), description: t("options:actionType.ARIA2.description"), value: "ARIA2" },
   { label: t("options:actionType.RADARR.label"), description: t("options:actionType.RADARR.description"), value: "RADARR" },
   { label: t("options:actionType.SONARR.label"), description: t("options:actionType.SONARR.description"), value: "SONARR" },
   { label: t("options:actionType.LIDARR.label"), description: t("options:actionType.LIDARR.description"), value: "LIDARR" },
   { label: t("options:actionType.WHISPARR.label"), description: t("options:actionType.WHISPARR.description"), value: "WHISPARR" },
   { label: t("options:actionType.WHISPARR_V3.label"), description: t("options:actionType.WHISPARR_V3.description"), value: "WHISPARR_V3" },
   { label: t("options:actionType.READARR.label"), description: t("options:actionType.READARR.description"), value: "READARR" },
-  { label: t("options:actionType.SPORTARR.label"), description: t("options:actionType.SPORTARR.description"), value: "SPORTARR" },
-  { label: t("options:actionType.SABNZBD.label"), description: t("options:actionType.SABNZBD.description"), value: "SABNZBD" },
-  { label: t("options:actionType.NZBGET.label"), description: t("options:actionType.NZBGET.description"), value: "NZBGET" }
+  { label: t("options:actionType.SPORTARR.label"), description: t("options:actionType.SPORTARR.description"), value: "SPORTARR" }
 ];
 
 export const ActionTypeNameMap: Record<ActionType, string> = {
@@ -518,22 +406,13 @@ export const ActionTypeNameMap: Record<ActionType, string> = {
   "WATCH_FOLDER": "Watch folder",
   "WEBHOOK": "Webhook",
   "EXEC": "Exec",
-  "DELUGE_V1": "Deluge v1",
-  "DELUGE_V2": "Deluge v2",
-  "QBITTORRENT": "qBittorrent",
-  "RTORRENT": "rTorrent",
-  "TRANSMISSION": "Transmission",
-  "PORLA": "Porla",
-  "ARIA2": "aria2",
   "RADARR": "Radarr",
   "SONARR": "Sonarr",
   "LIDARR": "Lidarr",
   "WHISPARR": "Whisparr (v2)",
   "WHISPARR_V3": "Whisparr (v3)",
   "READARR": "Readarr",
-  "SPORTARR": "Sportarr",
-  "SABNZBD": "SABnzbd",
-  "NZBGET": "NZBGet"
+  "SPORTARR": "Sportarr"
 } as const;
 
 export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> => ({
@@ -541,65 +420,23 @@ export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> =
   "WATCH_FOLDER": t("options:actionType.WATCH_FOLDER.label"),
   "WEBHOOK": t("options:actionType.WEBHOOK.label"),
   "EXEC": t("options:actionType.EXEC.label"),
-  "DELUGE_V1": t("options:actionType.DELUGE_V1.label"),
-  "DELUGE_V2": t("options:actionType.DELUGE_V2.label"),
-  "QBITTORRENT": t("options:actionType.QBITTORRENT.label"),
-  "RTORRENT": t("options:actionType.RTORRENT.label"),
-  "TRANSMISSION": t("options:actionType.TRANSMISSION.label"),
-  "PORLA": t("options:actionType.PORLA.label"),
-  "ARIA2": t("options:actionType.ARIA2.label"),
   "RADARR": t("options:actionType.RADARR.label"),
   "SONARR": t("options:actionType.SONARR.label"),
   "LIDARR": t("options:actionType.LIDARR.label"),
   "WHISPARR": t("options:actionType.WHISPARR.label"),
   "WHISPARR_V3": t("options:actionType.WHISPARR_V3.label"),
   "READARR": t("options:actionType.READARR.label"),
-  "SPORTARR": t("options:actionType.SPORTARR.label"),
-  "SABNZBD": t("options:actionType.SABNZBD.label"),
-  "NZBGET": t("options:actionType.NZBGET.label")
+  "SPORTARR": t("options:actionType.SPORTARR.label")
 });
 
 export const DOWNLOAD_CLIENTS = [
-  "QBITTORRENT",
-  "DELUGE_V1",
-  "DELUGE_V2",
-  "RTORRENT",
-  "TRANSMISSION",
-  "PORLA",
-  "ARIA2",
   "RADARR",
   "SONARR",
   "LIDARR",
   "WHISPARR",
   "WHISPARR_V3",
   "READARR",
-  "SPORTARR",
-  "SABNZBD",
-  "NZBGET"
-];
-
-export const ActionContentLayoutOptions: SelectGenericOption<ActionContentLayout>[] = [
-  { label: "Original", description: "Original", value: "ORIGINAL" },
-  { label: "Create subfolder", description: "Create subfolder", value: "SUBFOLDER_CREATE" },
-  { label: "Don't create subfolder", description: "Don't create subfolder", value: "SUBFOLDER_NONE" }
-];
-
-export const ActionPriorityOptions: SelectGenericOption<ActionPriorityLayout>[] = [
-  { label: "Top of queue", description: "Top of queue", value: "MAX" },
-  { label: "Bottom of queue", description: "Bottom of queue", value: "MIN" },
-  { label: "Disabled", description: "Disabled", value: "" }
-];
-
-export const getRTorrentPriorityOptions = (t: TFunction): SelectGenericOption<ActionPriorityLayout>[] => [
-  { label: t("options:rtorrentPriority.HIGH"), description: t("options:rtorrentPriority.HIGH"), value: "HIGH" },
-  { label: t("options:rtorrentPriority.NORMAL"), description: t("options:rtorrentPriority.NORMAL"), value: "NORMAL" },
-  { label: t("options:rtorrentPriority.LOW"), description: t("options:rtorrentPriority.LOW"), value: "LOW" },
-  { label: t("options:rtorrentPriority.DEFAULT"), description: t("options:rtorrentPriority.DEFAULT"), value: "" }
-];
-
-export const ActionRtorrentRenameOptions: SelectGenericOption<ActionContentLayout>[] = [
-  { label: "No", description: "No", value: "ORIGINAL" },
-  { label: "Yes", description: "Yes", value: "SUBFOLDER_NONE" }
+  "SPORTARR"
 ];
 
 export interface OptionBasic {
@@ -814,32 +651,6 @@ export const downloadsPerUnitOptions: OptionBasic[] = [
 export const getWindowTypeOptions = (t: TFunction): OptionBasic[] => [
   { label: t("options:maxDownloadsWindowType.FIXED"), value: "FIXED" },
   { label: t("options:maxDownloadsWindowType.ROLLING"), value: "ROLLING" }
-];
-
-export const DownloadRuleConditionOptions: OptionBasic[] = [
-  {
-    label: "Always",
-    value: "ALWAYS"
-  },
-  {
-    label: "Max downloads reached",
-    value: "MAX_DOWNLOADS_REACHED"
-  }
-];
-
-export const DownloaderAuthType: OptionBasic[] = [
-  {
-    label: "None",
-    value: "NONE"
-  },
-  {
-    label: "Basic Auth",
-    value: "BASIC_AUTH"
-  },
-  {
-    label: "Digest Auth",
-    value: "DIGEST_AUTH"
-  }
 ];
 
 const logLevel = ["DEBUG", "INFO", "WARN", "ERROR", "TRACE"] as const;

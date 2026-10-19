@@ -19,7 +19,7 @@ const actionSchema = z.object({
   type: z.string(),
   client_id: z.number().optional()
 }).superRefine((value, ctx) => {
-  if (value.type === "QBITTORRENT" && !value.client_id) {
+  if (value.type === "RADARR" && !value.client_id) {
     ctx.addIssue({ message: "Must select client", code: "custom", path: ["client_id"] });
   }
 });
@@ -35,7 +35,7 @@ type Values = z.infer<typeof schema>;
 const defaults: Values = {
   name: "",
   indexers: [],
-  actions: [{ type: "QBITTORRENT", client_id: 0 }]
+  actions: [{ type: "RADARR", client_id: 0 }]
 };
 
 // Mirrors the filter editor: the tab that is mounted only renders a subset of

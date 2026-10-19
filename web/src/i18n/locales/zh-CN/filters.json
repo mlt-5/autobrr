@@ -489,35 +489,6 @@
       "title": "实例",
       "subtitle": "选择要处理此发布过滤器的具体实例。"
     },
-    "common": {
-      "category": "分类",
-      "categoryPlaceholder": "例如：category",
-      "categoryTooltip": "分类必须预先存在。",
-      "savePath": "保存路径",
-      "savePathPlaceholder": "例如：/full/path/to/download_folder",
-      "numberNoLimit": "接受任意数字（0 表示不限速）",
-      "limitsTitle": "限制",
-      "limitsSubtitle": "配置速度、分享率和做种时间限制",
-      "limitDownloadKib": "限制下载速度 (KiB/s)",
-      "limitUploadKib": "限制上传速度 (KiB/s)",
-      "limitDownloadKb": "限制下载速度 (KB/s)",
-      "limitUploadKb": "限制上传速度 (KB/s)",
-      "ratioLimit": "分享率限制",
-      "seedTimeMinutes": "做种时间限制（分钟）",
-      "addPaused": "添加为暂停",
-      "addPausedDescription": "将种子以暂停状态添加",
-      "skipHashCheck": "跳过哈希校验",
-      "skipHashCheckDescription": "添加种子并跳过哈希校验",
-      "announceTitle": "重汇报",
-      "announceSubtitle": "设置重汇报次数、失败多少次后删除等行为。",
-      "disableReannounce": "禁用重汇报",
-      "disableReannounceDescription": "默认启用重汇报，如果不需要可以禁用",
-      "reannounceInterval": "重汇报间隔，每 X 秒执行一次",
-      "reannounceIntervalPlaceholder": "默认且推荐为 7",
-      "deleteStalled": "删除卡住任务",
-      "deleteStalledDescription": "尝试 Y 次后删除卡住的种子",
-      "reannounceMaxAttempts": "执行 Y 次重汇报"
-    },
     "test": {
       "alert": "提示",
       "text": "测试动作本身不会执行任何下载，只用于展示过滤器是否命中。测试时请打开日志页面观察结果。"
@@ -550,54 +521,6 @@
       "overrideClientNameTooltip": "覆盖 Clients 中设置的下载客户端名称。如果 arr 内配置了多个客户端，这会很有用。",
       "overrideClientId": "为 arr 覆盖下载客户端 ID（已弃用）",
       "overrideClientIdTooltip": "覆盖 Clients 中设置的下载客户端 ID。如果 arr 内配置了多个客户端，这会很有用。"
-    },
-    "qbittorrent": {
-      "macrosTooltip": "此字段可使用宏从元数据中转换或追加值：",
-      "tags": "标签",
-      "tagsPlaceholder": "例如：tag1,tag2",
-      "savePathPlaceholder": "例如：/full/path/to/save_folder",
-      "savePathTooltip": "为此动作设置自定义保存路径。如果你在 qBittorrent 中配合分类使用自动种子管理，通常会由它自动处理。",
-      "downloadPath": "下载路径",
-      "downloadPathPlaceholder": "例如：/full/path/to/download_folder",
-      "downloadPathTooltip": "为此动作设置自定义下载（未完成）路径。如果你在 qBittorrent 中配合分类使用自动种子管理，通常会由它自动处理。",
-      "rulesTitle": "规则",
-      "rulesSubtitle": "配置种子客户端规则",
-      "ignoreRules": "忽略现有客户端规则",
-      "ignoreRulesDescription": "选择是否忽略客户端设置中定义的规则。",
-      "contentLayout": "内容布局",
-      "contentLayoutDefault": "选择内容布局",
-      "priority": "优先级",
-      "priorityDefault": "禁用",
-      "priorityTooltip": "如果当前关闭了 Torrent Queueing，将为你自动启用。请确认已在客户端中设置好你偏好的相关限制。",
-      "firstLastPiece": "优先下载首尾分片",
-      "firstLastPieceDescription": "添加种子并优先下载首尾分片"
-    },
-    "deluge": {
-      "label": "标签",
-      "labelPlaceholder": "例如：label1（必须先在 Deluge 中存在）",
-      "skipHashCheckTooltip": "此选项仅在 Deluge v2 中生效。"
-    },
-    "transmission": {
-      "label": "种子标签",
-      "labelPlaceholder": "例如：label1,label2"
-    },
-    "rtorrent": {
-      "label": "标签",
-      "labelPlaceholder": "例如：label1,label2",
-      "renameToPath": "不要把种子名称加到路径中",
-      "renameDefault": "否",
-      "priority": "优先级",
-      "priorityDefault": "默认",
-      "priorityTooltip": "rTorrent 带宽优先级。优先级更高的种子会获得更多的上传和下载槽位。",
-      "ratioGroup": "分享率组",
-      "ratioGroupPlaceholder": "例如：rat_0",
-      "ratioGroupTooltip": "要将种子加入的 ruTorrent 分享率组。ratio 插件将分组命名为 rat_0 到 rat_7，顺序与 ruTorrent 分享率设置中列出的顺序一致。留空则使用默认分享率组。"
-    },
-    "porla": {
-      "preset": "预设",
-      "presetPlaceholder": "例如：default",
-      "presetTooltip": "这里填写在 Porla 中配置的区分大小写的预设名称。",
-      "savePathPlaceholder": "例如：/full/path/to/torrent/data"
     }
   },
   "addForm": {

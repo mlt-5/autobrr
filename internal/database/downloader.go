@@ -138,7 +138,6 @@ func (r *DownloaderRepo) Store(ctx context.Context, client *domain.Downloader) e
 	settings := domain.DownloaderSettings{
 		APIKey:                   client.Settings.APIKey,
 		Basic:                    client.Settings.Basic,
-		Rules:                    client.Settings.Rules,
 		ExternalDownloadClientId: client.Settings.ExternalDownloadClientId,
 		ExternalDownloadClient:   client.Settings.ExternalDownloadClient,
 		Auth:                     client.Settings.Auth,
@@ -174,7 +173,6 @@ func (r *DownloaderRepo) Update(ctx context.Context, client *domain.Downloader) 
 	settings := domain.DownloaderSettings{
 		APIKey:                   client.Settings.APIKey,
 		Basic:                    client.Settings.Basic,
-		Rules:                    client.Settings.Rules,
 		ExternalDownloadClientId: client.Settings.ExternalDownloadClientId,
 		ExternalDownloadClient:   client.Settings.ExternalDownloadClient,
 		Auth:                     client.Settings.Auth,

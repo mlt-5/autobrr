@@ -50,14 +50,13 @@ let you be a part of what we call the initial swarm of a torrent. This is where 
 Many indexers announce new torrents on their IRC channels the second it is uploaded to the site. autobrr monitors such
 channels in real time and grabs the torrent file as soon as it's uploaded based on certain conditions (hereby referred
 to as filters) that you set up within autobrr. It then sends that torrent file to a download client of your choice via
-an action set within the filter. A download client can be anything from qBittorrent and Deluge, to Radarr and Sonarr, or
-a watch folder.
+an action set within the filter. A download client can be Radarr, Sonarr and the rest of the *arr suite, or a watch folder.
 
 When your autobrr filter is set to send the torrent files to Radarr and Sonarr, they will decide if it's something they
  want and then forward it to the torrent client they are set up with.
 
-autobrr can also send matches (torrent files that meets your filter's criteria) directly to torrent clients like
-qBittorrent, Deluge, r(u)Torrent, and Transmission. You don't need to use the *arr suite to make use of autobrr.
+autobrr can also drop matches (torrent files that meet your filter's criteria) into a watch folder, run a custom
+script, or call a webhook.
 
 ## Key Features
 
@@ -78,14 +77,7 @@ qBittorrent, Deluge, r(u)Torrent, and Transmission. You don't need to use the *a
 
 ### Available Download Clients and Actions
 
-- **qBittorrent:** Includes built-in re-announce, categories, rules, max active downloads, etc.
-- **Deluge v1+ and v2+**
-- **rTorrent**
-- **Transmission**
-- **Porla**
-- **aria2**
 - **Sonarr, Radarr, Lidarr, Whisparr, Readarr, Sportarr:** Pushes releases directly for early swarm participation, rather than relying on RSS feeds.
-- **SABnzbd and NZBGet (Usenet):** Integrates smoothly for Usenet downloads.
 - **Watch Folder:** Monitors specified folders for new files.
 - **Exec Custom Scripts:** Execute tailored scripts for advanced automation.
 - **Webhook:** Offers webhook support for diverse integration needs.
@@ -99,7 +91,7 @@ Usenet support via Newznab feeds allows you to easily manage everything in a sin
 applications that handle RSS well, we think autobrr offers very easy-to-use filtering to help you get the content you
 want.
 
-You can use Usenet feeds and send to arrs or send directly to SABnzbd or NZBGet.
+You can use Usenet feeds and send them to the arrs.
 
 ## Installation
 

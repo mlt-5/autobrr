@@ -10,41 +10,7 @@
     "FIXED": "Fixe (réinitialisation calendaire)",
     "ROLLING": "Glissante (fenêtre glissante)"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "Par défaut",
-    "LOW": "Basse",
-    "NORMAL": "Normale",
-    "HIGH": "Haute"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Ajouter des torrents directement à qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Ajouter des torrents directement à Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "Ajouter des torrents directement à Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Ajouter des torrents directement à rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Ajouter des torrents directement à Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Ajouter des torrents directement à Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Ajouter des torrents directement à aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Envoyer à Radarr et laisser décider"
@@ -68,14 +34,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Envoyer à Readarr et laisser décider"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Ajouter des NZBs directement à SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Ajouter des NZBs directement à NZBGet"
     }
   },
   "actionType": {
@@ -95,34 +53,6 @@
       "label": "Exec",
       "description": "Exécuter une commande personnalisée après une correspondance de filtre"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Ajouter des torrents directement à qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Ajouter des torrents directement à Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "Ajouter des torrents directement à Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Ajouter des torrents directement à rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Ajouter des torrents directement à Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Ajouter des torrents directement à Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Ajouter des torrents directement à aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Envoyer à Radarr et laisser décider"
@@ -146,14 +76,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Envoyer à Readarr et laisser décider"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Ajouter à SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Ajouter à NZBGet"
     }
   },
   "pushStatus": {

@@ -10,41 +10,7 @@
     "FIXED": "Fest (Kalender-Reset)",
     "ROLLING": "Gleitend (gleitendes Fenster)"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "Standard",
-    "LOW": "Niedrig",
-    "NORMAL": "Normal",
-    "HIGH": "Hoch"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Torrents direkt zu qBittorrent hinzufügen"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Torrents direkt zu Deluge hinzufügen"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "Torrents direkt zu Deluge 2 hinzufügen"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Torrents direkt zu rTorrent hinzufügen"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Torrents direkt zu Transmission hinzufügen"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Torrents direkt zu Porla hinzufügen"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Torrents direkt zu aria2 hinzufügen"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "An Radarr senden und entscheiden lassen"
@@ -68,14 +34,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "An Readarr senden und entscheiden lassen"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "NZBs direkt zu SABnzbd hinzufügen"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "NZBs direkt zu NZBGet hinzufügen"
     }
   },
   "actionType": {
@@ -95,34 +53,6 @@
       "label": "Exec",
       "description": "Benutzerdefinierten Befehl nach Filtertreffer ausführen"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Torrents direkt zu qBittorrent hinzufügen"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Torrents direkt zu Deluge hinzufügen"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "Torrents direkt zu Deluge 2 hinzufügen"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Torrents direkt zu rTorrent hinzufügen"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Torrents direkt zu Transmission hinzufügen"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Torrents direkt zu Porla hinzufügen"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Torrents direkt zu aria2 hinzufügen"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "An Radarr senden und entscheiden lassen"
@@ -146,14 +76,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "An Readarr senden und entscheiden lassen"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Zu SABnzbd hinzufügen"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Zu NZBGet hinzufügen"
     }
   },
   "pushStatus": {

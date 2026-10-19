@@ -10,41 +10,7 @@
     "FIXED": "Fixed (calendar reset)",
     "ROLLING": "Rolling (sliding window)"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "Default",
-    "LOW": "Low",
-    "NORMAL": "Normal",
-    "HIGH": "High"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Add torrents directly to qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Add torrents directly to Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "Add torrents directly to Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Add torrents directly to rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Add torrents directly to Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Add torrents directly to Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Add torrents directly to aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Send to Radarr and let it decide"
@@ -72,14 +38,6 @@
     "SPORTARR": {
       "label": "Sportarr",
       "description": "Send to Sportarr and let it decide"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Add nzbs directly to SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Add nzbs directly to NZBGet"
     }
   },
   "actionType": {
@@ -99,34 +57,6 @@
       "label": "Exec",
       "description": "Run a custom command after a filter match"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Add torrents directly to qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Add torrents directly to Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "Add torrents directly to Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Add torrents directly to rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Add torrents directly to Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Add torrents directly to Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Add torrents directly to aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Send to Radarr and let it decide"
@@ -154,14 +84,6 @@
     "SPORTARR": {
       "label": "Sportarr",
       "description": "Send to Sportarr and let it decide"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Add to SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Add to NZBGet"
     }
   },
   "pushStatus": {

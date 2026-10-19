@@ -25,26 +25,6 @@ func getMockAction() *domain.Action {
 		ExecCmd:                  "/home/user/Downloads/test.sh",
 		ExecArgs:                 "WGET_URL",
 		WatchFolder:              "/home/user/Downloads",
-		Category:                 "HD, 720p",
-		Tags:                     "P2P, x264",
-		Label:                    "testLabel",
-		SavePath:                 "/home/user/Downloads",
-		DownloadPath:             "/home/user/Incomplete",
-		Paused:                   false,
-		IgnoreRules:              false,
-		SkipHashCheck:            false,
-		FirstLastPiecePrio:       false,
-		ContentLayout:            domain.ActionContentLayoutOriginal,
-		PriorityLayout:           domain.PriorityLayoutHigh,
-		RatioGroup:               "rat_1",
-		LimitUploadSpeed:         0,
-		LimitDownloadSpeed:       0,
-		LimitRatio:               0,
-		LimitSeedTime:            0,
-		ReAnnounceSkip:           false,
-		ReAnnounceDelete:         false,
-		ReAnnounceInterval:       0,
-		ReAnnounceMaxAttempts:    0,
 		WebhookHost:              "http://localhost:8080",
 		WebhookType:              "test",
 		WebhookMethod:            "POST",
@@ -239,7 +219,7 @@ func TestActionRepo_FindByFilterID(t *testing.T) {
 			actions, err := repo.FindByFilterID(ctx, createdFilters[0].ID, nil, false)
 			require.NoError(t, err)
 			require.Len(t, actions, 1)
-			assert.Equal(t, "rat_1", actions[0].RatioGroup)
+			assert.Equal(t, "/home/user/Downloads", actions[0].WatchFolder)
 
 			// Cleanup
 			_ = repo.Delete(ctx, &domain.DeleteActionRequest{ActionId: createdActions[0].ID})
@@ -371,8 +351,7 @@ func TestActionRepo_Get(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, action)
 			assert.Equal(t, createdActions[0].ID, action.ID)
-			assert.Equal(t, domain.PriorityLayoutHigh, action.PriorityLayout)
-			assert.Equal(t, "rat_1", action.RatioGroup)
+			assert.Equal(t, "/home/user/Downloads", action.WatchFolder)
 
 			// Cleanup
 			_ = repo.Delete(ctx, &domain.DeleteActionRequest{ActionId: createdActions[0].ID})

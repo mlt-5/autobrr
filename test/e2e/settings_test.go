@@ -68,11 +68,11 @@ func TestAddDownloadClient(t *testing.T) {
 	page.Open("/settings/clients")
 	page.AddNew()
 
-	page.Fill("name", "qbit-e2e")
+	page.Fill("name", "sonarr-e2e")
 	page.Fill("host", "http://localhost:8080")
 	page.Submit()
 
-	page.ExpectRow("qbit-e2e")
+	page.ExpectRow("sonarr-e2e")
 }
 
 // The log level select saves on change rather than on submit, so the toast is
