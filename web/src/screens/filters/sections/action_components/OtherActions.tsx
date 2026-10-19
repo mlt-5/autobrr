@@ -4,8 +4,8 @@
  */
 
 import { WarningAlert } from "@components/alerts";
-import { FilterHalfRow, FilterLayout, FilterSection } from "@screens/filters/sections/_components.tsx";
-import { DownloaderSelect, NumberField, TextAreaAutoResize, TextField } from "@components/inputs";
+import { FilterLayout, FilterSection } from "@screens/filters/sections/_components.tsx";
+import { TextAreaAutoResize, TextField } from "@components/inputs";
 import { useTranslation } from "react-i18next";
 
 
@@ -91,47 +91,6 @@ export const WebHook = ({ idx }: ClientActionProps) => {
       label={t("actionComponents.webhook.payload")}
       placeholder={t("actionComponents.webhook.payloadPlaceholder")}
     />
-  </FilterSection>
-  );
-};
-
-export const Arr = ({ idx, action, clients }: ClientActionProps) => {
-  const { t } = useTranslation("filters");
-
-  return (
-  <FilterSection
-    title={t("actionComponents.instance.title")}
-    subtitle={t("actionComponents.instance.subtitle")}
-  >
-    <FilterLayout>
-      <FilterHalfRow>
-        <DownloaderSelect
-          name={`actions[${idx}].client_id`}
-          action={action}
-          clients={clients}
-        />
-      </FilterHalfRow>
-
-      <FilterHalfRow>
-        <div className="">
-          <TextField
-            name={`actions[${idx}].external_download_client`}
-            label={t("actionComponents.arr.overrideClientName")}
-            tooltip={
-              <p>{t("actionComponents.arr.overrideClientNameTooltip")}</p>
-            }
-          />
-          <NumberField
-            name={`actions[${idx}].external_download_client_id`}
-            label={t("actionComponents.arr.overrideClientId")}
-            className="mt-4"
-            tooltip={
-              <p>{t("actionComponents.arr.overrideClientIdTooltip")}</p>
-            }
-          />
-        </div>
-      </FilterHalfRow>
-    </FilterLayout>
   </FilterSection>
   );
 };

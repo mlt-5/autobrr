@@ -16,13 +16,6 @@ import (
 type ListType string
 
 const (
-	ListTypeRadarr     ListType = "RADARR"
-	ListTypeSonarr     ListType = "SONARR"
-	ListTypeLidarr     ListType = "LIDARR"
-	ListTypeReadarr    ListType = "READARR"
-	ListTypeWhisparr   ListType = "WHISPARR"
-	ListTypeWhisparrV3 ListType = "WHISPARR_V3"
-	ListTypeSportarr   ListType = "SPORTARR"
 	ListTypeMDBList    ListType = "MDBLIST"
 	ListTypeMetacritic ListType = "METACRITIC"
 	ListTypePlaintext  ListType = "PLAINTEXT"
@@ -36,19 +29,6 @@ func (l ListType) String() string {
 }
 
 func (l ListType) Valid() bool {
-	return l.ArrClient() || l.RegularList()
-}
-
-func (l ListType) ArrClient() bool {
-	switch l {
-	case ListTypeRadarr, ListTypeSonarr, ListTypeLidarr, ListTypeReadarr, ListTypeWhisparr, ListTypeWhisparrV3, ListTypeSportarr:
-		return true
-	default:
-		return false
-	}
-}
-
-func (l ListType) RegularList() bool {
 	switch l {
 	case ListTypeMDBList, ListTypeMetacritic, ListTypePlaintext, ListTypeTrakt, ListTypeSteam, ListTypeAniList:
 		return true
@@ -71,27 +51,22 @@ type ListQueryParams struct {
 }
 
 type List struct {
-	ID                     int64             `json:"id"`
-	Name                   string            `json:"name"`
-	Type                   ListType          `json:"type"`
-	Enabled                bool              `json:"enabled"`
-	ClientID               int               `json:"client_id"`
-	URL                    string            `json:"url"`
-	Headers                []string          `json:"headers"`
-	APIKey                 string            `json:"api_key"`
-	Filters                []ListFilter      `json:"filters"`
-	MatchRelease           bool              `json:"match_release"`
-	TagsInclude            []string          `json:"tags_included"`
-	TagsExclude            []string          `json:"tags_excluded"`
-	IncludeUnmonitored     bool              `json:"include_unmonitored"`
-	IncludeAlternateTitles bool              `json:"include_alternate_titles"`
-	IncludeYear            bool              `json:"include_year"`
-	SkipCleanSanitize      bool              `json:"skip_clean_sanitize"`
-	LastRefreshTime        time.Time         `json:"last_refresh_time"`
-	LastRefreshData        string            `json:"last_refresh_error"`
-	LastRefreshStatus      ListRefreshStatus `json:"last_refresh_status"`
-	CreatedAt              time.Time         `json:"created_at"`
-	UpdatedAt              time.Time         `json:"updated_at"`
+	ID                int64             `json:"id"`
+	Name              string            `json:"name"`
+	Type              ListType          `json:"type"`
+	Enabled           bool              `json:"enabled"`
+	URL               string            `json:"url"`
+	Headers           []string          `json:"headers"`
+	APIKey            string            `json:"api_key"`
+	Filters           []ListFilter      `json:"filters"`
+	MatchRelease      bool              `json:"match_release"`
+	IncludeYear       bool              `json:"include_year"`
+	SkipCleanSanitize bool              `json:"skip_clean_sanitize"`
+	LastRefreshTime   time.Time         `json:"last_refresh_time"`
+	LastRefreshData   string            `json:"last_refresh_error"`
+	LastRefreshStatus ListRefreshStatus `json:"last_refresh_status"`
+	CreatedAt         time.Time         `json:"created_at"`
+	UpdatedAt         time.Time         `json:"updated_at"`
 }
 
 func (l List) MarshalJSON() ([]byte, error) {
@@ -118,19 +93,12 @@ func (l *List) Validate() error {
 		return errors.New("invalid list type: %s", l.Type)
 	}
 
-	if l.Type.ArrClient() && l.ClientID == 0 {
-		return errors.New("arr client id is required")
+	if l.URL == "" {
+		return errors.New("list url is required")
 	}
 
-	if l.Type.RegularList() {
-		if l.URL == "" {
-			return errors.New("list url is required")
-		}
-
-		_, err := url.Parse(l.URL)
-		if err != nil {
-			return errors.Wrap(err, "could not parse list url: %s", l.URL)
-		}
+	if _, err := url.Parse(l.URL); err != nil {
+		return errors.Wrap(err, "could not parse list url: %s", l.URL)
 	}
 
 	if len(l.Filters) == 0 {
@@ -138,14 +106,6 @@ func (l *List) Validate() error {
 	}
 
 	return nil
-}
-
-func (l *List) ShouldProcessItem(monitored bool) bool {
-	if l.IncludeUnmonitored {
-		return true
-	}
-
-	return monitored
 }
 
 // SetRequestHeaders set headers from list on the request

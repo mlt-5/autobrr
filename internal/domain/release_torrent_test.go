@@ -82,8 +82,6 @@ func TestAction_NeedsTorrentDownloaded(t *testing.T) {
 		want       bool
 	}{
 		{ActionTypeWatchFolder, true},
-		{ActionTypeRadarr, false},
-		{ActionTypeSonarr, false},
 		{ActionTypeExec, false},
 		{ActionTypeWebhook, false},
 		{ActionTypeTest, false},

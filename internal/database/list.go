@@ -34,15 +34,10 @@ func (r *ListRepo) List(ctx context.Context, params domain.ListQueryParams) ([]*
 		"name",
 		"enabled",
 		"type",
-		"client_id",
 		"url",
 		"headers",
 		"api_key",
 		"match_release",
-		"tags_included",
-		"tags_excluded",
-		"include_unmonitored",
-		"include_alternate_titles",
 		"include_year",
 		"skip_clean_sanitize",
 		"last_refresh_time",
@@ -80,13 +75,11 @@ func (r *ListRepo) List(ctx context.Context, params domain.ListQueryParams) ([]*
 
 		var url, apiKey, lastRefreshStatus, lastRefreshData sql.Null[string]
 		var lastRefreshTime sql.Null[time.Time]
-		var clientID sql.Null[int]
-		err = rows.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &clientID, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, pq.Array(&list.TagsInclude), pq.Array(&list.TagsExclude), &list.IncludeUnmonitored, &list.IncludeAlternateTitles, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
+		err = rows.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
 
-		list.ClientID = clientID.V
 		list.URL = url.V
 		list.APIKey = apiKey.V
 
@@ -108,15 +101,10 @@ func (r *ListRepo) FindByID(ctx context.Context, listID int64) (*domain.List, er
 		"name",
 		"enabled",
 		"type",
-		"client_id",
 		"url",
 		"headers",
 		"api_key",
 		"match_release",
-		"tags_included",
-		"tags_excluded",
-		"include_unmonitored",
-		"include_alternate_titles",
 		"include_year",
 		"skip_clean_sanitize",
 		"last_refresh_time",
@@ -146,14 +134,12 @@ func (r *ListRepo) FindByID(ctx context.Context, listID int64) (*domain.List, er
 
 	var url, apiKey, lastRefreshStatus, lastRefreshData sql.Null[string]
 	var lastRefreshTime sql.Null[time.Time]
-	var clientID sql.Null[int]
 
-	err = row.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &clientID, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, pq.Array(&list.TagsInclude), pq.Array(&list.TagsExclude), &list.IncludeUnmonitored, &list.IncludeAlternateTitles, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
+	err = row.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	list.ClientID = clientID.V
 	list.URL = url.V
 	list.APIKey = apiKey.V
 
@@ -177,15 +163,10 @@ func (r *ListRepo) Store(ctx context.Context, list *domain.List) error {
 			"name",
 			"enabled",
 			"type",
-			"client_id",
 			"url",
 			"headers",
 			"api_key",
 			"match_release",
-			"tags_included",
-			"tags_excluded",
-			"include_unmonitored",
-			"include_alternate_titles",
 			"include_year",
 			"skip_clean_sanitize",
 		).
@@ -193,15 +174,10 @@ func (r *ListRepo) Store(ctx context.Context, list *domain.List) error {
 			list.Name,
 			list.Enabled,
 			list.Type,
-			toNullInt32(int32(list.ClientID)),
 			list.URL,
 			pq.Array(list.Headers),
 			list.APIKey,
 			list.MatchRelease,
-			pq.Array(list.TagsInclude),
-			pq.Array(list.TagsExclude),
-			list.IncludeUnmonitored,
-			list.IncludeAlternateTitles,
 			list.IncludeYear,
 			list.SkipCleanSanitize,
 		).Suffix("RETURNING id").RunWith(tx)
@@ -233,15 +209,10 @@ func (r *ListRepo) Update(ctx context.Context, list *domain.List) error {
 		Set("name", list.Name).
 		Set("enabled", list.Enabled).
 		Set("type", list.Type).
-		Set("client_id", toNullInt32(int32(list.ClientID))).
 		Set("url", list.URL).
 		Set("headers", pq.Array(list.Headers)).
 		Set("api_key", list.APIKey).
 		Set("match_release", list.MatchRelease).
-		Set("tags_included", pq.Array(list.TagsInclude)).
-		Set("tags_excluded", pq.Array(list.TagsExclude)).
-		Set("include_unmonitored", list.IncludeUnmonitored).
-		Set("include_alternate_titles", list.IncludeAlternateTitles).
 		Set("include_year", list.IncludeYear).
 		Set("skip_clean_sanitize", list.SkipCleanSanitize).
 		Set("updated_at", sq.Expr("CURRENT_TIMESTAMP")).

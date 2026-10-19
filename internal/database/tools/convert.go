@@ -29,7 +29,6 @@ var defaultTables = []string{
 	"filter",
 	"filter_external",
 	"filter_indexer",
-	"client",
 	"action",
 	"release",
 	"release_action_status",
@@ -53,16 +52,13 @@ var sqliteFixups = []string{
 	"UPDATE indexer SET proxy_id = NULL WHERE proxy_id NOT IN (SELECT id FROM proxy)",
 	"UPDATE irc_network SET proxy_id = NULL WHERE proxy_id NOT IN (SELECT id FROM proxy)",
 	"UPDATE filter SET release_profile_duplicate_id = NULL WHERE release_profile_duplicate_id NOT IN (SELECT id FROM release_profile_duplicate)",
-	"UPDATE action SET client_id = NULL WHERE client_id NOT IN (SELECT id FROM client)",
 	"UPDATE feed SET indexer_id = NULL WHERE indexer_id NOT IN (SELECT id FROM indexer)",
-	"UPDATE list SET client_id = NULL WHERE client_id NOT IN (SELECT id FROM client)",
 }
 
 var postgresFixups = []string{
 	// Update PK sequences to start after their most recent values instead of 1
 	"SELECT setval('release_id_seq', (SELECT MAX(id) FROM release), true)",
 	"SELECT setval('filter_id_seq', (SELECT MAX(id) FROM filter), true)",
-	"SELECT setval('client_id_seq', (SELECT MAX(id) FROM client), true)",
 	"SELECT setval('feed_id_seq', (SELECT MAX(id) FROM feed), true)",
 	"SELECT setval('filter_external_id_seq', (SELECT MAX(id) FROM filter_external), true)",
 	"SELECT setval('indexer_id_seq', (SELECT MAX(id) FROM indexer), true)",

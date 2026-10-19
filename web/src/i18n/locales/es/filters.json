@@ -78,8 +78,7 @@
     "resetSuccess": "Se restablecieron todos los valores del filtro.",
     "save": "Guardar",
     "validationError": "Error de validación",
-    "validationErrors": "Errores de validación",
-    "mustSelectClient": "Debes seleccionar un cliente"
+    "validationErrors": "Errores de validación"
   },
   "importer": {
     "title": "Importar filtro (en formato JSON o autodl-irssi)",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "Instancia",
-      "subtitle": "Selecciona la instancia específica que quieres que maneje este filtro de lanzamiento."
-    },
     "test": {
       "alert": "¡Atención!",
       "text": "La acción de prueba no hace nada excepto mostrar si el filtro funciona. Asegúrate de tener la página de Registros abierta mientras pruebas."
@@ -515,12 +510,6 @@
       "endpointTooltip": "URL o IP de tu API. Pasa parámetros y establece tokens de API, etc.",
       "payload": "Carga útil (json)",
       "payloadPlaceholder": "Datos de solicitud: { \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "Anular nombre del cliente de descarga para arr",
-      "overrideClientNameTooltip": "Anular el nombre del cliente de descarga del configurado en Clientes. Útil si tienes múltiples clientes dentro del arr.",
-      "overrideClientId": "Anular ID del cliente de descarga para arr OBSOLETO",
-      "overrideClientIdTooltip": "Anular el ID del cliente de descarga del configurado en Clientes. Útil si tienes múltiples clientes dentro del arr."
     }
   },
   "addForm": {

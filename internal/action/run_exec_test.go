@@ -100,9 +100,8 @@ func Test_service_execCmd(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &Service{
-				log:           logger.Mock().With().Logger(),
-				repo:          nil,
-				downloaderSvc: nil,
+				log:  logger.Mock().With().Logger(),
+				repo: nil,
 			}
 			s.runExecCmd(t.Context(), tt.args.action, &tt.args.release)
 		})

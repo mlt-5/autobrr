@@ -17,7 +17,6 @@ import (
 	"github.com/autobrr/autobrr/internal/database"
 	"github.com/autobrr/autobrr/internal/diagnostics"
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/downloader"
 	"github.com/autobrr/autobrr/internal/events"
 	"github.com/autobrr/autobrr/internal/feed"
 	"github.com/autobrr/autobrr/internal/filter"
@@ -69,7 +68,6 @@ type App struct {
 	alertService        *alert.Service
 	authService         *auth.Service
 	apiService          *api.Service
-	downloaderService   *downloader.Service
 	indexerService      *indexer.Service
 	indexerAPIService   *indexer.APIService
 	ircService          *irc.Service
@@ -364,7 +362,6 @@ func (app *App) setup(ctx context.Context) error {
 
 	var (
 		apikeyRepo       = database.NewAPIRepo(app.log, db)
-		downloaderRepo   = database.NewDownloaderRepo(app.log, db)
 		actionRepo       = database.NewActionRepo(app.log, db)
 		filterRepo       = database.NewFilterRepo(app.log, db)
 		feedRepo         = database.NewFeedRepo(app.log, db)
@@ -387,14 +384,13 @@ func (app *App) setup(ctx context.Context) error {
 	app.proxyService = proxy.NewService(app.log, app.eventBus, proxyRepo)
 	app.indexerAPIService = indexer.NewAPIService(app.log, app.proxyService)
 	app.rlsDownloadService = release.NewDownloadService(app.log, indexerRepo, app.proxyService)
-	app.downloaderService = downloader.NewService(app.log, downloaderRepo)
-	app.actionService = action.NewService(app.log, app.eventBus, actionRepo, app.downloaderService, app.rlsDownloadService)
+	app.actionService = action.NewService(app.log, app.eventBus, actionRepo, app.rlsDownloadService)
 	app.indexerService = indexer.NewService(app.log, app.eventBus, app.cfg.Config, indexerRepo, releaseRepo, app.indexerAPIService)
 	app.filterService = filter.NewService(app.log, filterRepo, app.actionService, releaseRepo, app.indexerAPIService, app.indexerService, app.rlsDownloadService, app.notificationService)
 	app.releaseService = release.NewService(app.log, app.eventBus, releaseRepo, app.actionService, app.filterService, app.indexerService, app.scheduler)
 	app.ircService = irc.NewService(app.log, app.eventBus, app.sse, ircRepo, app.releaseService, app.indexerService, app.proxyService)
 	app.feedService = feed.NewService(app.log, app.eventBus, feedRepo, feedCacheRepo, app.releaseService, app.proxyService, app.scheduler)
-	app.listService = list.NewService(app.log, app.eventBus, listRepo, app.downloaderService, app.filterService, app.scheduler)
+	app.listService = list.NewService(app.log, app.eventBus, listRepo, app.filterService, app.scheduler)
 	app.alertService = alert.NewService(app.log, app.eventBus, app.cfg.Config, app.sse, app.updateService, app.ircService, app.listService)
 
 	app.httpServer = http.NewServer(http.Deps{
@@ -410,7 +406,6 @@ func (app *App) setup(ctx context.Context) error {
 		AlertService:        app.alertService,
 		ApiService:          app.apiService,
 		AuthService:         app.authService,
-		DownloaderService:   app.downloaderService,
 		FilterService:       app.filterService,
 		FeedService:         app.feedService,
 		IndexerService:      app.indexerService,

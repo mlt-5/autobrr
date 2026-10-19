@@ -30,7 +30,6 @@ require (
 	github.com/gosimple/slug v1.15.0
 	github.com/hashicorp/go-version v1.9.0
 	github.com/lib/pq v1.12.3
-	github.com/magiconair/properties v1.18.12
 	github.com/maniartech/signals v1.3.1
 	github.com/mmcdole/gofeed v1.5.0
 	github.com/moistari/rls v0.6.0

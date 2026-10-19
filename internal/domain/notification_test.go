@@ -172,15 +172,15 @@ func TestNewWebhookEvent_ListRefresh(t *testing.T) {
 		err   string
 	}{
 		{name: "success", event: NotificationEventListRefreshSuccess, want: WebhookEventListRefreshSuccess},
-		{name: "error", event: NotificationEventListRefreshError, want: WebhookEventListRefreshError, err: "client sonarr Sonarr not enabled"},
+		{name: "error", event: NotificationEventListRefreshError, want: WebhookEventListRefreshError, err: "unexpected status code: 401"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			payload := NotificationPayload{
 				Event:     tt.event,
-				List:      "Sonarr TV",
+				List:      "Trakt Popular",
 				ListID:    3,
-				ListType:  ListTypeSonarr,
+				ListType:  ListTypeTrakt,
 				ListError: tt.err,
 			}
 
@@ -188,7 +188,7 @@ func TestNewWebhookEvent_ListRefresh(t *testing.T) {
 
 			assert.Equal(t, tt.want, result.Event)
 			require.NotNil(t, result.Data.List)
-			assert.Equal(t, &WebhookList{ID: 3, Name: "Sonarr TV", Type: "SONARR", Error: tt.err}, result.Data.List)
+			assert.Equal(t, &WebhookList{ID: 3, Name: "Trakt Popular", Type: "TRAKT", Error: tt.err}, result.Data.List)
 		})
 	}
 }

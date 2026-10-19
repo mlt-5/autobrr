@@ -77,7 +77,6 @@ test.each([
   } as Filter;
 
   vi.spyOn(APIClient.indexers, "getOptions").mockResolvedValue([]);
-  vi.spyOn(APIClient.downloaders, "getAll").mockResolvedValue([]);
   vi.spyOn(APIClient.filters, "getByID").mockResolvedValue(filter);
   vi.spyOn(APIClient.filters, "find")
     .mockResolvedValueOnce([{ ...filter, actions_count: 1, actions_enabled_count: 1 }])

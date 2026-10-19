@@ -6,12 +6,6 @@ import (
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/internal/events"
-	"github.com/autobrr/autobrr/pkg/arr/lidarr"
-	"github.com/autobrr/autobrr/pkg/arr/radarr"
-	"github.com/autobrr/autobrr/pkg/arr/readarr"
-	"github.com/autobrr/autobrr/pkg/arr/sonarr"
-	"github.com/autobrr/autobrr/pkg/arr/sportarr"
-	"github.com/autobrr/autobrr/pkg/arr/whisparr"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -26,69 +20,9 @@ type processorBase struct {
 	list *domain.List
 }
 
-func (s *Service) getClientInstance[T any](ctx context.Context, clientID int) (*T, error) {
-	instance, err := s.downloaderSvc.GetInstance(ctx, int32(clientID))
-	if err != nil {
-		return nil, err
-	}
-
-	cfg := instance.Config()
-	if cfg == nil {
-		return nil, errors.Errorf("client %d has no config", clientID)
-	}
-
-	if !cfg.Enabled {
-		return nil, errors.Errorf("client %s %s not enabled", cfg.Type, cfg.Name)
-	}
-
-	return instance.ClientAs[*T]()
-}
-
-func (s *Service) getProcessor(ctx context.Context, list *domain.List) (Processor, error) {
+func (s *Service) getProcessor(list *domain.List) (Processor, error) {
 	var processor Processor
 	switch list.Type {
-	case domain.ListTypeLidarr:
-		client, err := s.getClientInstance[lidarr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewLidarrProcessor(s.log, list, client)
-
-	case domain.ListTypeRadarr:
-		client, err := s.getClientInstance[radarr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewRadarrProcessor(s.log, list, client)
-
-	case domain.ListTypeReadarr:
-		client, err := s.getClientInstance[readarr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewReadarrProcessor(s.log, list, client)
-
-	case domain.ListTypeSonarr:
-		client, err := s.getClientInstance[sonarr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewSonarrProcessor(s.log, list, client)
-
-	case domain.ListTypeSportarr:
-		client, err := s.getClientInstance[sportarr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewSportarrProcessor(s.log, list, client)
-
-	case domain.ListTypeWhisparr, domain.ListTypeWhisparrV3:
-		client, err := s.getClientInstance[whisparr.Client](ctx, list.ClientID)
-		if err != nil {
-			return nil, err
-		}
-		processor = NewWhisparrProcessor(s.log, list, client)
-
 	case domain.ListTypeAniList:
 		processor = NewAnilistProcessor(s.log, list)
 	case domain.ListTypeMDBList:
@@ -109,7 +43,7 @@ func (s *Service) getProcessor(ctx context.Context, list *domain.List) (Processo
 }
 
 func (s *Service) Process(ctx context.Context, list *domain.List) error {
-	processor, err := s.getProcessor(ctx, list)
+	processor, err := s.getProcessor(list)
 	if err != nil {
 		return err
 	}

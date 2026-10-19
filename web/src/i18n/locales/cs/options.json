@@ -10,32 +10,6 @@
       "FIXED": "Pevné (reset kalendáře)",
       "ROLLING": "Klouzavé (klouzavé okno)"
     },
-    "downloadClient": {
-      "RADARR": {
-        "label": "Radarr",
-        "description": "Odeslat do Radarr a nechat ho rozhodnout"
-      },
-      "SONARR": {
-        "label": "Sonarr",
-        "description": "Odeslat do Sonarr a nechat ho rozhodnout"
-      },
-      "LIDARR": {
-        "label": "Lidarr",
-        "description": "Odeslat do Lidarr a nechat ho rozhodnout"
-      },
-      "WHISPARR": {
-        "label": "Whisparr (v2)",
-        "description": "Odeslat do Whisparr a nechat ho rozhodnout"
-      },
-      "WHISPARR_V3": {
-        "label": "Whisparr (v3)",
-        "description": "Odeslat do Whisparr a nechat ho rozhodnout"
-      },
-      "READARR": {
-        "label": "Readarr",
-        "description": "Odeslat do Readarr a nechat ho rozhodnout"
-      }
-    },
     "actionType": {
       "TEST": {
         "label": "Test",
@@ -52,30 +26,6 @@
       "EXEC": {
         "label": "Příkaz",
         "description": "Spustit vlastní příkaz po shodě filtru"
-      },
-      "RADARR": {
-        "label": "Radarr",
-        "description": "Odeslat do Radarr a nechat ho rozhodnout"
-      },
-      "SONARR": {
-        "label": "Sonarr",
-        "description": "Odeslat do Sonarr a nechat ho rozhodnout"
-      },
-      "LIDARR": {
-        "label": "Lidarr",
-        "description": "Odeslat do Lidarr a nechat ho rozhodnout"
-      },
-      "WHISPARR": {
-        "label": "Whisparr (v2)",
-        "description": "Odeslat do Whisparr a nechat ho rozhodnout"
-      },
-      "WHISPARR_V3": {
-        "label": "Whisparr (v3)",
-        "description": "Odeslat do Whisparr a nechat ho rozhodnout"
-      },
-      "READARR": {
-        "label": "Readarr",
-        "description": "Odeslat do Readarr a nechat ho rozhodnout"
       }
     },
     "pushStatus": {

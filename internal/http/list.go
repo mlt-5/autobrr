@@ -22,8 +22,6 @@ type listService interface {
 	List(ctx context.Context, params domain.ListQueryParams) ([]*domain.List, error)
 	RefreshList(ctx context.Context, id int64) error
 	RefreshAll(ctx context.Context) error
-	RefreshArrLists(ctx context.Context) error
-	RefreshOtherLists(ctx context.Context) error
 }
 
 type listHandler struct {

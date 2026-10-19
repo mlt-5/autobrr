@@ -75,15 +75,6 @@ export const ApiKeys = {
   detail: (id: string) => [...ApiKeys.details(), id] as const
 };
 
-export const DownloaderKeys = {
-  all: ["downloaders"] as const,
-  lists: () => [...DownloaderKeys.all, "list"] as const,
-  // list: (indexers: string[], sortOrder: string) => [...clientKeys.lists(), { indexers, sortOrder }] as const,
-  details: () => [...DownloaderKeys.all, "detail"] as const,
-  detail: (id: number) => [...DownloaderKeys.details(), id] as const,
-  arrTags: (id: number) => [...DownloaderKeys.details(), id, "arr-tags"] as const
-};
-
 export const FeedKeys = {
   all: ["feeds"] as const,
   lists: () => [...FeedKeys.all, "list"] as const,

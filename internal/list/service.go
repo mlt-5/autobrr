@@ -8,7 +8,6 @@ import (
 	stdErr "errors"
 
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/downloader"
 	"github.com/autobrr/autobrr/internal/events"
 
 	"github.com/pkg/errors"
@@ -28,10 +27,6 @@ type listRepo interface {
 	GetAllListFilters(ctx context.Context) (map[int64][]domain.ListFilter, error)
 }
 
-type downloaderService interface {
-	GetInstance(ctx context.Context, clientId int32) (*downloader.Instance, error)
-}
-
 type filterService interface {
 	UpdatePartial(ctx context.Context, filter domain.FilterUpdate) error
 }
@@ -49,19 +44,17 @@ type Service struct {
 	eventBus eventBus
 	repo     listRepo
 
-	scheduler     schedulerService
-	downloaderSvc downloaderService
-	filterSvc     filterService
+	scheduler schedulerService
+	filterSvc filterService
 }
 
-func NewService(log zerolog.Logger, eventBus eventBus, repo listRepo, downloaderSvc downloaderService, filterSvc filterService, schedulerSvc schedulerService) *Service {
+func NewService(log zerolog.Logger, eventBus eventBus, repo listRepo, filterSvc filterService, schedulerSvc schedulerService) *Service {
 	return &Service{
-		log:           log.With().Str("module", "list").Logger(),
-		eventBus:      eventBus,
-		repo:          repo,
-		downloaderSvc: downloaderSvc,
-		filterSvc:     filterSvc,
-		scheduler:     schedulerSvc,
+		log:       log.With().Str("module", "list").Logger(),
+		eventBus:  eventBus,
+		repo:      repo,
+		filterSvc: filterSvc,
+		scheduler: schedulerSvc,
 	}
 }
 
@@ -206,11 +199,6 @@ func (s *Service) refreshAll(ctx context.Context, lists []*domain.List) error {
 		}
 
 		if err := s.refreshList(ctx, listItem); err != nil {
-			if errors.Is(err, domain.ErrRecordNotFound) {
-				s.log.Error().Str("type", string(listItem.Type)).Str("list", listItem.Name).Int("client_id", listItem.ClientID).Msg("client not found for list, skipping")
-				continue
-			}
-
 			s.log.Error().Err(err).Str("type", string(listItem.Type)).Str("list", listItem.Name).Msg("error while refreshing, continuing with other lists")
 
 			processingErrors = append(processingErrors, errors.Wrapf(err, "error while refreshing %s", listItem.Name))
@@ -220,7 +208,7 @@ func (s *Service) refreshAll(ctx context.Context, lists []*domain.List) error {
 	if len(processingErrors) > 0 {
 		err := stdErr.Join(processingErrors...)
 
-		s.log.Error().Err(err).Msg("Errors encountered during processing Arrs:")
+		s.log.Error().Err(err).Msg("errors encountered while refreshing lists")
 
 		return err
 	}
@@ -246,46 +234,6 @@ func (s *Service) RefreshList(ctx context.Context, listID int64) error {
 	}
 
 	if err := s.refreshList(ctx, list); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) RefreshArrLists(ctx context.Context) error {
-	lists, err := s.List(ctx, domain.ListQueryParams{Enabled: new(true)})
-	if err != nil {
-		return err
-	}
-
-	var selectedLists []*domain.List
-	for _, list := range lists {
-		if list.Type.ArrClient() {
-			selectedLists = append(selectedLists, list)
-		}
-	}
-
-	if err := s.refreshAll(ctx, selectedLists); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) RefreshOtherLists(ctx context.Context) error {
-	lists, err := s.List(ctx, domain.ListQueryParams{Enabled: new(true)})
-	if err != nil {
-		return err
-	}
-
-	var selectedLists []*domain.List
-	for _, list := range lists {
-		if list.Type.RegularList() {
-			selectedLists = append(selectedLists, list)
-		}
-	}
-
-	if err := s.refreshAll(ctx, selectedLists); err != nil {
 		return err
 	}
 

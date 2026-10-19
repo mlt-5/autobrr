@@ -10,32 +10,6 @@
     "FIXED": "固定（按日历重置）",
     "ROLLING": "滚动（滑动窗口）"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "发送到 Radarr，由它决定如何处理"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "发送到 Sonarr，由它决定如何处理"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "发送到 Lidarr，由它决定如何处理"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "发送到 Whisparr，由它决定如何处理"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "发送到 Whisparr，由它决定如何处理"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "发送到 Readarr，由它决定如何处理"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "测试",
@@ -52,30 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "在过滤器命中后运行自定义命令"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "发送到 Radarr，由它决定如何处理"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "发送到 Sonarr，由它决定如何处理"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "发送到 Lidarr，由它决定如何处理"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "发送到 Whisparr，由它决定如何处理"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "发送到 Whisparr，由它决定如何处理"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "发送到 Readarr，由它决定如何处理"
     }
   },
   "pushStatus": {

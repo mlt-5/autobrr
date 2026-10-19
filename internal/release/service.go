@@ -57,7 +57,7 @@ type releaseRepo interface {
 
 type actionService interface {
 	Get(ctx context.Context, req *domain.GetActionRequest) (*domain.Action, error)
-	FindByFilterID(ctx context.Context, filterID int, active *bool, withClient bool) ([]*domain.Action, error)
+	FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error)
 	RunAction(ctx context.Context, action *domain.Action, release *domain.Release) (rejections []string, err error)
 }
 
@@ -80,11 +80,6 @@ type schedulerService interface {
 type eventBus interface {
 	EmitReleaseNew(ctx context.Context, event events.ReleaseEvent)
 	EmitReleasePush(ctx context.Context, event events.ReleasePushEvent)
-}
-
-type actionClientTypeKey struct {
-	Type     domain.ActionType
-	ClientID int32
 }
 
 // cleanupJobKey creates a unique identifier for controlling cleanup jobs in the scheduler
@@ -465,10 +460,6 @@ func (s *Service) processRelease(ctx context.Context, release *domain.Release, f
 }
 
 func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, release *domain.Release) error {
-	// keep track of action clients to avoid sending the same thing all over again
-	// save both client type and client id to potentially try another client of same type
-	triedActionClients := map[actionClientTypeKey]struct{}{}
-
 	// loop over and check filters
 	for _, f := range filters {
 		l := s.log.With().Str("trace_id", release.TraceID).Str("indexer", release.Indexer.Identifier).Str("filter", f.Name).Str("release", release.TorrentName).Logger()
@@ -504,7 +495,7 @@ func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, 
 
 		// found matching filter, lets find the filter actions and attach
 		active := true
-		actions, err := s.actionSvc.FindByFilterID(subCtx, f.ID, &active, false)
+		actions, err := s.actionSvc.FindByFilterID(subCtx, f.ID, &active)
 		if err != nil {
 			l.Error().Err(err).Msg("release.processFilters: error finding actions for filter")
 			return err
@@ -528,7 +519,7 @@ func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, 
 
 		var rejections []string
 
-		// run actions (watchFolder, test, exec, qBittorrent, Deluge, arr etc.)
+		// run actions (watchFolder, test, exec, webhook)
 		for idx, act := range actions {
 			// only run enabled actions
 			if !act.Enabled {
@@ -554,13 +545,6 @@ func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, 
 
 			l.Trace().Str("action", act.Name).Msg("release.processFilters: run action")
 
-			// keep track of action clients to avoid sending the same thing all over again
-			_, tried := triedActionClients[actionClientTypeKey{Type: act.Type, ClientID: act.ClientID}]
-			if tried {
-				l.Debug().Msg("release.processFilters: action client already tried for this release, skipping..")
-				continue
-			}
-
 			// run action
 			status, err := s.runAction(subCtx, act, release, actionStatus)
 			if err != nil {
@@ -575,10 +559,6 @@ func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, 
 			}
 
 			if len(rejections) > 0 {
-				// if we get action rejection, remember which action client it was from
-				triedActionClients[actionClientTypeKey{Type: act.Type, ClientID: act.ClientID}] = struct{}{}
-
-				// log something and fire events
 				l.Debug().Str("action", act.Name).Str("action_type", string(act.Type)).Strs("rejections", rejections).Msg("action rejected release")
 			}
 
@@ -590,7 +570,7 @@ func (s *Service) processFilters(ctx context.Context, filters []*domain.Filter, 
 			l.Error().Err(err).Msg("release.processFilters: error updating release")
 		}
 
-		// if we have rejections from arr, continue to next filter
+		// if an action rejected the release, continue to next filter
 		if len(rejections) > 0 {
 			continue
 		}

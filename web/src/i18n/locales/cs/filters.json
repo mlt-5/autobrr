@@ -78,8 +78,7 @@
       "resetSuccess": "Všechny hodnoty filtru byly resetovány.",
       "save": "Uložit",
       "validationError": "Validace selhaly",
-      "validationErrors": "Validace selhaly",
-      "mustSelectClient": "Musíte vybrat klienta"
+      "validationErrors": "Validace selhaly"
     },
     "importer": {
       "title": "Importovat filtr (v JSON nebo autodl-irssi formátu)",
@@ -485,10 +484,6 @@
       }
     },
     "actionComponents": {
-      "instance": {
-        "title": "Instance",
-        "subtitle": "Vyberte konkrétní instanci, která má tento filtr zpracovat."
-      },
       "test": {
         "alert": "Upozornění!",
         "text": "Testovací akce nic neprovede, kromě toho, aby ukázala, zda filtr funguje. Ujistěte se, že máte otevřenou stránku Logy při testování."
@@ -515,12 +510,6 @@
         "endpointTooltip": "URL nebo IP vašeho API. Předejte parametry a nastavte API tokeny atd.",
         "payload": "Payload (JSON)",
         "payloadPlaceholder": "Požadovaná data: { \"klíč\": \"hodnota\" }"
-      },
-      "arr": {
-        "overrideClientName": "Přepsat název downloadovacího klienta pro arr",
-        "overrideClientNameTooltip": "Přepsat název downloadovacího klienta z toho, který je nastaven v klientech. Užitečné, pokud máte více klientů uvnitř arr.",
-        "overrideClientId": "Přepsat ID downloadovacího klienta pro arr ZASTARALÉ",
-        "overrideClientIdTooltip": "Přepsat ID downloadovacího klienta z toho, který je nastaven v klientech. Užitečné, pokud máte více klientů uvnitř arr."
       }
     },
     "addForm": {

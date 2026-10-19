@@ -41,7 +41,7 @@ The backend follows a layered architecture with clear separation of concerns:
   - **Infrastructure**: External integrations (`internal/indexer/`, `internal/irc/`, `internal/notification/`)
 
 - **`pkg/`**: Reusable packages and client libraries
-  - Contains clients for various download clients (qBittorrent, Deluge, etc.)
+  - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `ptp`, `red`) and the Newznab/Torznab feed clients
   - Utility packages for different indexer APIs
 
 ### Frontend Architecture (React/TypeScript)
@@ -55,7 +55,7 @@ The backend follows a layered architecture with clear separation of concerns:
 ### Key Domain Concepts
 - **Releases**: Torrent/Usenet releases that get processed through filters
 - **Filters**: Rules that determine which releases should be downloaded
-- **Actions**: What to do with matched releases (send to download clients, *arr apps, etc.)
+- **Actions**: What to do with matched releases (watch folder, exec, webhook)
 - **Indexers**: Torrent trackers and Usenet indexers, defined as YAML in `internal/indexer/definitions/`
 - **IRC**: Real-time monitoring of indexer announce channels
 - **Feed**: RSS/Newznab/Torznab feed processing for indexers without IRC

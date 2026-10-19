@@ -40,7 +40,6 @@ type Server struct {
 	alertService        alertService
 	apiService          apikeyService
 	authService         authService
-	downloaderService   downloaderService
 	filterService       filterService
 	feedService         feedService
 	indexerService      indexerService
@@ -69,7 +68,6 @@ type Deps struct {
 	AlertService        alertService
 	ApiService          apikeyService
 	AuthService         authService
-	DownloaderService   downloaderService
 	FilterService       filterService
 	FeedService         feedService
 	IndexerService      indexerService
@@ -116,7 +114,6 @@ func NewServer(deps Deps) *Server {
 		alertService:        deps.AlertService,
 		apiService:          deps.ApiService,
 		authService:         deps.AuthService,
-		downloaderService:   deps.DownloaderService,
 		filterService:       deps.FilterService,
 		feedService:         deps.FeedService,
 		indexerService:      deps.IndexerService,
@@ -231,7 +228,6 @@ func (s *Server) Handler() http.Handler {
 			r.Route("/actions", newActionHandler(encoder, s.actionService).Routes)
 			r.Route("/alerts", newAlertHandler(encoder, s.alertService).Routes)
 			r.Route("/config", newConfigHandler(encoder, s.buildInfo, s.config).Routes)
-			r.Route("/downloaders", newDownloaderHandler(encoder, s.downloaderService).Routes)
 			r.Route("/filters", newFilterHandler(encoder, s.filterService).Routes)
 			r.Route("/feeds", newFeedHandler(encoder, s.feedService).Routes)
 			r.Route("/irc", newIrcHandler(encoder, s.sse, s.ircService).Routes)

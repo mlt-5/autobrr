@@ -304,21 +304,6 @@ CREATE TABLE filter_notification
 
 CREATE INDEX idx_filter_notification_filter_id ON filter_notification(filter_id);
 
-CREATE TABLE client
-(
-    id              INTEGER PRIMARY KEY,
-    name            TEXT NOT NULL,
-    enabled         BOOLEAN,
-    type            TEXT,
-    host            TEXT NOT NULL,
-    port            INTEGER,
-    tls             BOOLEAN,
-    tls_skip_verify BOOLEAN,
-    username        TEXT,
-    password        TEXT,
-    settings        JSON
-);
-
 CREATE TABLE action
 (
     id                      INTEGER PRIMARY KEY,
@@ -333,12 +318,8 @@ CREATE TABLE action
     webhook_type            TEXT,
     webhook_data            TEXT,
     webhook_headers         TEXT [] DEFAULT '{}',
-    external_client_id      INTEGER,
-    external_client         TEXT,
-    client_id               INTEGER,
     filter_id               INTEGER,
-    FOREIGN KEY (filter_id) REFERENCES filter (id),
-    FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL
+    FOREIGN KEY (filter_id) REFERENCES filter (id)
 );
 
 CREATE TABLE "release"
@@ -573,23 +554,17 @@ CREATE TABLE list
     name                     TEXT                   NOT NULL,
     enabled                  BOOLEAN,
     type                     TEXT                   NOT NULL,
-    client_id                INTEGER,
     url                      TEXT,
     headers                  TEXT []   DEFAULT '{}' NOT NULL,
     api_key                  TEXT,
     match_release            BOOLEAN,
-    tags_included            TEXT []   DEFAULT '{}' NOT NULL,
-    tags_excluded            TEXT []   DEFAULT '{}' NOT NULL,
-    include_unmonitored      BOOLEAN,
-    include_alternate_titles BOOLEAN,
     include_year             BOOLEAN DEFAULT FALSE,
     skip_clean_sanitize      BOOLEAN   DEFAULT FALSE,
     last_refresh_time        TIMESTAMP,
     last_refresh_status      TEXT,
     last_refresh_data        TEXT,
     created_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (client_id) REFERENCES client (id) ON DELETE SET NULL
+    updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE list_filter

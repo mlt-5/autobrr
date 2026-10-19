@@ -10,36 +10,6 @@
     "FIXED": "Fixed (calendar reset)",
     "ROLLING": "Rolling (sliding window)"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Send to Radarr and let it decide"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Send to Sonarr and let it decide"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Send to Lidarr and let it decide"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Send to Whisparr and let it decide"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Send to Whisparr and let it decide"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Send to Readarr and let it decide"
-    },
-    "SPORTARR": {
-      "label": "Sportarr",
-      "description": "Send to Sportarr and let it decide"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "Test",
@@ -56,34 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "Run a custom command after a filter match"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Send to Radarr and let it decide"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Send to Sonarr and let it decide"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Send to Lidarr and let it decide"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Send to Whisparr and let it decide"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Send to Whisparr and let it decide"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Send to Readarr and let it decide"
-    },
-    "SPORTARR": {
-      "label": "Sportarr",
-      "description": "Send to Sportarr and let it decide"
     }
   },
   "pushStatus": {

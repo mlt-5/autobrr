@@ -9,7 +9,6 @@ import {
   AlertKeys,
   ApiKeys,
   AuthKeys,
-  DownloaderKeys,
   FeedKeys,
   FilterKeys,
   IndexerKeys,
@@ -140,20 +139,6 @@ export const FeedsQueryOptions = () =>
   queryOptions({
     queryKey: FeedKeys.lists(),
     queryFn: () => APIClient.feeds.find(),
-  });
-
-export const DownloadersQueryOptions = () =>
-  queryOptions({
-    queryKey: DownloaderKeys.lists(),
-    queryFn: () => APIClient.downloaders.getAll(),
-  });
-
-export const DownloadersArrTagsQueryOptions = (clientID: number) =>
-  queryOptions({
-    queryKey: DownloaderKeys.arrTags(clientID),
-    queryFn: () => APIClient.downloaders.getArrTags(clientID),
-    retry: false,
-    enabled: clientID > 0,
   });
 
 export const NotificationsQueryOptions = () =>

@@ -3,19 +3,12 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { Fragment, JSX, useRef } from "react";
+import { useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "@tanstack/react-form";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition
-} from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { APIClient } from "@api/APIClient";
 import { AlertKeys, ListKeys } from "@api/query_keys";
@@ -23,7 +16,6 @@ import { toast } from "@components/hot-toast";
 import Toast from "@components/notifications/Toast";
 import { selectComponents, selectStyles, selectTheme } from "@components/inputs/select_props";
 import {
-  MultiSelectOption,
   PasswordFieldWide,
   SwitchGroupWide,
   TextFieldWide
@@ -33,25 +25,18 @@ import {
   ListsMetacriticOptions,
   ListsTraktOptions,
   ListsAniListOptions,
-  ListTypeOptions,
-  OptionBasicTyped
+  ListTypeOptions
 } from "@domain/constants";
 import { FormDebug } from "@components/debug";
-import {
-  DownloadersArrTagsQueryOptions,
-  DownloadersQueryOptions,
-  FiltersGetAllQueryOptions
-} from "@api/queries";
+import { FiltersGetAllQueryOptions } from "@api/queries";
 import { classNames, sleep } from "@utils";
 import {
   ListFilterMultiSelectField,
   SelectFieldBasic,
   SelectFieldCreatable
 } from "@components/inputs/select_wide";
-import { DocsTooltip } from "@components/tooltips/DocsTooltip";
-import { MultiSelect as RMSC } from "react-multi-select-component";
 import { useToggle } from "@hooks/hooks.ts";
-import { errorMessages, fieldErrors, fieldHasError, useAppForm, useFormContext, useFormValue } from "@hooks/form";
+import { fieldErrors, useAppForm, useFormContext, useFormValue } from "@hooks/form";
 import type { FormFieldErrors } from "@hooks/form";
 
 const LISTSTRAKT_SELECT_OPTIONS = ListsTraktOptions.map((u) => ({ value: u.value, label: u.label, key: u.label }));
@@ -88,8 +73,6 @@ function ListAddFormPanel({ toggle }: ListAddFormPanelProps) {
   const { t } = useTranslation("settings");
   const queryClient = useQueryClient();
 
-  const { data: clients } = useQuery(DownloadersQueryOptions());
-
   const filterQuery = useQuery(FiltersGetAllQueryOptions());
 
   const createMutation = useMutation({
@@ -119,16 +102,11 @@ function ListAddFormPanel({ toggle }: ListAddFormPanelProps) {
     enabled: true,
     type: "",
     name: "",
-    client_id: 0,
     url: "",
     headers: [],
     api_key: "",
     filters: [],
     match_release: false,
-    tags_included: [],
-    tags_excluded: [],
-    include_unmonitored: false,
-    include_alternate_titles: false,
     include_year: false,
     skip_clean_sanitize: false,
   };
@@ -207,7 +185,6 @@ function ListAddFormPanel({ toggle }: ListAddFormPanelProps) {
                         const option = newValue as { value: string };
                         const nextType = option?.value ?? "";
                         if (nextType !== field.state.value) {
-                          form.setFieldValue("client_id", 0, { dontUpdateMeta: true });
                           form.setFieldValue("url", "", { dontUpdateMeta: true });
                         }
                         field.handleChange(nextType);
@@ -223,7 +200,7 @@ function ListAddFormPanel({ toggle }: ListAddFormPanelProps) {
             <SwitchGroupWide name="enabled" label={t("forms.list.enabled")}/>
           </div>
 
-          <ListTypeForm listType={type as ListType} clients={clients ?? []}/>
+          <ListTypeForm listType={type as ListType}/>
 
           <div className="flex flex-col space-y-4 py-6 sm:py-0 sm:space-y-0">
             <div className="border-t border-gray-200 dark:border-gray-700 py-4">
@@ -291,7 +268,6 @@ function ListUpdateFormPanel({ toggle, data }: ListUpdateFormPanelProps) {
 
   const queryClient = useQueryClient();
 
-  const clientsQuery = useQuery(DownloadersQueryOptions());
   const filterQuery = useQuery(FiltersGetAllQueryOptions());
 
   const mutation = useMutation({
@@ -326,16 +302,11 @@ function ListUpdateFormPanel({ toggle, data }: ListUpdateFormPanelProps) {
     enabled: data.enabled,
     type: data.type,
     name: data.name,
-    client_id: data.client_id,
     url: data.url,
     headers: data.headers || [],
     api_key: data.api_key,
     filters: data.filters,
     match_release: data.match_release,
-    tags_included: data.tags_included,
-    tags_excluded: data.tags_excluded,
-    include_unmonitored: data.include_unmonitored,
-    include_alternate_titles: data.include_alternate_titles,
     include_year: data.include_year,
     skip_clean_sanitize: data.skip_clean_sanitize,
   };
@@ -402,7 +373,7 @@ function ListUpdateFormPanel({ toggle, data }: ListUpdateFormPanelProps) {
               <SwitchGroupWide name="enabled" label={t("forms.list.enabled")}/>
 
               <div className="space-y-2 divide-y divide-gray-200 dark:divide-gray-700">
-                <ListTypeForm listType={type} clients={clientsQuery.data ?? []}/>
+                <ListTypeForm listType={type}/>
               </div>
 
               <div className="flex flex-col space-y-4 py-6 sm:py-0 sm:space-y-0">
@@ -511,28 +482,11 @@ const SubmitButton = (props: SubmitButtonProps) => {
 }
 
 interface ListTypeFormProps {
-  listID?: number;
   listType: ListType;
-  clients: Downloader[];
 }
 
-const ListTypeForm = (props: ListTypeFormProps) => {
-  const { listType } = props;
-
+const ListTypeForm = ({ listType }: ListTypeFormProps) => {
   switch (listType) {
-    case "RADARR":
-      return <ListTypeArr {...props} />;
-    case "SONARR":
-      return <ListTypeArr {...props} />;
-    case "LIDARR":
-      return <ListTypeArr {...props} />;
-    case "READARR":
-      return <ListTypeArr {...props} />;
-    case "WHISPARR":
-    case "WHISPARR_V3":
-      return <ListTypeArr {...props} />;
-    case "SPORTARR":
-      return <ListTypeArr {...props} />;
     case "TRAKT":
       return <ListTypeTrakt />;
     case "STEAM":
@@ -548,91 +502,6 @@ const ListTypeForm = (props: ListTypeFormProps) => {
     default:
       return null;
   }
-}
-
-const FilterOptionCheckBoxes = (props: ListTypeFormProps) => {
-  const { t } = useTranslation("settings");
-  switch (props.listType) {
-    case "RADARR":
-    case "SONARR":
-      return (
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="match_release" label={t("forms.list.matchRelease")} description={t("forms.list.matchReleaseDesc")} />
-          <SwitchGroupWide name="include_unmonitored" label={t("forms.list.includeUnmonitored")} description={t("forms.list.includeUnmonitoredDesc")} />
-          <SwitchGroupWide name="include_alternate_titles" label={t("forms.list.includeAlternateTitles")} description={t("forms.list.includeAlternateTitlesDesc")} />
-        </fieldset>
-      );
-    case "LIDARR":
-    case "WHISPARR":
-    case "READARR":
-    case "SPORTARR":
-      return (
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="include_unmonitored" label={t("forms.list.includeUnmonitored")} description={t("forms.list.includeUnmonitoredDesc")} />
-        </fieldset>
-      );
-    case "WHISPARR_V3":
-      return (
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="include_unmonitored" label={t("forms.list.includeUnmonitored")} description={t("forms.list.includeUnmonitoredDesc")} />
-          <SwitchGroupWide name="include_alternate_titles" label={t("forms.list.includeAlternateTitles")} description={t("forms.list.includeAlternateTitlesDesc")} />
-        </fieldset>
-      );
-    case "PLAINTEXT":
-      return (
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="skip_clean_sanitize" label={t("forms.list.skipCleanSanitize")} description={t("forms.list.skipCleanSanitizeDesc")} />
-        </fieldset>
-      );
-  }
-}
-
-function ListTypeArr({ listType, clients }: ListTypeFormProps) {
-  const { t } = useTranslation("settings");
-  const values = useFormValue((v: List) => ({ client_id: v.client_id, type: v.type }));
-
-  const arrTagsQuery = useQuery(DownloadersArrTagsQueryOptions(values.client_id));
-
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-4">
-      <div className="px-4">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-          {t("forms.list.source")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("forms.list.arrSourceDescription")}
-        </p>
-      </div>
-
-      <DownloaderSelectCustom
-        name={`client_id`}
-        clients={clients}
-        clientType={listType}
-      />
-
-      {values.client_id > 0 && (values.type === "RADARR" || values.type === "SONARR" || values.type === "WHISPARR" || values.type === "WHISPARR_V3" || values.type === "SPORTARR") && (
-        <>
-          <ListArrTagsMultiSelectField name="tags_included" label={t("forms.list.tagsIncluded")} options={arrTagsQuery.data?.map(f => ({
-            value: f.label,
-            label: f.label
-          })) ?? []}/>
-
-          <ListArrTagsMultiSelectField name="tags_excluded" label={t("forms.list.tagsExcluded")} options={arrTagsQuery.data?.map(f => ({
-            value: f.label,
-            label: f.label
-          })) ?? []}/>
-        </>
-      )}
-
-      <div className="space-y-1">
-        <FilterOptionCheckBoxes listType={listType} clients={[]}/>
-      </div>
-    </div>
-  )
 }
 
 function ListTypeTrakt() {
@@ -838,184 +707,4 @@ function ListTypeMDBList() {
       </div>
     </div>
   )
-}
-
-interface DownloaderSelectProps {
-  name: string;
-  clientType: string;
-  clients: Downloader[];
-}
-
-function DownloaderSelectCustom({ name, clientType, clients }: DownloaderSelectProps) {
-  const { t } = useTranslation("settings");
-  const form = useFormContext();
-  return (
-    <div className="flex items-center space-y-1 p-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4">
-      <div>
-        <label
-          htmlFor={name}
-          className="block ml-px text-sm font-medium text-gray-900 dark:text-white"
-        >
-          <div className="flex">
-            {t("forms.list.selectClient")}
-          </div>
-        </label>
-      </div>
-      <div className="sm:col-span-2">
-        <form.Field name={name}>
-          {(field) => (
-            <Listbox
-              value={field.state.value}
-              onChange={(value) => field.handleChange(value)}
-            >
-              {({ open }) => (
-                <>
-                  {/*<Label className="block text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide">*/}
-                  {/*  Client*/}
-                  {/*</Label>*/}
-                  <div className="relative">
-                    <ListboxButton
-                      className="block w-full shadow-xs sm:text-sm rounded-md border py-2 pl-3 pr-10 text-left focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-815 dark:text-gray-100">
-                    <span className="block truncate">
-                      {field.state.value
-                        ? clients.find((c) => c.id === field.state.value)?.name
-                        : t("forms.list.chooseClient")}
-                    </span>
-                      <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <ChevronUpDownIcon
-                        className="h-5 w-5 text-gray-400 dark:text-gray-300"
-                        aria-hidden="true"/>
-                    </span>
-                    </ListboxButton>
-
-                    <Transition
-                      show={open}
-                      as={Fragment}
-                      leave="transition ease-in duration-100"
-                      leaveFrom="opacity-100"
-                      leaveTo="opacity-0"
-                    >
-                      <ListboxOptions
-                        static
-                        className="absolute z-10 mt-1 w-full border border-gray-400 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-hidden sm:text-sm"
-                      >
-                        {clients
-                          .filter((c) => c.type === clientType)
-                          .map((client) => (
-                            <ListboxOption
-                              key={client.id}
-                              className={({ focus }) => classNames(
-                                focus
-                                  ? "text-white dark:text-gray-100 bg-blue-600 dark:bg-gray-950"
-                                  : "text-gray-900 dark:text-gray-300",
-                                "cursor-default select-none relative py-2 pl-3 pr-9"
-                              )}
-                              value={client.id}
-                            >
-                              {({ selected, focus }) => (
-                                <>
-                                <span
-                                  className={classNames(
-                                    selected ? "font-semibold" : "font-normal",
-                                    "block truncate"
-                                  )}
-                                >
-                                  {client.name}
-                                </span>
-
-                                  {selected ? (
-                                    <span
-                                      className={classNames(
-                                        focus ? "text-white dark:text-gray-100" : "text-blue-600 dark:text-blue-500",
-                                        "absolute inset-y-0 right-0 flex items-center pr-4"
-                                      )}
-                                    >
-                                    <CheckIcon
-                                      className="h-5 w-5"
-                                      aria-hidden="true"/>
-                                  </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </ListboxOption>
-                          ))}
-                      </ListboxOptions>
-                    </Transition>
-                    {fieldHasError(field.state.meta) && (
-                      <p className="error text-sm text-red-600 mt-1">* {errorMessages(field.state.meta.errors)[0]}</p>
-                    )}
-                  </div>
-                </>
-              )}
-            </Listbox>
-          )}
-        </form.Field>
-      </div>
-    </div>
-  );
-}
-
-export interface ListMultiSelectFieldProps {
-  name: string;
-  label: string;
-  help?: string;
-  placeholder?: string;
-  required?: boolean;
-  tooltip?: JSX.Element;
-  options: OptionBasicTyped<number | string>[];
-}
-
-export function ListArrTagsMultiSelectField({ name, label, help, tooltip, options }: ListMultiSelectFieldProps) {
-  const { t } = useTranslation("settings");
-  const form = useFormContext();
-  return (
-    <div className="flex items-center space-y-1 p-4 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-4">
-      <div>
-        <label
-          htmlFor={name}
-          className="block ml-px text-sm font-medium text-gray-900 dark:text-white"
-        >
-          <div className="flex">
-            {tooltip ? (
-              <DocsTooltip label={label}>{tooltip}</DocsTooltip>
-            ) : label}
-          </div>
-        </label>
-      </div>
-      <div className="sm:col-span-2">
-        <form.Field name={name}>
-          {(field) => (
-            <>
-              <RMSC
-                options={options}
-                overrideStrings={{
-                  selectSomeItems: t("forms.list.selectSomeItems"),
-                  allItemsAreSelected: t("forms.list.allItemsSelected"),
-                  selectAll: t("forms.list.selectAll"),
-                  search: t("forms.list.search"),
-                  noOptions: t("forms.list.noOptions")
-                }}
-                // disabled={disabled}
-                labelledBy={name}
-                // isCreatable={creatable}
-                // onCreateOption={handleNewField}
-                value={field.state.value && field.state.value.map((item: MultiSelectOption) => ({
-                  value: item.value ? item.value : item,
-                  label: item.label ? item.label : item
-                }))}
-                onChange={(values: Array<MultiSelectOption>) => {
-                  const am = values && values.map((i) => i.value);
-
-                  field.handleChange(am);
-                }}
-              />
-            </>
-          )}
-        </form.Field>
-        {help && (
-          <p className="mt-2 text-sm text-gray-500" id={`${name}-description`}>{help}</p>
-        )}
-      </div>
-    </div>
-  );
 }

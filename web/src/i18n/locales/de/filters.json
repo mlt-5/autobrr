@@ -78,8 +78,7 @@
     "resetSuccess": "Alle Filterwerte zurückgesetzt.",
     "save": "Speichern",
     "validationError": "Validierungsfehler",
-    "validationErrors": "Validierungsfehler",
-    "mustSelectClient": "Client muss ausgewählt werden"
+    "validationErrors": "Validierungsfehler"
   },
   "importer": {
     "title": "Filter importieren (im JSON- oder autodl-irssi-Format)",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "Instanz",
-      "subtitle": "Die spezifische Instanz auswählen, die diesen Releasefilter verarbeiten soll."
-    },
     "test": {
       "alert": "Achtung!",
       "text": "Die Testaktion macht nichts außer zu zeigen, ob der Filter funktioniert. Stelle sicher, dass die Protokollseite während des Tests geöffnet ist."
@@ -515,12 +510,6 @@
       "endpointTooltip": "URL oder IP zu deiner API. Parameter übergeben und API-Token usw. festlegen.",
       "payload": "Payload (JSON)",
       "payloadPlaceholder": "Anfragedaten: { \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "Downloadclientnamen für arr überschreiben",
-      "overrideClientNameTooltip": "Downloadclientnamen von dem in Clients festgelegten überschreiben. Nützlich, wenn mehrere Clients innerhalb des arr vorhanden sind.",
-      "overrideClientId": "Downloadclient-ID für arr überschreiben VERALTET",
-      "overrideClientIdTooltip": "Downloadclient-ID von der in Clients festgelegten überschreiben. Nützlich, wenn mehrere Clients innerhalb des arr vorhanden sind."
     }
   },
   "addForm": {

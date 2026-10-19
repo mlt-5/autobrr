@@ -11,7 +11,6 @@ import type { AnyFormApi, StandardSchemaV1 } from "@tanstack/react-form";
 import { z } from "zod";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
-import i18n from "../../i18n";
 
 import { APIClient } from "@api/APIClient";
 import { FilterByIdQueryOptions } from "@api/queries";
@@ -19,7 +18,7 @@ import { FilterKeys } from "@api/query_keys";
 import { useToggle } from "@hooks/hooks";
 import { useAppForm, useFormContext, useFormValues, errorMessages, touchInvalidFields } from "@hooks/form";
 import { classNames } from "@utils";
-import { DOWNLOAD_CLIENTS, ExternalFilterOnErrorValues } from "@domain/constants";
+import { ExternalFilterOnErrorValues } from "@domain/constants";
 
 import { DEBUG } from "@components/debug";
 import { toast } from "@components/hot-toast";
@@ -158,7 +157,7 @@ const FormDebug = () => {
   return <DEBUG values={values} />;
 };
 
-// Renders "actions->0->client_id: message" lines for the validation toast
+// Renders "actions->0->name: message" lines for the validation toast
 const collectFieldErrors = (form: AnyFormApi) => {
   const lines: string[] = [];
   for (const [field, meta] of Object.entries(form.state.fieldMeta)) {
@@ -174,8 +173,7 @@ const collectFieldErrors = (form: AnyFormApi) => {
 const actionSchema = z.object({
   enabled: z.boolean(),
   name: z.string().min(1, { message: "Required" }),
-  type: z.enum(["TEST", "EXEC", "WATCH_FOLDER", "WEBHOOK", ...DOWNLOAD_CLIENTS]),
-  client_id: z.number().optional(),
+  type: z.enum(["TEST", "EXEC", "WATCH_FOLDER", "WEBHOOK"]),
   exec_cmd: z.string().optional(),
   exec_args: z.string().optional(),
   watch_folder: z.string().optional(),
@@ -183,16 +181,6 @@ const actionSchema = z.object({
   webhook_type: z.string().optional(),
   webhook_method: z.string().optional(),
   webhook_data: z.string().optional()
-}).superRefine((value, ctx) => {
-  if (DOWNLOAD_CLIENTS.includes(value.type)) {
-    if (!value.client_id) {
-      ctx.addIssue({
-        message: i18n.t("filters:details.mustSelectClient"),
-        code: "custom",
-        path: ["client_id"]
-      });
-    }
-  }
 });
 
 const externalFilterSchema = z.object({

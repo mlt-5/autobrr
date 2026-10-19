@@ -378,10 +378,6 @@ func NewReleaseActionStatus(action *Action, release *Release) *ReleaseActionStat
 		ReleaseID:  release.ID,
 	}
 
-	if action.Client != nil {
-		s.Client = action.Client.Name
-	}
-
 	return s
 }
 
