@@ -3,7 +3,7 @@
   autobrr
 </h1>
 
-<p align="center">autobrr redefines download automation for torrents and Usenet, drawing inspiration from tools like trackarr, autodl-irssi, and flexget. We've combined the best of these worlds into one versatile tool that can do it all, and then some.</p>
+<p align="center">autobrr redefines download automation for torrents, drawing inspiration from tools like trackarr, autodl-irssi, and flexget. We've combined the best of these worlds into one versatile tool that can do it all, and then some.</p>
 
 <p align="center"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/autobrr/autobrr?style=for-the-badge">&nbsp;<img alt="GitHub all releases" src="https://img.shields.io/github/downloads/autobrr/autobrr/total?style=for-the-badge">&nbsp;<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/autobrr/autobrr/release.yml?style=for-the-badge"></p>
 
@@ -18,8 +18,8 @@ Full documentation can be found at [https://autobrr.com](https://autobrr.com)
 
 1. [What Is Autobrr?](#what-is-autobrr)
 2. [Key Features](#key-features)
-   - [Available Download Clients and Actions](#available-download-clients-and-actions)
-   - [RSS and Usenet Support](#rss-and-usenet-support)
+   - [Available Actions](#available-actions)
+   - [RSS Support](#rss-support)
 3. [Installation](#installation)
    - [Swizzin](#swizzin-dedi)
    - [Saltbox](#saltbox)
@@ -55,9 +55,8 @@ or call a webhook.
 
 ## Key Features
 
-- Torrents and Usenet support
 - Support for 100+ torrent trackers with IRC announces
-- Newznab, Torznab, and RSS support to easily get access to hundreds of torrent and Usenet indexers
+- Torznab and RSS support to easily get access to hundreds of torrent indexers
 - Torrent Magnet support
 - Powerful but simple filtering with RegEx support (like in autodl-irssi)
 - Easy to use and mobile friendly web UI (with dark mode!) to manage everything
@@ -75,14 +74,13 @@ or call a webhook.
 - **Exec Custom Scripts:** Execute tailored scripts for advanced automation.
 - **Webhook:** Offers webhook support for diverse integration needs.
 
-### RSS and Usenet Support
+### RSS Support
 
 A lot of indexers do not announce new torrents in an IRC channel. You can still make use of these indexers with autobrr
-since it has built-in support for feeds as well. Both Torznab, Newznab, and regular RSS is supported. RSS indexers are treated the same way as regular indexers within autobrr.
+since it has built-in support for feeds as well. Both Torznab and regular RSS are supported. RSS indexers are treated the same way as regular indexers within autobrr.
 
-Usenet support via Newznab feeds allows you to easily manage everything in a single application. While there are a lot of
-applications that handle RSS well, we think autobrr offers very easy-to-use filtering to help you get the content you
-want.
+While there are a lot of applications that handle RSS well, we think autobrr offers very easy-to-use filtering to help
+you get the content you want.
 
 ## Installation
 

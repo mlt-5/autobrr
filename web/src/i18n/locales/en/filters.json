@@ -269,8 +269,8 @@
       "toggleTooltip3": "See who uses what in the documentation:"
     },
     "feedSpecific": {
-      "title": "RSS/Torznab/Newznab-specific",
-      "subtitle": "These options are only for Feeds such as RSS, Torznab and Newznab",
+      "title": "RSS/Torznab-specific",
+      "subtitle": "These options are only for Feeds such as RSS and Torznab",
       "matchDescription": "Match description",
       "matchDescriptionPlaceholder": "eg. *some?movie*,*some?show*s01*",
       "exceptDescription": "Except description",

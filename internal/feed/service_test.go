@@ -44,7 +44,7 @@ func (r *testProxyRepo) FindByID(context.Context, int64) (*domain.Proxy, error) 
 func TestServiceTestTimeout(t *testing.T) {
 	t.Parallel()
 
-	for _, feedType := range []domain.FeedType{domain.FeedTypeTorznab, domain.FeedTypeNewznab} {
+	for _, feedType := range []domain.FeedType{domain.FeedTypeTorznab} {
 		t.Run(string(feedType), func(t *testing.T) {
 			for _, route := range []string{"direct", "proxy"} {
 				t.Run(route, func(t *testing.T) {

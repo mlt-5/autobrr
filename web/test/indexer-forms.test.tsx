@@ -37,7 +37,7 @@ const rssIndexer: IndexerDefinition = {
 };
 
 test.each(
-  (["irc", "rss", "torznab", "newznab"] as const).flatMap((implementation) =>
+  (["irc", "rss", "torznab"] as const).flatMap((implementation) =>
     ["", "DistroWatch (Prowlarr)"].map((identifierExternal) => ({ implementation, identifierExternal }))
   )
 )("the $implementation add form submits external identifier '$identifierExternal'", async ({ implementation, identifierExternal }) => {
@@ -66,10 +66,9 @@ test.each(
   fireEvent.change(externalIdentifier, { target: { value: identifierExternal } });
 
   if (implementation !== "irc") {
-    const urlField = implementation === "newznab" ? "feed.newznab_url" : "feed.url";
-    fireEvent.change(document.getElementById(urlField) as HTMLInputElement, { target: { value: "https://example.com/rss" } });
+    fireEvent.change(document.getElementById("feed.url") as HTMLInputElement, { target: { value: "https://example.com/rss" } });
   }
-  if (implementation === "torznab" || implementation === "newznab") {
+  if (implementation === "torznab") {
     fireEvent.change(document.getElementById("feed.api_key") as HTMLInputElement, { target: { value: "test-key" } });
   }
 

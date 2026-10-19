@@ -269,8 +269,8 @@
         "toggleTooltip3": "Podrobnosti naleznete v naší dokumentaci:"
       },
       "feedSpecific": {
-        "title": "RSS/Torznab/Newznab-specifické",
-        "subtitle": "Tyto možnosti jsou pouze pro kanály jako RSS, Torznab a Newznab",
+        "title": "RSS/Torznab-specifické",
+        "subtitle": "Tyto možnosti jsou pouze pro kanály jako RSS a Torznab",
         "matchDescription": "Podmínka shody popisu",
         "matchDescriptionPlaceholder": "např. *some?movie*,*some?show*s01*",
         "exceptDescription": "Ignorovat popis",

@@ -32,9 +32,9 @@ interface FeedSettings {
   cache_ttl_days: number;
 }
 
-type FeedDownloadType = "MAGNET" | "TORRENT" | "NZB";
+type FeedDownloadType = "MAGNET" | "TORRENT";
 
-type FeedType = "TORZNAB" | "NEWZNAB" | "RSS";
+type FeedType = "TORZNAB" | "RSS";
 
 interface FeedCreate {
   name: string;

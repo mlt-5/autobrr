@@ -1,0 +1,5 @@
+identifier: curupira
+name: Curupira
+reason: Usenet support removed
+issue_url: https://github.com/mlt-5/autobrr/pull/3
+deprecated_at: 2026-10-19T00:00:00Z

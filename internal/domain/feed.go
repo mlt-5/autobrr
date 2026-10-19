@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/autobrr/autobrr/pkg/errors"
-	"github.com/autobrr/autobrr/pkg/newznab"
 	"github.com/autobrr/autobrr/pkg/torznab"
 
 	"golang.org/x/net/http/httpguts"
@@ -96,7 +95,6 @@ type FeedType string
 
 const (
 	FeedTypeTorznab FeedType = "TORZNAB"
-	FeedTypeNewznab FeedType = "NEWZNAB"
 	FeedTypeRSS     FeedType = "RSS"
 )
 
@@ -105,7 +103,6 @@ type FeedDownloadType string
 const (
 	FeedDownloadTypeMagnet  FeedDownloadType = "MAGNET"
 	FeedDownloadTypeTorrent FeedDownloadType = "TORRENT"
-	FeedDownloadTypeNzb     FeedDownloadType = "NZB"
 )
 
 type FeedCacheItem struct {
@@ -182,56 +179,6 @@ func NewFeedCapabilitiesFromTorznab(caps *torznab.Caps) *FeedCapabilities {
 		},
 		Categories: make([]FeedCapabilitiesCategory, 0),
 		Searching:  FeedCapabilitiesSearching{},
-	}
-
-	if maxVal := parseFeedCapLimitValue(caps.Limits.Max); maxVal > 0 {
-		c.Limits.Max = maxVal
-	}
-	if def := parseFeedCapLimitValue(caps.Limits.Default); def > 0 {
-		c.Limits.Default = def
-	}
-
-	for _, cat := range caps.Categories.Categories {
-		parentCat := FeedCapabilitiesCategory{
-			ID:            cat.ID,
-			Name:          cat.Name,
-			SubCategories: make([]FeedCapabilitiesCategory, 0),
-		}
-		for _, j := range cat.SubCategories {
-			parentCat.SubCategories = append(parentCat.SubCategories, FeedCapabilitiesCategory{
-				ID:   j.ID,
-				Name: j.Name,
-			})
-		}
-		c.Categories = append(c.Categories, parentCat)
-	}
-
-	c.Searching = FeedCapabilitiesSearching{
-		Search:      FeedCapsSearch{Available: caps.Searching.Search.Available, SupportedParams: caps.Searching.Search.SupportedParams},
-		TvSearch:    FeedCapsSearch{Available: caps.Searching.TvSearch.Available, SupportedParams: caps.Searching.TvSearch.SupportedParams},
-		MovieSearch: FeedCapsSearch{Available: caps.Searching.MovieSearch.Available, SupportedParams: caps.Searching.MovieSearch.SupportedParams},
-		AudioSearch: FeedCapsSearch{Available: caps.Searching.AudioSearch.Available, SupportedParams: caps.Searching.AudioSearch.SupportedParams},
-		BookSearch:  FeedCapsSearch{Available: caps.Searching.BookSearch.Available, SupportedParams: caps.Searching.BookSearch.SupportedParams},
-	}
-
-	return c
-}
-
-func NewFeedCapabilitiesFromNewznab(caps *newznab.Caps) *FeedCapabilities {
-	c := &FeedCapabilities{
-		Server: FeedCapsServer{
-			Version:   caps.Server.Version,
-			Title:     caps.Server.Title,
-			Strapline: caps.Server.Strapline,
-			Email:     caps.Server.Email,
-			URL:       caps.Server.URL,
-			Image:     caps.Server.Image,
-		},
-		Limits: FeedCapabilitiesLimits{
-			Max:     100,
-			Default: 50,
-		},
-		Categories: make([]FeedCapabilitiesCategory, 0),
 	}
 
 	if maxVal := parseFeedCapLimitValue(caps.Limits.Max); maxVal > 0 {

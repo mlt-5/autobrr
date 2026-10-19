@@ -269,8 +269,8 @@
       "toggleTooltip3": "不同来源的使用方式请参考文档："
     },
     "feedSpecific": {
-      "title": "RSS/Torznab/Newznab 专属",
-      "subtitle": "这些选项仅适用于 RSS、Torznab 和 Newznab 等订阅源",
+      "title": "RSS/Torznab 专属",
+      "subtitle": "这些选项仅适用于 RSS 和 Torznab 等订阅源",
       "matchDescription": "匹配描述",
       "matchDescriptionPlaceholder": "例如：*some?movie*,*some?show*s01*",
       "exceptDescription": "排除描述",

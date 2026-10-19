@@ -634,10 +634,6 @@ export const FeedDownloadTypeOptions: OptionBasicTyped<FeedDownloadType>[] = [
   {
     label: "Torrent",
     value: "TORRENT"
-  },
-  {
-    label: "NZB",
-    value: "NZB"
   }
 ];
 

@@ -568,15 +568,12 @@ type ReleaseProtocol string
 
 const (
 	ReleaseProtocolTorrent ReleaseProtocol = "torrent"
-	ReleaseProtocolNzb     ReleaseProtocol = "usenet"
 )
 
 func (r ReleaseProtocol) String() string {
 	switch r {
 	case ReleaseProtocolTorrent:
 		return "torrent"
-	case ReleaseProtocolNzb:
-		return "usenet"
 	default:
 		return "torrent"
 	}
@@ -587,7 +584,6 @@ type ReleaseImplementation string
 const (
 	ReleaseImplementationIRC     ReleaseImplementation = "IRC"
 	ReleaseImplementationTorznab ReleaseImplementation = "TORZNAB"
-	ReleaseImplementationNewznab ReleaseImplementation = "NEWZNAB"
 	ReleaseImplementationRSS     ReleaseImplementation = "RSS"
 )
 
@@ -597,8 +593,6 @@ func (r ReleaseImplementation) String() string {
 		return "IRC"
 	case ReleaseImplementationTorznab:
 		return "TORZNAB"
-	case ReleaseImplementationNewznab:
-		return "NEWZNAB"
 	case ReleaseImplementationRSS:
 		return "RSS"
 	default:
