@@ -54,8 +54,7 @@ type Action struct {
 // torrent from the indexer once, instead of once per action.
 func (a *Action) NeedsTorrentDownloaded() bool {
 	switch a.Type {
-	case ActionTypeQbittorrent, ActionTypeDelugeV1, ActionTypeDelugeV2, ActionTypeRTorrent,
-		ActionTypeTransmission, ActionTypePorla, ActionTypeAria2, ActionTypeWatchFolder:
+	case ActionTypeQbittorrent, ActionTypeDelugeV1, ActionTypeDelugeV2, ActionTypeRTorrent, ActionTypeWatchFolder:
 		return true
 	default:
 		return false
@@ -158,26 +157,21 @@ func (a *Action) ParseMacros(release *Release) error {
 type ActionType string
 
 const (
-	ActionTypeTest         ActionType = "TEST"
-	ActionTypeExec         ActionType = "EXEC"
-	ActionTypeQbittorrent  ActionType = "QBITTORRENT"
-	ActionTypeDelugeV1     ActionType = "DELUGE_V1"
-	ActionTypeDelugeV2     ActionType = "DELUGE_V2"
-	ActionTypeRTorrent     ActionType = "RTORRENT"
-	ActionTypeTransmission ActionType = "TRANSMISSION"
-	ActionTypePorla        ActionType = "PORLA"
-	ActionTypeAria2        ActionType = "ARIA2"
-	ActionTypeWatchFolder  ActionType = "WATCH_FOLDER"
-	ActionTypeWebhook      ActionType = "WEBHOOK"
-	ActionTypeRadarr       ActionType = "RADARR"
-	ActionTypeSonarr       ActionType = "SONARR"
-	ActionTypeLidarr       ActionType = "LIDARR"
-	ActionTypeWhisparr     ActionType = "WHISPARR"
-	ActionTypeWhisparrV3   ActionType = "WHISPARR_V3"
-	ActionTypeReadarr      ActionType = "READARR"
-	ActionTypeSportarr     ActionType = "SPORTARR"
-	ActionTypeSabnzbd      ActionType = "SABNZBD"
-	ActionTypeNzbget       ActionType = "NZBGET"
+	ActionTypeTest        ActionType = "TEST"
+	ActionTypeExec        ActionType = "EXEC"
+	ActionTypeQbittorrent ActionType = "QBITTORRENT"
+	ActionTypeDelugeV1    ActionType = "DELUGE_V1"
+	ActionTypeDelugeV2    ActionType = "DELUGE_V2"
+	ActionTypeRTorrent    ActionType = "RTORRENT"
+	ActionTypeWatchFolder ActionType = "WATCH_FOLDER"
+	ActionTypeWebhook     ActionType = "WEBHOOK"
+	ActionTypeRadarr      ActionType = "RADARR"
+	ActionTypeSonarr      ActionType = "SONARR"
+	ActionTypeLidarr      ActionType = "LIDARR"
+	ActionTypeWhisparr    ActionType = "WHISPARR"
+	ActionTypeWhisparrV3  ActionType = "WHISPARR_V3"
+	ActionTypeReadarr     ActionType = "READARR"
+	ActionTypeSportarr    ActionType = "SPORTARR"
 )
 
 type ActionContentLayout string

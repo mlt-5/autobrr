@@ -8,18 +8,13 @@ type DownloaderType =
   "DELUGE_V1" |
   "DELUGE_V2" |
   "RTORRENT" |
-  "TRANSMISSION" |
-  "PORLA" |
-  "ARIA2" |
   "RADARR" |
   "SONARR" |
   "LIDARR" |
   "WHISPARR" |
   "WHISPARR_V3" |
   "READARR" |
-  "SPORTARR" |
-  "SABNZBD" |
-  "NZBGET";
+  "SPORTARR";
 
 // export enum DownloaderTypeEnum {
 //     QBITTORRENT = "QBITTORRENT",

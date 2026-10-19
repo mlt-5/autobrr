@@ -57,15 +57,6 @@ func (s *Service) RunAction(ctx context.Context, action *domain.Action, release 
 	case domain.ActionTypeRTorrent:
 		rejections, err = s.runRTorrent(ctx, action, release)
 
-	case domain.ActionTypeTransmission:
-		rejections, err = s.runTransmission(ctx, action, release)
-
-	case domain.ActionTypePorla:
-		rejections, err = s.runPorla(ctx, action, release)
-
-	case domain.ActionTypeAria2:
-		rejections, err = s.runAria2(ctx, action, release)
-
 	case domain.ActionTypeRadarr:
 		rejections, err = s.runRadarr(ctx, action, release)
 
@@ -83,12 +74,6 @@ func (s *Service) RunAction(ctx context.Context, action *domain.Action, release 
 
 	case domain.ActionTypeSportarr:
 		rejections, err = s.runSportarr(ctx, action, release)
-
-	case domain.ActionTypeSabnzbd:
-		rejections, err = s.runSabnzbd(ctx, action, release)
-
-	case domain.ActionTypeNzbget:
-		rejections, err = s.runNzbget(ctx, action, release)
 
 	default:
 		return nil, errors.New("unsupported action type: %s", action.Type)

@@ -32,7 +32,6 @@ require (
 	github.com/go-chi/render v1.0.3
 	github.com/gosimple/slug v1.15.0
 	github.com/hashicorp/go-version v1.9.0
-	github.com/hekmon/transmissionrpc/v3 v3.0.0
 	github.com/icholy/digest v1.2.0
 	github.com/lib/pq v1.12.3
 	github.com/magiconair/properties v1.18.12
@@ -83,8 +82,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
-	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hekmon/cunits/v2 v2.1.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect

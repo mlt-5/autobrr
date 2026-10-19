@@ -26,15 +26,12 @@ import { TitleSubtitle } from "@components/headings";
 import { DownloadersQueryOptions } from "@api/queries";
 import { FilterHalfRow, FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
 import {
-  Aria2,
   Arr,
   Deluge, Exec,
-  NZBGet,
-  Porla,
   QBittorrent,
   RTorrent,
-  SABnzbd, Test,
-  Transmission, WatchFolder, WebHook
+  Test,
+  WatchFolder, WebHook
 } from "@screens/filters/sections/action_components";
 
 export function Actions() {
@@ -141,12 +138,6 @@ const TypeForm = (props: ClientActionProps) => {
     return <Deluge {...props} />;
   case "RTORRENT":
     return <RTorrent {...props} />;
-  case "TRANSMISSION":
-    return <Transmission {...props} />;
-  case "PORLA":
-    return <Porla {...props} />;
-  case "ARIA2":
-    return <Aria2 {...props} />;
   // arrs
   case "RADARR":
   case "SONARR":
@@ -156,11 +147,6 @@ const TypeForm = (props: ClientActionProps) => {
   case "READARR":
   case "SPORTARR":
     return <Arr {...props} />;
-  // nzb
-  case "SABNZBD":
-    return <SABnzbd {...props} />;
-  case "NZBGET":
-    return <NZBGet {...props} />;
   // autobrr actions
   case "TEST":
     return <Test />;

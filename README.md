@@ -57,7 +57,7 @@ When your autobrr filter is set to send the torrent files to Radarr and Sonarr, 
  want and then forward it to the torrent client they are set up with.
 
 autobrr can also send matches (torrent files that meets your filter's criteria) directly to torrent clients like
-qBittorrent, Deluge, r(u)Torrent, and Transmission. You don't need to use the *arr suite to make use of autobrr.
+qBittorrent, Deluge, and r(u)Torrent. You don't need to use the *arr suite to make use of autobrr.
 
 ## Key Features
 
@@ -81,11 +81,7 @@ qBittorrent, Deluge, r(u)Torrent, and Transmission. You don't need to use the *a
 - **qBittorrent:** Includes built-in re-announce, categories, rules, max active downloads, etc.
 - **Deluge v1+ and v2+**
 - **rTorrent**
-- **Transmission**
-- **Porla**
-- **aria2**
 - **Sonarr, Radarr, Lidarr, Whisparr, Readarr, Sportarr:** Pushes releases directly for early swarm participation, rather than relying on RSS feeds.
-- **SABnzbd and NZBGet (Usenet):** Integrates smoothly for Usenet downloads.
 - **Watch Folder:** Monitors specified folders for new files.
 - **Exec Custom Scripts:** Execute tailored scripts for advanced automation.
 - **Webhook:** Offers webhook support for diverse integration needs.
@@ -99,7 +95,7 @@ Usenet support via Newznab feeds allows you to easily manage everything in a sin
 applications that handle RSS well, we think autobrr offers very easy-to-use filtering to help you get the content you
 want.
 
-You can use Usenet feeds and send to arrs or send directly to SABnzbd or NZBGet.
+You can use Usenet feeds and send them to the arrs.
 
 ## Installation
 

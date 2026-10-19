@@ -7,7 +7,6 @@ import (
 	"context"
 
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/pkg/aria2"
 	"github.com/autobrr/autobrr/pkg/arr/lidarr"
 	"github.com/autobrr/autobrr/pkg/arr/radarr"
 	"github.com/autobrr/autobrr/pkg/arr/readarr"
@@ -15,14 +14,10 @@ import (
 	"github.com/autobrr/autobrr/pkg/arr/sportarr"
 	"github.com/autobrr/autobrr/pkg/arr/whisparr"
 	"github.com/autobrr/autobrr/pkg/errors"
-	"github.com/autobrr/autobrr/pkg/nzbget"
-	"github.com/autobrr/autobrr/pkg/porla"
-	"github.com/autobrr/autobrr/pkg/sabnzbd"
 
 	"github.com/autobrr/go-deluge"
 	"github.com/autobrr/go-qbittorrent"
 	"github.com/autobrr/go-rtorrent"
-	"github.com/hekmon/transmissionrpc/v3"
 )
 
 func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) error {
@@ -41,15 +36,6 @@ func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) er
 	case domain.DownloaderTypeRTorrent:
 		return s.testConnectionRTorrent(ctx, instance)
 
-	case domain.DownloaderTypeTransmission:
-		return s.testConnectionTransmission(ctx, instance)
-
-	case domain.DownloaderTypePorla:
-		return s.testConnectionPorla(ctx, instance)
-
-	case domain.DownloaderTypeAria2:
-		return s.testConnectionAria2(ctx, instance)
-
 	case domain.DownloaderTypeRadarr:
 		return s.testConnectionRadarr(ctx, instance)
 
@@ -67,12 +53,6 @@ func (s *Service) testConnection(ctx context.Context, cfg *domain.Downloader) er
 
 	case domain.DownloaderTypeSportarr:
 		return s.testConnectionSportarr(ctx, instance)
-
-	case domain.DownloaderTypeSabnzbd:
-		return s.testConnectionSabnzbd(ctx, instance)
-
-	case domain.DownloaderTypeNzbget:
-		return s.testConnectionNzbget(ctx, instance)
 
 	default:
 		return errors.New("unsupported client: %s", cfg.Type)
@@ -163,28 +143,6 @@ func (s *Service) testConnectionRTorrent(ctx context.Context, instance *Instance
 	}
 
 	s.log.Debug().Str("name", name).Msg("test client connection for rTorrent: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionTransmission(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*transmissionrpc.Client]()
-	if err != nil {
-		return err
-	}
-
-	ok, version, _, err := client.RPCVersion(ctx)
-	if err != nil {
-		return errors.Wrap(err, "error getting rpc info: %v", cfg.Host)
-	}
-
-	if !ok {
-		return errors.Wrap(err, "error getting rpc info: %v", cfg.Host)
-	}
-
-	s.log.Debug().Int64("version", version).Msg("test client connection for Transmission: success")
 
 	return nil
 }
@@ -307,84 +265,6 @@ func (s *Service) testConnectionReadarr(ctx context.Context, instance *Instance)
 	}
 
 	s.log.Debug().Msg("test client connection for readarr: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionPorla(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*porla.Client]()
-	if err != nil {
-		return err
-	}
-
-	version, err := client.Version(ctx)
-	if err != nil {
-		return errors.Wrap(err, "porla: failed to get version: %v", cfg.Host)
-	}
-
-	commitHash := version.Commitish
-
-	if len(commitHash) > 8 {
-		commitHash = commitHash[:8]
-	}
-
-	s.log.Debug().Str("version", version.Version).Str("commit", commitHash).Msg("test client connection for porla: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionAria2(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*aria2.Client]()
-	if err != nil {
-		return err
-	}
-
-	version, err := client.GetVersion(ctx)
-	if err != nil {
-		return errors.Wrap(err, "aria2: failed to get version: %s", cfg.Host)
-	}
-
-	s.log.Debug().Str("version", version.Version).Msg("test client connection for aria2: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionSabnzbd(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*sabnzbd.Client]()
-	if err != nil {
-		return err
-	}
-
-	version, err := client.Version(ctx)
-	if err != nil {
-		return errors.Wrap(err, "error getting version from sabnzbd: %s", cfg.Host)
-	}
-
-	s.log.Debug().Str("version", version.Version).Msg("test client connection for sabnzbd: success")
-
-	return nil
-}
-
-func (s *Service) testConnectionNzbget(ctx context.Context, instance *Instance) error {
-	cfg := instance.Config()
-
-	client, err := instance.ClientAs[*nzbget.Client]()
-	if err != nil {
-		return err
-	}
-
-	version, err := client.Version(ctx)
-	if err != nil {
-		return errors.Wrap(err, "error getting version from nzbget: %s", cfg.Host)
-	}
-
-	s.log.Debug().Str("version", version).Msg("test client connection for nzbget: success")
 
 	return nil
 }

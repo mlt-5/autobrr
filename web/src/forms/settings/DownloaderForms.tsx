@@ -27,7 +27,7 @@ import {
   SwitchGroupWide,
   TextFieldWide
 } from "@components/inputs";
-import { DocsLink, ExternalLink } from "@components/ExternalLink";
+import { DocsLink } from "@components/ExternalLink";
 import { SelectFieldBasic } from "@components/inputs/select_wide";
 import { AddFormProps, UpdateFormProps } from "@forms/_shared";
 
@@ -214,82 +214,6 @@ function FormFieldsQbit() {
   );
 }
 
-function FormFieldsPorla() {
-  const { t } = useTranslation("settings");
-  const { tls, settings } = useFormValue((v: InitialValues) => ({ tls: v.tls, settings: v.settings }));
-
-  return (
-    <div className="flex flex-col space-y-4 px-1 py-6 sm:py-0 sm:space-y-0">
-      <TextFieldWide
-        required
-        name="host"
-        label={t("forms.downloadClient.host")}
-        help={t("forms.downloadClient.hostHelpPorla")}
-      />
-
-      <SwitchGroupWide name="tls" label={t("forms.downloadClient.tls")} />
-
-      <PasswordFieldWide required name="settings.apikey" label={t("forms.downloadClient.authToken")} />
-
-      {tls && (
-        <SwitchGroupWide
-          name="tls_skip_verify"
-          label={t("forms.downloadClient.skipTls")}
-        />
-      )}
-
-      <SwitchGroupWide name="settings.basic.auth" label={t("forms.downloadClient.basicAuth")} />
-
-      {settings.basic?.auth === true && (
-        <>
-          <TextFieldWide name="settings.basic.username" label={t("forms.downloadClient.username")} />
-          <PasswordFieldWide name="settings.basic.password" label={t("forms.downloadClient.password")} />
-        </>
-      )}
-    </div>
-  );
-}
-
-function FormFieldsAria2() {
-  const { t } = useTranslation("settings");
-  const { tls, settings } = useFormValue((v: InitialValues) => ({ tls: v.tls, settings: v.settings }));
-
-  return (
-    <div className="flex flex-col space-y-4 px-1 py-6 sm:py-0 sm:space-y-0">
-      <TextFieldWide
-        required
-        name="host"
-        label={t("forms.downloadClient.host")}
-        help={t("forms.downloadClient.hostHelpAria2")}
-      />
-
-      <SwitchGroupWide name="tls" label={t("forms.downloadClient.tls")} />
-
-      {tls && (
-        <SwitchGroupWide
-          name="tls_skip_verify"
-          label={t("forms.downloadClient.skipTls")}
-        />
-      )}
-
-      <PasswordFieldWide
-        name="settings.apikey"
-        label={t("forms.downloadClient.rpcSecret")}
-        help={t("forms.downloadClient.rpcSecretHelp")}
-      />
-
-      <SwitchGroupWide name="settings.basic.auth" label={t("forms.downloadClient.basicAuth")} />
-
-      {settings.basic?.auth === true && (
-        <>
-          <TextFieldWide name="settings.basic.username" label={t("forms.downloadClient.username")} />
-          <PasswordFieldWide name="settings.basic.password" label={t("forms.downloadClient.password")} />
-        </>
-      )}
-    </div>
-  );
-}
-
 function FormFieldsRTorrent() {
   const { t } = useTranslation("settings");
   const { tls, settings } = useFormValue((v: InitialValues) => ({ tls: v.tls, settings: v.settings }));
@@ -341,135 +265,6 @@ function FormFieldsRTorrent() {
   );
 }
 
-function FormFieldsTransmission() {
-  const { t } = useTranslation("settings");
-  const { port, tls } = useFormValue((v: InitialValues) => ({ port: v.port, tls: v.tls }));
-
-  return (
-    <div className="flex flex-col space-y-4 px-1 py-6 sm:py-0 sm:space-y-0">
-      <TextFieldWide
-        required
-        name="host"
-        label={t("forms.downloadClient.host")}
-        help={t("forms.downloadClient.hostHelpTransmission")}
-        tooltip={
-          <div>
-            <p>{t("forms.downloadClient.guidesTransmission")}</p>
-            <br />
-            <p>{t("forms.downloadClient.dedicatedServers")}</p>
-            <DocsLink href="https://autobrr.com/configuration/download-clients/dedicated#transmission" />
-            <p>{t("forms.downloadClient.sharedSeedboxProviders")}</p>
-            <DocsLink href="https://autobrr.com/configuration/download-clients/shared-seedboxes#transmission" />
-          </div>
-        }
-      />
-
-      {port > 0 && (
-        <NumberFieldWide
-          name="port"
-          label={t("forms.downloadClient.port")}
-          help={t("forms.downloadClient.transmissionPort")}
-        />
-      )}
-
-      <SwitchGroupWide name="tls" label={t("forms.downloadClient.tls")} />
-
-      {tls && (
-        <SwitchGroupWide
-          name="tls_skip_verify"
-          label={t("forms.downloadClient.skipTls")}
-        />
-      )}
-
-      <TextFieldWide name="username" label={t("forms.downloadClient.username")} />
-      <PasswordFieldWide name="password" label={t("forms.downloadClient.password")} />
-    </div>
-  );
-}
-
-function FormFieldsSabnzbd() {
-  const { t } = useTranslation("settings");
-  const { port, tls, settings } = useFormValue((v: InitialValues) => ({ port: v.port, tls: v.tls, settings: v.settings }));
-
-  return (
-    <div className="flex flex-col space-y-4 px-1 py-6 sm:py-0 sm:space-y-0">
-      <TextFieldWide
-        name="host"
-        label={t("forms.downloadClient.host")}
-        help={t("forms.downloadClient.hostHelpSabnzbd")}
-        tooltip={
-          <div>
-            <p>{t("forms.downloadClient.guidesSabnzbd")}</p>
-            <br />
-            <p>{t("forms.downloadClient.dedicatedServers")}</p>
-            <ExternalLink href="https://autobrr.com/configuration/download-clients/dedicated#sabnzbd" />
-            <p>{t("forms.downloadClient.sharedSeedboxProviders")}</p>
-            <ExternalLink href="https://autobrr.com/configuration/download-clients/shared-seedboxes#sabnzbd" />
-          </div>
-        }
-      />
-
-      {port > 0 && (
-        <NumberFieldWide
-          name="port"
-          label={t("forms.downloadClient.port")}
-          help={t("forms.downloadClient.sabnzbdPort")}
-        />
-      )}
-
-      <SwitchGroupWide name="tls" label={t("forms.downloadClient.tls")} />
-
-      {tls && (
-        <SwitchGroupWide
-          name="tls_skip_verify"
-          label={t("forms.downloadClient.skipTls")}
-        />
-      )}
-
-      {/*<TextFieldWide name="username" label="Username" />*/}
-      {/*<PasswordFieldWide name="password" label="Password" />*/}
-
-      <PasswordFieldWide name="settings.apikey" label={t("forms.downloadClient.apiKey")} />
-
-      <SwitchGroupWide name="settings.basic.auth" label={t("forms.downloadClient.basicAuth")} />
-
-      {settings.basic?.auth === true && (
-        <>
-          <TextFieldWide name="settings.basic.username" label={t("forms.downloadClient.username")} />
-          <PasswordFieldWide name="settings.basic.password" label={t("forms.downloadClient.password")} />
-        </>
-      )}
-    </div>
-  );
-}
-
-function FormFieldsNzbget() {
-  const { t } = useTranslation("settings");
-  const { tls } = useFormValue((v: InitialValues) => ({ tls: v.tls }));
-
-  return (
-    <div className="flex flex-col space-y-4 px-1 py-6 sm:py-0 sm:space-y-0">
-      <TextFieldWide
-        name="host"
-        label={t("forms.downloadClient.host")}
-        help={t("forms.downloadClient.hostHelpNzbget")}
-      />
-
-      <SwitchGroupWide name="tls" label={t("forms.downloadClient.tls")} />
-
-      {tls && (
-        <SwitchGroupWide
-          name="tls_skip_verify"
-          label={t("forms.downloadClient.skipTls")}
-        />
-      )}
-
-      <TextFieldWide name="username" label={t("forms.downloadClient.username")} />
-      <PasswordFieldWide name="password" label={t("forms.downloadClient.password")} />
-    </div>
-  );
-}
-
 export interface componentMapType {
   [key: string]: ReactElement;
 }
@@ -479,9 +274,6 @@ const componentMap: componentMapType = {
   DELUGE_V2: <FormFieldsDeluge />,
   QBITTORRENT: <FormFieldsQbit />,
   RTORRENT: <FormFieldsRTorrent />,
-  TRANSMISSION: <FormFieldsTransmission />,
-  PORLA: <FormFieldsPorla />,
-  ARIA2: <FormFieldsAria2 />,
   RADARR: <FormFieldsArr />,
   SONARR: <FormFieldsArr />,
   LIDARR: <FormFieldsArr />,
@@ -489,8 +281,6 @@ const componentMap: componentMapType = {
   WHISPARR_V3: <FormFieldsArr />,
   READARR: <FormFieldsArr />,
   SPORTARR: <FormFieldsArr />,
-  SABNZBD: <FormFieldsSabnzbd />,
-  NZBGET: <FormFieldsNzbget />
 };
 
 function FormFieldsRulesBasic() {
@@ -616,51 +406,10 @@ function FormFieldsRulesQbit() {
   );
 }
 
-function FormFieldsRulesTransmission() {
-  const { t } = useTranslation("settings");
-  const { settings } = useFormValue((v: InitialValues) => ({ settings: v.settings }));
-
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-5 px-2">
-      <div className="px-4">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-          {t("forms.downloadClient.rulesTitle")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("forms.downloadClient.rulesDescriptionAdvanced")}
-        </p>
-      </div>
-
-      <SwitchGroupWide name="settings.rules.enabled" label={t("forms.downloadClient.enabled")} />
-
-      {settings.rules?.enabled === true && (
-        <>
-          <NumberFieldWide
-            name="settings.rules.max_active_downloads"
-            label={t("forms.downloadClient.maxActiveDownloads")}
-            tooltip={
-              <>
-                <p>{t("forms.downloadClient.maxActiveDownloadsTooltip")}</p>
-                <DocsLink href="https://autobrr.com/configuration/download-clients/dedicated#transmission-rules" />
-                <br /><br />
-                <p>{t("forms.downloadClient.seeRecommendations")}</p>
-                <DocsLink href="https://autobrr.com/filters/examples#build-buffer" />
-              </>
-            }
-          />
-        </>
-      )}
-    </div>
-  );
-}
-
 const rulesComponentMap: componentMapType = {
   DELUGE_V1: <FormFieldsRulesBasic />,
   DELUGE_V2: <FormFieldsRulesBasic />,
   QBITTORRENT: <FormFieldsRulesQbit />,
-  PORLA: <FormFieldsRulesBasic />,
-  ARIA2: <FormFieldsRulesBasic />,
-  TRANSMISSION: <FormFieldsRulesTransmission />,
   RADARR: <FormFieldsRulesArr />,
   SONARR: <FormFieldsRulesArr />,
   LIDARR: <FormFieldsRulesArr />,

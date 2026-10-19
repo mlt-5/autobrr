@@ -9,66 +9,6 @@ import { DownloaderSelect, NumberField, TextAreaAutoResize, TextField } from "@c
 import { useTranslation } from "react-i18next";
 
 
-export const SABnzbd = ({ idx, action, clients }: ClientActionProps) => {
-  const { t } = useTranslation("filters");
-
-  return (
-  <FilterSection
-    title={t("actionComponents.instance.title")}
-    subtitle={t("actionComponents.instance.subtitle")}
-  >
-    <FilterLayout>
-      <FilterHalfRow>
-        <DownloaderSelect
-          name={`actions[${idx}].client_id`}
-          action={action}
-          clients={clients}
-        />
-      </FilterHalfRow>
-      <FilterHalfRow>
-        <TextField
-          name={`actions[${idx}].category`}
-          label={t("actionComponents.common.category")}
-          columns={6}
-          placeholder={t("actionComponents.common.categoryPlaceholder")}
-          tooltip={<p>{t("actionComponents.common.categoryTooltip")}</p>}
-        />
-      </FilterHalfRow>
-    </FilterLayout>
-  </FilterSection>
-  );
-};
-
-export const NZBGet = ({ idx, action, clients }: ClientActionProps) => {
-  const { t } = useTranslation("filters");
-
-  return (
-  <FilterSection
-    title={t("actionComponents.instance.title")}
-    subtitle={t("actionComponents.instance.subtitle")}
-  >
-    <FilterLayout>
-      <FilterHalfRow>
-        <DownloaderSelect
-          name={`actions[${idx}].client_id`}
-          action={action}
-          clients={clients}
-        />
-      </FilterHalfRow>
-      <FilterHalfRow>
-        <TextField
-          name={`actions[${idx}].category`}
-          label={t("actionComponents.common.category")}
-          columns={6}
-          placeholder={t("actionComponents.common.categoryPlaceholder")}
-          tooltip={<p>{t("actionComponents.common.categoryTooltip")}</p>}
-        />
-      </FilterHalfRow>
-    </FilterLayout>
-  </FilterSection>
-  );
-};
-
 export const Test = () => {
   const { t } = useTranslation("filters");
 
