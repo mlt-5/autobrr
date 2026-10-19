@@ -4,17 +4,11 @@
 package domain
 
 import (
-	"encoding/json"
-	"net/url"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/autobrr/autobrr/pkg/errors"
 )
-
-// Notifiarr API keys are lowercase UUIDs; anything else is rejected by notifiarr.com.
-var rxpNotifiarrAPIKey = regexp.MustCompile(`^[a-z0-9-]{36}$`)
 
 type Notification struct {
 	ID            int                  `json:"id"`
@@ -22,22 +16,7 @@ type Notification struct {
 	Type          NotificationType     `json:"type"`
 	Enabled       bool                 `json:"enabled"`
 	Events        []string             `json:"events"`
-	Token         string               `json:"token"`
-	APIKey        string               `json:"api_key"`
 	Webhook       string               `json:"webhook"`
-	Title         string               `json:"title"`
-	Icon          string               `json:"icon"`
-	Username      string               `json:"username"`
-	Host          string               `json:"host"`
-	Password      string               `json:"password"`
-	Channel       string               `json:"channel"`
-	Rooms         string               `json:"rooms"`
-	Targets       string               `json:"targets"`
-	Devices       string               `json:"devices"`
-	Priority      int32                `json:"priority"`
-	Topic         string               `json:"topic"`
-	Sound         string               `json:"sound"`
-	EventSounds   map[string]string    `json:"event_sounds,omitempty"` // event -> sound mapping
 	UsedByFilters []FilterNotification `json:"used_by_filters,omitempty"`
 	Method        string               `json:"method,omitempty"`
 	Headers       string               `json:"headers,omitempty"`
@@ -55,100 +34,20 @@ func (n *Notification) IsEnabled() bool {
 	}
 
 	switch n.Type {
-	case NotificationTypeBark:
-		if n.Host != "" && n.Token != "" {
-			return true
-		}
-	case NotificationTypeDiscord:
-		if n.Webhook != "" {
-			return true
-		}
-	case NotificationTypeGotify:
-		if n.Host != "" && n.Token != "" {
-			return true
-		}
-	case NotificationTypeLunaSea:
-		if n.Webhook != "" {
-			return true
-		}
-	case NotificationTypeNotifiarr:
-		if n.APIKey != "" {
-			return true
-		}
-	case NotificationTypeNtfy:
-		if n.Host != "" {
-			return true
-		}
-	case NotificationTypePushover:
-		if n.APIKey != "" && n.Token != "" {
-			return true
-		}
-	case NotificationTypeShoutrrr:
-		if n.Host != "" {
-			return true
-		}
-	case NotificationTypeTelegram:
-		if n.Token != "" && n.Channel != "" {
-			return true
-		}
 	case NotificationTypeWebhook:
-		if n.Webhook != "" {
-			return true
-		}
+		return n.Webhook != ""
 	case NotificationTypeBuiltin:
 		return true
 	}
 	return false
 }
 
-// Validate checks that the provider-specific fields a sender needs are present and well-formed.
+// Validate checks that the fields a sender needs are present.
 func (n *Notification) Validate() error {
 	switch n.Type {
-	case NotificationTypeBark:
-		if strings.TrimSpace(n.Host) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing bark server url")
-		}
-		if serverURL, err := url.Parse(n.Host); err != nil || serverURL.Hostname() == "" || serverURL.RawQuery != "" || (serverURL.Scheme != "http" && serverURL.Scheme != "https") {
-			return errors.Wrap(ErrNotificationInvalid, "bark server url must be an http or https url without query parameters")
-		}
-		if strings.TrimSpace(n.Token) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing bark device key")
-		}
-	case NotificationTypeDiscord, NotificationTypeLunaSea, NotificationTypeWebhook:
+	case NotificationTypeWebhook:
 		if strings.TrimSpace(n.Webhook) == "" {
 			return errors.Wrap(ErrNotificationInvalid, "missing webhook url")
-		}
-	case NotificationTypeGotify:
-		if strings.TrimSpace(n.Host) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing gotify url")
-		}
-		if strings.TrimSpace(n.Token) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing gotify application token")
-		}
-	case NotificationTypeNotifiarr:
-		if strings.TrimSpace(n.APIKey) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing notifiarr api key")
-		}
-		if !rxpNotifiarrAPIKey.MatchString(n.APIKey) {
-			return errors.Wrap(ErrNotificationInvalid, "notifiarr api key must be 36 characters of a-z, 0-9 and dashes")
-		}
-	case NotificationTypeNtfy, NotificationTypeShoutrrr:
-		if strings.TrimSpace(n.Host) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing url")
-		}
-	case NotificationTypePushover:
-		if strings.TrimSpace(n.APIKey) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing pushover api token")
-		}
-		if strings.TrimSpace(n.Token) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing pushover user key")
-		}
-	case NotificationTypeTelegram:
-		if strings.TrimSpace(n.Token) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing telegram bot token")
-		}
-		if strings.TrimSpace(n.Channel) == "" {
-			return errors.Wrap(ErrNotificationInvalid, "missing telegram chat id")
 		}
 	case NotificationTypeBuiltin:
 	default:
@@ -156,21 +55,6 @@ func (n *Notification) Validate() error {
 	}
 
 	return nil
-}
-
-func (n Notification) MarshalJSON() ([]byte, error) {
-	type Alias Notification
-	return json.Marshal(&struct {
-		*Alias
-		Token    string `json:"token"`
-		APIKey   string `json:"api_key"`
-		Password string `json:"password"`
-	}{
-		Alias:    (*Alias)(&n),
-		Token:    RedactString(n.Token),
-		APIKey:   RedactString(n.APIKey),
-		Password: RedactString(n.Password),
-	})
 }
 
 type NotificationPayload struct {
@@ -212,18 +96,8 @@ type NotificationPayload struct {
 type NotificationType string
 
 const (
-	NotificationTypeDiscord   NotificationType = "DISCORD"
-	NotificationTypeNotifiarr NotificationType = "NOTIFIARR"
-	NotificationTypePushover  NotificationType = "PUSHOVER"
-	NotificationTypeSlack     NotificationType = "SLACK"
-	NotificationTypeTelegram  NotificationType = "TELEGRAM"
-	NotificationTypeGotify    NotificationType = "GOTIFY"
-	NotificationTypeNtfy      NotificationType = "NTFY"
-	NotificationTypeLunaSea   NotificationType = "LUNASEA"
-	NotificationTypeShoutrrr  NotificationType = "SHOUTRRR"
-	NotificationTypeWebhook   NotificationType = "WEBHOOK"
-	NotificationTypeBark      NotificationType = "BARK"
-	NotificationTypeBuiltin   NotificationType = "BUILTIN"
+	NotificationTypeWebhook NotificationType = "WEBHOOK"
+	NotificationTypeBuiltin NotificationType = "BUILTIN"
 )
 
 type NotificationEvent string

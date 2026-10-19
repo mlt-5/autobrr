@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-type NotificationType = "DISCORD" | "NOTIFIARR" | "TELEGRAM" | "PUSHOVER" | "GOTIFY" | "NTFY" | "LUNASEA" | "SHOUTRRR" | "WEBHOOK" | "BARK" | "BUILTIN";
+type NotificationType = "WEBHOOK" | "BUILTIN";
 type NotificationEvent =
   "PUSH_APPROVED"
   | "PUSH_REJECTED"
@@ -26,16 +26,6 @@ interface ServiceNotification {
   type: NotificationType;
   events: NotificationEvent[];
   webhook?: string;
-  token?: string;
-  api_key?: string;
-  channel?: string;
-  priority?: number;
-  topic?: string;
-  sound?: string;
-  event_sounds?: Record<string, string>;
-  host?: string;
-  username?: string;
-  password?: string;
   method?: string;
   headers?: string;
   used_by_filters?: NotificationFilter[];

@@ -397,59 +397,7 @@ export const ListTypeNameMap: Record<ListType, string> = {
   "ANILIST": "AniList",
 };
 
-export const NotificationTypeOptions: OptionBasicTyped<NotificationType>[] = [
-  {
-    label: "Bark",
-    value: "BARK"
-  },
-  {
-    label: "Discord",
-    value: "DISCORD"
-  },
-  {
-    label: "Gotify",
-    value: "GOTIFY"
-  },
-  {
-    label: "LunaSea",
-    value: "LUNASEA"
-  },
-  {
-    label: "Notifiarr",
-    value: "NOTIFIARR"
-  },
-  {
-    label: "Ntfy",
-    value: "NTFY"
-  },
-  {
-    label: "Pushover",
-    value: "PUSHOVER"
-  },
-  {
-    label: "Shoutrrr",
-    value: "SHOUTRRR"
-  },
-  {
-    label: "Telegram",
-    value: "TELEGRAM"
-  },
-  {
-    label: "Webhook",
-    value: "WEBHOOK"
-  }
-];
-
 export const getNotificationTypeOptions = (t: TFunction): OptionBasicTyped<NotificationType>[] => [
-  { label: t("options:notificationType.BARK"), value: "BARK" },
-  { label: t("options:notificationType.DISCORD"), value: "DISCORD" },
-  { label: t("options:notificationType.GOTIFY"), value: "GOTIFY" },
-  { label: t("options:notificationType.LUNASEA"), value: "LUNASEA" },
-  { label: t("options:notificationType.NOTIFIARR"), value: "NOTIFIARR" },
-  { label: t("options:notificationType.NTFY"), value: "NTFY" },
-  { label: t("options:notificationType.PUSHOVER"), value: "PUSHOVER" },
-  { label: t("options:notificationType.SHOUTRRR"), value: "SHOUTRRR" },
-  { label: t("options:notificationType.TELEGRAM"), value: "TELEGRAM" },
   { label: t("options:notificationType.WEBHOOK"), value: "WEBHOOK" }
 ];
 
@@ -635,34 +583,6 @@ export const FeedDownloadTypeOptions: OptionBasicTyped<FeedDownloadType>[] = [
     label: "Torrent",
     value: "TORRENT"
   }
-];
-
-// Built-in Pushover sounds - https://pushover.net/api#sounds
-// Custom user-uploaded sounds are fetched from the API when available
-export const PushoverSoundOptions: OptionBasic[] = [
-  { label: "Pushover (default)", value: "pushover" },
-  { label: "Bike", value: "bike" },
-  { label: "Bugle", value: "bugle" },
-  { label: "Cash Register", value: "cashregister" },
-  { label: "Classical", value: "classical" },
-  { label: "Cosmic", value: "cosmic" },
-  { label: "Falling", value: "falling" },
-  { label: "Gamelan", value: "gamelan" },
-  { label: "Incoming", value: "incoming" },
-  { label: "Intermission", value: "intermission" },
-  { label: "Magic", value: "magic" },
-  { label: "Mechanical", value: "mechanical" },
-  { label: "Piano Bar", value: "pianobar" },
-  { label: "Siren", value: "siren" },
-  { label: "Space Alarm", value: "spacealarm" },
-  { label: "Tug Boat", value: "tugboat" },
-  { label: "Alien Alarm (long)", value: "alien" },
-  { label: "Climb (long)", value: "climb" },
-  { label: "Persistent (long)", value: "persistent" },
-  { label: "Pushover Echo (long)", value: "echo" },
-  { label: "Up Down (long)", value: "updown" },
-  { label: "Vibrate Only", value: "vibrate" },
-  { label: "None (silent)", value: "none" }
 ];
 
 export const tagsMatchLogicOptions: OptionBasic[] = [

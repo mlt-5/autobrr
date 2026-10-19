@@ -16,18 +16,7 @@ import { NotificationAddForm, NotificationUpdateForm } from "@forms/settings/Not
 import { componentMapType } from "@forms/settings/types";
 import toast from "@components/hot-toast";
 import Toast from "@components/notifications/Toast";
-import {
-  BarkIcon,
-  DiscordIcon,
-  GotifyIcon,
-  LunaSeaIcon,
-  NotifiarrIcon,
-  NtfyIcon,
-  PushoverIcon,
-  Section,
-  TelegramIcon,
-  WebhookIcon
-} from "./_components";
+import { Section, WebhookIcon } from "./_components";
 import { Checkbox } from "@components/Checkbox";
 
 function NotificationSettings() {
@@ -102,15 +91,6 @@ const BuiltinTypeBadge = () => {
 };
 
 const iconComponentMap: componentMapType = {
-  DISCORD: <span className={iconStyle}><DiscordIcon /> Discord</span>,
-  NOTIFIARR: <span className={iconStyle}><NotifiarrIcon /> Notifiarr</span>,
-  TELEGRAM: <span className={iconStyle}><TelegramIcon /> Telegram</span>,
-  PUSHOVER: <span className={iconStyle}><PushoverIcon /> Pushover</span>,
-  GOTIFY: <span className={iconStyle}><GotifyIcon /> Gotify</span>,
-  NTFY: <span className={iconStyle}><NtfyIcon /> ntfy</span>,
-  BARK: <span className={iconStyle}><BarkIcon /> Bark</span>,
-  SHOUTRRR: <span className={iconStyle}><NtfyIcon /> Shoutrrr</span>,
-  LUNASEA: <span className={iconStyle}><LunaSeaIcon /> LunaSea</span>,
   WEBHOOK: <span className={iconStyle}><WebhookIcon /> Webhook</span>,
   BUILTIN: <BuiltinTypeBadge />
 };

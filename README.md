@@ -65,7 +65,7 @@ or call a webhook.
 - Great container support (Docker, k8s/Kubernetes)
 - Database engine supporting both PostgreSQL and SQLite
 - Authentication support including built-in auth and OpenID Connect (OIDC)
-- Notifications (Discord, Telegram, Notifiarr, Pushover, Gotify, Shoutrrr, ntfy)
+- Notifications (built-in inbox and webhooks)
 - Base path / Subfolder (and subdomain) support for convenient reverse-proxy support
 
 ### Available Actions

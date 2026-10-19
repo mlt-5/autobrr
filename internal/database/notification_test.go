@@ -20,23 +20,11 @@ func getMockNotification() domain.Notification {
 	return domain.Notification{
 		ID:        1,
 		Name:      "MockNotification",
-		Type:      domain.NotificationTypeSlack,
+		Type:      domain.NotificationTypeWebhook,
 		Enabled:   true,
 		Events:    []string{"event1", "event2"},
-		Token:     "mock-token",
-		APIKey:    "mock-api-key",
 		Webhook:   "https://webhook.example.com",
-		Title:     "Mock Title",
-		Icon:      "https://icon.example.com",
-		Username:  "mock-username",
-		Host:      "https://host.example.com",
-		Password:  "mock-password",
-		Channel:   "#mock-channel",
-		Rooms:     "room1,room2",
-		Targets:   "target1,target2",
-		Devices:   "device1,device2",
-		Priority:  1,
-		Topic:     "mock-topic",
+		Method:    "POST",
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -91,13 +79,11 @@ func TestNotificationRepo_Update(t *testing.T) {
 
 			// Modify some fields
 			newName := "UpdatedName"
-			newType := domain.NotificationTypeTelegram
-			newPriority := int32(2)
+			newMethod := "PUT"
 
 			updatedMockData := &mockData
 			updatedMockData.Name = newName
-			updatedMockData.Type = newType
-			updatedMockData.Priority = newPriority
+			updatedMockData.Method = newMethod
 
 			// Execute Update
 			err = repo.Update(ctx, updatedMockData)
@@ -106,8 +92,7 @@ func TestNotificationRepo_Update(t *testing.T) {
 			require.NoError(t, err)
 			assert.NotNil(t, &mockData)
 			assert.Equal(t, updatedMockData.Name, newName)
-			assert.Equal(t, updatedMockData.Type, newType)
-			assert.Equal(t, updatedMockData.Priority, newPriority)
+			assert.Equal(t, updatedMockData.Method, newMethod)
 
 			// Cleanup
 			_ = repo.Delete(ctx, mockData.ID)
