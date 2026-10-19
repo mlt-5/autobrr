@@ -48,24 +48,6 @@ func (s *Service) RunAction(ctx context.Context, action *domain.Action, release 
 	case domain.ActionTypeWebhook:
 		err = s.runWebhook(ctx, action)
 
-	case domain.ActionTypeRadarr:
-		rejections, err = s.runRadarr(ctx, action, release)
-
-	case domain.ActionTypeSonarr:
-		rejections, err = s.runSonarr(ctx, action, release)
-
-	case domain.ActionTypeLidarr:
-		rejections, err = s.runLidarr(ctx, action, release)
-
-	case domain.ActionTypeWhisparr, domain.ActionTypeWhisparrV3:
-		rejections, err = s.runWhisparr(ctx, action, release)
-
-	case domain.ActionTypeReadarr:
-		rejections, err = s.runReadarr(ctx, action, release)
-
-	case domain.ActionTypeSportarr:
-		rejections, err = s.runSportarr(ctx, action, release)
-
 	default:
 		return nil, errors.New("unsupported action type: %s", action.Type)
 	}

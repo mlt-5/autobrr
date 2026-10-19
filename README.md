@@ -44,19 +44,14 @@ We can start by talking about torrent trackers (hereby referred to as indexers) 
 to maintain a ratio with most indexers. Ratio is built by seeding your torrents. The earlier you're seeding a torrent,
 the more peers you make yourself available to on that torrent.
 
-Software like Radarr and Sonarr uses RSS to look for new torrents. RSS feeds are updated regularly, but too slow to
+Many tools use RSS to look for new torrents. RSS feeds are updated regularly, but too slow to
 let you be a part of what we call the initial swarm of a torrent. This is where autobrr comes into play.
 
 Many indexers announce new torrents on their IRC channels the second it is uploaded to the site. autobrr monitors such
 channels in real time and grabs the torrent file as soon as it's uploaded based on certain conditions (hereby referred
-to as filters) that you set up within autobrr. It then sends that torrent file to a download client of your choice via
-an action set within the filter. A download client can be Radarr, Sonarr and the rest of the *arr suite, or a watch folder.
-
-When your autobrr filter is set to send the torrent files to Radarr and Sonarr, they will decide if it's something they
- want and then forward it to the torrent client they are set up with.
-
-autobrr can also drop matches (torrent files that meet your filter's criteria) into a watch folder, run a custom
-script, or call a webhook.
+to as filters) that you set up within autobrr. It then hands that torrent file on via an action set within the filter:
+autobrr can drop matches (torrent files that meet your filter's criteria) into a watch folder, run a custom script,
+or call a webhook.
 
 ## Key Features
 
@@ -72,12 +67,10 @@ script, or call a webhook.
 - Database engine supporting both PostgreSQL and SQLite
 - Authentication support including built-in auth and OpenID Connect (OIDC)
 - Notifications (Discord, Telegram, Notifiarr, Pushover, Gotify, Shoutrrr, ntfy)
-- One autobrr instance can communicate with multiple clients (torrent, Usenet, and \*arr) on remote servers
 - Base path / Subfolder (and subdomain) support for convenient reverse-proxy support
 
-### Available Download Clients and Actions
+### Available Actions
 
-- **Sonarr, Radarr, Lidarr, Whisparr, Readarr, Sportarr:** Pushes releases directly for early swarm participation, rather than relying on RSS feeds.
 - **Watch Folder:** Monitors specified folders for new files.
 - **Exec Custom Scripts:** Execute tailored scripts for advanced automation.
 - **Webhook:** Offers webhook support for diverse integration needs.
@@ -91,13 +84,11 @@ Usenet support via Newznab feeds allows you to easily manage everything in a sin
 applications that handle RSS well, we think autobrr offers very easy-to-use filtering to help you get the content you
 want.
 
-You can use Usenet feeds and send them to the arrs.
-
 ## Installation
 
 For comprehensive installation instructions, visit our [Installation Guide](https://autobrr.com/installation/linux). This guide provides detailed steps for different platforms, including Windows, Linux, Docker, and more.
 
-Remember to head over to our [Configuration Guide](https://autobrr.com/configuration/autobrr) to learn how to set up your indexers, IRC, and download clients after you're done installing.
+Remember to head over to our [Configuration Guide](https://autobrr.com/configuration/autobrr) to learn how to set up your indexers, IRC, and filters after you're done installing.
 
 ### Swizzin (dedi)
 

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/downloader"
 	"github.com/autobrr/autobrr/internal/events"
 	"github.com/autobrr/autobrr/internal/meta"
 	"github.com/autobrr/autobrr/pkg/sharedhttp"
@@ -21,17 +20,12 @@ type actionRepo interface {
 	Store(ctx context.Context, action *domain.Action) error
 	Update(ctx context.Context, action domain.Action) (*domain.Action, error)
 	StoreFilterActions(ctx context.Context, filterID int64, actions []*domain.Action) ([]*domain.Action, error)
-	FindByFilterID(ctx context.Context, filterID int, active *bool, withClient bool) ([]*domain.Action, error)
+	FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error)
 	List(ctx context.Context) ([]domain.Action, error)
 	Get(ctx context.Context, req *domain.GetActionRequest) (*domain.Action, error)
 	Delete(ctx context.Context, req *domain.DeleteActionRequest) error
 	DeleteByFilterID(ctx context.Context, filterID int) error
 	ToggleEnabled(actionID int) error
-}
-
-type downloaderService interface {
-	FindByID(ctx context.Context, id int32) (*domain.Downloader, error)
-	GetInstance(ctx context.Context, clientId int32) (*downloader.Instance, error)
 }
 
 type rlsDownloadService interface {
@@ -47,19 +41,17 @@ type Service struct {
 	log            zerolog.Logger
 	eventBus       eventBus
 	repo           actionRepo
-	downloaderSvc  downloaderService
 	rlsDownloadSvc rlsDownloadService
 
 	httpClient *http.Client
 	userAgent  string
 }
 
-func NewService(log zerolog.Logger, bus eventBus, repo actionRepo, clientSvc downloaderService, downloadSvc rlsDownloadService) *Service {
+func NewService(log zerolog.Logger, bus eventBus, repo actionRepo, downloadSvc rlsDownloadService) *Service {
 	s := &Service{
 		log:            log.With().Str("module", "action").Logger(),
 		eventBus:       bus,
 		repo:           repo,
-		downloaderSvc:  clientSvc,
 		rlsDownloadSvc: downloadSvc,
 
 		httpClient: &http.Client{
@@ -89,26 +81,11 @@ func (s *Service) List(ctx context.Context) ([]domain.Action, error) {
 }
 
 func (s *Service) Get(ctx context.Context, req *domain.GetActionRequest) (*domain.Action, error) {
-	a, err := s.repo.Get(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	// optionally attach download client to action
-	if a.ClientID > 0 {
-		client, err := s.downloaderSvc.FindByID(ctx, a.ClientID)
-		if err != nil {
-			return nil, err
-		}
-
-		a.Client = client
-	}
-
-	return a, nil
+	return s.repo.Get(ctx, req)
 }
 
-func (s *Service) FindByFilterID(ctx context.Context, filterID int, active *bool, withClient bool) ([]*domain.Action, error) {
-	return s.repo.FindByFilterID(ctx, filterID, active, withClient)
+func (s *Service) FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
+	return s.repo.FindByFilterID(ctx, filterID, active)
 }
 
 func (s *Service) Delete(ctx context.Context, req *domain.DeleteActionRequest) error {

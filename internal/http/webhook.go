@@ -22,12 +22,10 @@ func newWebhookHandler(encoder encoder, listSvc listService) *webhookHandler {
 func (h *webhookHandler) Routes(r chi.Router) {
 	r.Route("/lists", func(r chi.Router) {
 		r.Post("/trigger", h.refreshAll)
-		r.Post("/trigger/arr", h.refreshArr)
-		r.Post("/trigger/lists", h.refreshLists)
+		r.Post("/trigger/lists", h.refreshAll)
 
 		r.Get("/trigger", h.refreshAll)
-		r.Get("/trigger/arr", h.refreshArr)
-		r.Get("/trigger/lists", h.refreshLists)
+		r.Get("/trigger/lists", h.refreshAll)
 
 		r.Post("/trigger/{listID}", h.refreshByID)
 	})
@@ -47,24 +45,6 @@ func (h *webhookHandler) refreshByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.listSvc.RefreshList(context.Background(), int64(listID)); err != nil {
-		h.encoder.Error(w, err)
-		return
-	}
-
-	h.encoder.NoContent(w)
-}
-
-func (h *webhookHandler) refreshArr(w http.ResponseWriter, r *http.Request) {
-	if err := h.listSvc.RefreshArrLists(r.Context()); err != nil {
-		h.encoder.Error(w, err)
-		return
-	}
-
-	h.encoder.NoContent(w)
-}
-
-func (h *webhookHandler) refreshLists(w http.ResponseWriter, r *http.Request) {
-	if err := h.listSvc.RefreshOtherLists(r.Context()); err != nil {
 		h.encoder.Error(w, err)
 		return
 	}

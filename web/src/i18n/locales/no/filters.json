@@ -78,8 +78,7 @@
     "resetSuccess": "Tilbakestilte alle filterverdier.",
     "save": "Lagre",
     "validationError": "Valideringsfeil",
-    "validationErrors": "Valideringsfeil",
-    "mustSelectClient": "Må velge klient"
+    "validationErrors": "Valideringsfeil"
   },
   "importer": {
     "title": "Importer filter (i JSON eller autodl-irssi-format)",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "Instans",
-      "subtitle": "Velg den spesifikke instansen som du vil at skal håndtere dette utgivelsesfilteret."
-    },
     "test": {
       "alert": "Obs!",
       "text": "Testhandlingen gjør ingenting annet enn å vise om filteret fungerer. Sørg for å ha Logger-siden åpen mens du tester."
@@ -515,12 +510,6 @@
       "endpointTooltip": "URL eller IP til API-et ditt. Send med parametere og sett API-tokens osv.",
       "payload": "Nyttelast (json)",
       "payloadPlaceholder": "Forespørselsdata: { \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "Overstyr nedlastingsklientens navn for arr",
-      "overrideClientNameTooltip": "Overstyr nedlastingsklientens navn fra det som er satt i Klienter. Nyttig hvis du har flere klienter inne i arr.",
-      "overrideClientId": "Overstyr nedlastingsklientens ID for arr AVLEGS (DEPRECATED)",
-      "overrideClientIdTooltip": "Overstyr nedlastingsklientens ID fra det som er satt i Klienter. Nyttig hvis du har flere klienter inne i arr."
     }
   },
   "addForm": {

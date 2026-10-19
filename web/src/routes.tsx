@@ -22,7 +22,6 @@ import {
   ApikeysQueryOptions,
   CanOnboardQueryOptions,
   ConfigQueryOptions,
-  DownloadersQueryOptions,
   FeedsQueryOptions,
   FilterByIdQueryOptions,
   IndexersQueryOptions,
@@ -202,13 +201,6 @@ export const SettingsFeedsRoute = createRoute({
   component: lazyRouteComponent(() => import("@screens/settings/Feed"))
 });
 
-export const SettingsClientsRoute = createRoute({
-  getParentRoute: () => SettingsRoute,
-  path: 'clients',
-  loader: (opts) => opts.context.queryClient.query({ ...DownloadersQueryOptions(), staleTime: "static" }),
-  component: lazyRouteComponent(() => import("@screens/settings/Downloaders"))
-});
-
 export const SettingsNotificationsRoute = createRoute({
   getParentRoute: () => SettingsRoute,
   path: 'notifications',
@@ -357,7 +349,7 @@ export const RootRoute = createRootRouteWithContext<{
 });
 
 const filterRouteTree = FiltersRoute.addChildren([FilterIndexRoute, FilterGetByIdRoute.addChildren([FilterGeneralRoute, FilterMoviesTvRoute, FilterMusicRoute, FilterBooksRoute, FilterAdvancedRoute, FilterExternalRoute, FilterActionsRoute, FilterNotificationsRoute])])
-const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsClientsRoute, SettingsNotificationsRoute, SettingsApiRoute, SettingsProxiesRoute, SettingsReleasesRoute, SettingsAccountRoute])
+const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsNotificationsRoute, SettingsApiRoute, SettingsProxiesRoute, SettingsReleasesRoute, SettingsAccountRoute])
 const authenticatedTree = AuthRoute.addChildren([AuthIndexRoute.addChildren([DashboardRoute, filterRouteTree, ReleasesRoute, settingsRouteTree, LogsRoute, NotificationInboxRoute])])
 const routeTree = RootRoute.addChildren([
   authenticatedTree,

@@ -293,10 +293,6 @@ func (s *Service) setupEventListeners() {
 			Release:        release,
 		}
 
-		if action.Client != nil {
-			payload.ActionClient = action.Client.Name
-		}
-
 		switch event.Type {
 		case events.ReleasePushApproved:
 			payload.Event = domain.NotificationEventPushApproved
@@ -754,9 +750,8 @@ func (s *Service) Test(ctx context.Context, notification *domain.Notification) e
 			Filter:         "TV",
 			Indexer:        "MockIndexer",
 			Status:         domain.ReleasePushStatusApproved,
-			Action:         "Send to Sonarr",
-			ActionType:     domain.ActionTypeSonarr,
-			ActionClient:   "Sonarr",
+			Action:         "Send to webhook",
+			ActionType:     domain.ActionTypeWebhook,
 			Rejections:     nil,
 			Protocol:       domain.ReleaseProtocolTorrent,
 			Implementation: domain.ReleaseImplementationIRC,
@@ -785,10 +780,9 @@ func (s *Service) Test(ctx context.Context, notification *domain.Notification) e
 			Filter:         "TV",
 			Indexer:        "MockIndexer",
 			Status:         domain.ReleasePushStatusRejected,
-			Action:         "Send to Sonarr",
-			ActionType:     domain.ActionTypeSonarr,
-			ActionClient:   "Sonarr",
-			Rejections:     []string{"Unknown Series"},
+			Action:         "Send to webhook",
+			ActionType:     domain.ActionTypeWebhook,
+			Rejections:     []string{"Already downloaded"},
 			Protocol:       domain.ReleaseProtocolTorrent,
 			Implementation: domain.ReleaseImplementationIRC,
 			Timestamp:      time.Now(),
@@ -815,10 +809,9 @@ func (s *Service) Test(ctx context.Context, notification *domain.Notification) e
 			Filter:         "TV",
 			Indexer:        "MockIndexer",
 			Status:         domain.ReleasePushStatusErr,
-			Action:         "Send to Sonarr",
-			ActionType:     domain.ActionTypeSonarr,
-			ActionClient:   "Sonarr",
-			Rejections:     []string{"error pushing to client"},
+			Action:         "Send to webhook",
+			ActionType:     domain.ActionTypeWebhook,
+			Rejections:     []string{"webhook returned status 500"},
 			Protocol:       domain.ReleaseProtocolTorrent,
 			Implementation: domain.ReleaseImplementationIRC,
 			Timestamp:      time.Now(),
@@ -869,20 +862,20 @@ func (s *Service) Test(ctx context.Context, notification *domain.Notification) e
 		{
 			Event:     domain.NotificationEventListRefreshSuccess,
 			Subject:   "List Refresh Success",
-			Message:   "List: Sonarr TV",
-			List:      "Sonarr TV",
+			Message:   "List: Trakt Popular",
+			List:      "Trakt Popular",
 			ListID:    1,
-			ListType:  domain.ListTypeSonarr,
+			ListType:  domain.ListTypeTrakt,
 			Timestamp: time.Now(),
 		},
 		{
 			Event:     domain.NotificationEventListRefreshError,
 			Subject:   "List Refresh Error",
-			Message:   "List: Sonarr TV\nError: client sonarr Sonarr not enabled",
-			List:      "Sonarr TV",
+			Message:   "List: Trakt Popular\nError: unexpected status code: 401",
+			List:      "Trakt Popular",
 			ListID:    1,
-			ListType:  domain.ListTypeSonarr,
-			ListError: "client sonarr Sonarr not enabled",
+			ListType:  domain.ListTypeTrakt,
+			ListError: "unexpected status code: 401",
 			Timestamp: time.Now(),
 		},
 		{

@@ -4,7 +4,7 @@
  */
 
 import { useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { ChevronRightIcon, BoltIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
 
@@ -12,7 +12,7 @@ import { classNames } from "@utils";
 import { useToggle } from "@hooks/hooks";
 import { useFormContext, useFormValue } from "@hooks/form";
 import { APIClient } from "@api/APIClient";
-import { DOWNLOAD_CLIENTS, getActionTypeNameMap, getActionTypeOptions } from "@domain/constants";
+import { getActionTypeNameMap, getActionTypeOptions } from "@domain/constants";
 
 import { Select, TextField } from "@components/inputs";
 import { DeleteModal } from "@components/modals";
@@ -23,10 +23,8 @@ import Toast from "@components/notifications/Toast";
 import { Checkbox } from "@components/Checkbox";
 import { TitleSubtitle } from "@components/headings";
 
-import { DownloadersQueryOptions } from "@api/queries";
 import { FilterHalfRow, FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
 import {
-  Arr,
   Exec,
   Test,
   WatchFolder, WebHook
@@ -37,8 +35,6 @@ export function Actions() {
   const form = useFormContext();
   const values = useFormValue((v: Filter) => ({ actions: v.actions, id: v.id }));
   const actionTypeOptions = getActionTypeOptions(t);
-
-  const { data } = useQuery(DownloadersQueryOptions());
 
   const newAction: Action = {
     id: 0,
@@ -53,10 +49,7 @@ export function Actions() {
     webhook_type: "",
     webhook_method: "",
     webhook_data: "",
-    webhook_headers: [],
-    external_download_client_id: 0,
-    external_download_client: "",
-    client_id: 0
+    webhook_headers: []
   };
 
   const remove = (index: number) => form.removeFieldValue("actions", index);
@@ -91,7 +84,6 @@ export function Actions() {
               key={action.id}
               action={action}
               actionTypeOptions={actionTypeOptions}
-              clients={data ?? []}
               idx={index}
               initialEdit={values.actions.length === 1}
               remove={remove}
@@ -109,16 +101,6 @@ const TypeForm = (props: ClientActionProps) => {
   const { action } = props;
 
   switch (action.type) {
-  // arrs
-  case "RADARR":
-  case "SONARR":
-  case "LIDARR":
-  case "WHISPARR":
-  case "WHISPARR_V3":
-  case "READARR":
-  case "SPORTARR":
-    return <Arr {...props} />;
-  // autobrr actions
   case "TEST":
     return <Test />;
   case "EXEC":
@@ -136,13 +118,12 @@ const TypeForm = (props: ClientActionProps) => {
 interface FilterActionsItemProps {
   action: Action;
   actionTypeOptions: ReturnType<typeof getActionTypeOptions>;
-  clients: Downloader[];
   idx: number;
   initialEdit: boolean;
   remove: (index: number) => void;
 }
 
-function FilterActionsItem({ action, actionTypeOptions, clients, idx, initialEdit, remove }: FilterActionsItemProps) {
+function FilterActionsItem({ action, actionTypeOptions, idx, initialEdit, remove }: FilterActionsItemProps) {
   const { t } = useTranslation(["options", "filters"]);
   const form = useFormContext();
   const cancelButtonRef = useRef(null);
@@ -237,11 +218,6 @@ function FilterActionsItem({ action, actionTypeOptions, clients, idx, initialEdi
                     optionDefaultText={t("filters:actionsSection.selectType")}
                     options={actionTypeOptions}
                     tooltip={<div><p>{t("filters:actionsSection.actionTypeTooltip")}</p></div>}
-                    onChange={(type) => {
-                      if (DOWNLOAD_CLIENTS.includes(type as ActionType)) {
-                        form.setFieldValue(`actions[${idx}].client_id`, 0, { dontUpdateMeta: true });
-                      }
-                    }}
                   />
                 </FilterHalfRow>
 
@@ -251,7 +227,7 @@ function FilterActionsItem({ action, actionTypeOptions, clients, idx, initialEdi
               </FilterLayout>
             </FilterSection>
 
-            <TypeForm action={action} clients={clients} idx={idx} />
+            <TypeForm action={action} idx={idx} />
 
             <div className="pt-6 pb-4 flex space-x-2 justify-between">
               <button

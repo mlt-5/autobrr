@@ -33,7 +33,7 @@ func TestDiscordBuildEmbed_RespectsEmbedLimits(t *testing.T) {
 		Action:       strings.Repeat("a", 2000),
 		ActionClient: strings.Repeat("c", 2000),
 		Status:       domain.ReleasePushStatusErr,
-		ActionType:   domain.ActionTypeRadarr,
+		ActionType:   domain.ActionTypeWebhook,
 		Rejections:   []string{"radarr failed to push release: " + strings.Repeat("x", 4000) + ": i/o timeout"},
 	}
 

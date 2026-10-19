@@ -85,7 +85,7 @@ func TestCheckActionPreconditions_SkipsDownloadForMagnet(t *testing.T) {
 }
 
 // Actions that never touch the torrent should not pull it down.
-func TestCheckActionPreconditions_SkipsDownloadForArrActions(t *testing.T) {
+func TestCheckActionPreconditions_SkipsDownloadForTestAction(t *testing.T) {
 	t.Parallel()
 
 	dl := &fakeDownloadService{}
@@ -93,7 +93,7 @@ func TestCheckActionPreconditions_SkipsDownloadForArrActions(t *testing.T) {
 
 	release := &domain.Release{TorrentName: "Test.Release-GRP", Protocol: domain.ReleaseProtocolTorrent}
 
-	err := svc.CheckActionPreconditions(t.Context(), &domain.Action{Type: domain.ActionTypeRadarr}, release)
+	err := svc.CheckActionPreconditions(t.Context(), &domain.Action{Type: domain.ActionTypeTest}, release)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 0, dl.fetches)

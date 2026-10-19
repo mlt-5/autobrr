@@ -36,8 +36,8 @@ type mockActionService struct {
 	mock.Mock
 }
 
-func (m *mockActionService) FindByFilterID(ctx context.Context, filterID int, active *bool, isTest bool) ([]*domain.Action, error) {
-	args := m.Called(ctx, filterID, active, isTest)
+func (m *mockActionService) FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
+	args := m.Called(ctx, filterID, active)
 	return args.Get(0).([]*domain.Action), args.Error(1)
 }
 
@@ -75,7 +75,7 @@ func TestService_Process_PublishesEvent(t *testing.T) {
 
 	// Minimal mock for ActionSvc
 	actionSvc := &mockActionService{}
-	actionSvc.On("FindByFilterID", mock.Anything, 1, mock.Anything, false).Return([]*domain.Action{{ID: 1, Name: "Test Action"}}, nil)
+	actionSvc.On("FindByFilterID", mock.Anything, 1, mock.Anything).Return([]*domain.Action{{ID: 1, Name: "Test Action"}}, nil)
 
 	// Minimal mock for Repo
 	repo := &mockReleaseRepo{}

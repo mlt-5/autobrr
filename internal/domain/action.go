@@ -10,23 +10,19 @@ import (
 )
 
 type Action struct {
-	ID                       int         `json:"id"`
-	Name                     string      `json:"name"`
-	Type                     ActionType  `json:"type"`
-	Enabled                  bool        `json:"enabled"`
-	ExecCmd                  string      `json:"exec_cmd,omitempty"`
-	ExecArgs                 string      `json:"exec_args,omitempty"`
-	WatchFolder              string      `json:"watch_folder,omitempty"`
-	WebhookHost              string      `json:"webhook_host,omitempty"`
-	WebhookType              string      `json:"webhook_type,omitempty"`
-	WebhookMethod            string      `json:"webhook_method,omitempty"`
-	WebhookData              string      `json:"webhook_data,omitempty"`
-	WebhookHeaders           []string    `json:"webhook_headers,omitempty"`
-	ExternalDownloadClientID int32       `json:"external_download_client_id,omitempty"`
-	ExternalDownloadClient   string      `json:"external_download_client,omitempty"`
-	FilterID                 int         `json:"filter_id,omitempty"`
-	ClientID                 int32       `json:"client_id,omitempty"`
-	Client                   *Downloader `json:"client,omitempty"`
+	ID             int        `json:"id"`
+	Name           string     `json:"name"`
+	Type           ActionType `json:"type"`
+	Enabled        bool       `json:"enabled"`
+	ExecCmd        string     `json:"exec_cmd,omitempty"`
+	ExecArgs       string     `json:"exec_args,omitempty"`
+	WatchFolder    string     `json:"watch_folder,omitempty"`
+	WebhookHost    string     `json:"webhook_host,omitempty"`
+	WebhookType    string     `json:"webhook_type,omitempty"`
+	WebhookMethod  string     `json:"webhook_method,omitempty"`
+	WebhookData    string     `json:"webhook_data,omitempty"`
+	WebhookHeaders []string   `json:"webhook_headers,omitempty"`
+	FilterID       int        `json:"filter_id,omitempty"`
 }
 
 // NeedsTorrentDownloaded check if the action type uploads the torrent itself.
@@ -119,13 +115,6 @@ const (
 	ActionTypeExec        ActionType = "EXEC"
 	ActionTypeWatchFolder ActionType = "WATCH_FOLDER"
 	ActionTypeWebhook     ActionType = "WEBHOOK"
-	ActionTypeRadarr      ActionType = "RADARR"
-	ActionTypeSonarr      ActionType = "SONARR"
-	ActionTypeLidarr      ActionType = "LIDARR"
-	ActionTypeWhisparr    ActionType = "WHISPARR"
-	ActionTypeWhisparrV3  ActionType = "WHISPARR_V3"
-	ActionTypeReadarr     ActionType = "READARR"
-	ActionTypeSportarr    ActionType = "SPORTARR"
 )
 
 type GetActionRequest struct {

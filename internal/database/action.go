@@ -6,7 +6,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/pkg/errors"
@@ -27,15 +26,7 @@ func NewActionRepo(log zerolog.Logger, db *DB) *ActionRepo {
 	}
 }
 
-func (r *ActionRepo) FindByFilterID(ctx context.Context, filterID int, active *bool, withClient bool) ([]*domain.Action, error) {
-	if withClient {
-		return r.findByFilterIDWithClient(ctx, filterID, active)
-	}
-
-	return r.findByFilterID(ctx, filterID, active)
-}
-
-func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
+func (r *ActionRepo) FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
 	queryBuilder := r.db.squirrel.
 		Select(
 			"a.id",
@@ -49,9 +40,6 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 			"a.webhook_type",
 			"a.webhook_method",
 			"a.webhook_data",
-			"a.external_client_id",
-			"a.external_client",
-			"a.client_id",
 		).
 		From("action a").
 		Where(sq.Eq{"a.filter_id": filterID})
@@ -76,11 +64,9 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
 
-		var externalClientID, clientID sql.NullInt32
-
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
@@ -93,10 +79,6 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 		a.WebhookMethod = webhookMethod.String
 		a.WebhookData = webhookData.String
 
-		a.ExternalDownloadClientID = externalClientID.Int32
-		a.ExternalDownloadClient = externalClient.String
-		a.ClientID = clientID.Int32
-
 		actions = append(actions, &a)
 	}
 
@@ -105,267 +87,6 @@ func (r *ActionRepo) findByFilterID(ctx context.Context, filterID int, active *b
 	}
 
 	return actions, nil
-}
-
-func (r *ActionRepo) findByFilterIDWithClient(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
-	queryBuilder := r.db.squirrel.
-		Select(
-			"a.id",
-			"a.name",
-			"a.type",
-			"a.enabled",
-			"a.exec_cmd",
-			"a.exec_args",
-			"a.watch_folder",
-			"a.webhook_host",
-			"a.webhook_type",
-			"a.webhook_method",
-			"a.webhook_data",
-			"a.external_client_id",
-			"a.external_client",
-			"a.client_id",
-			"c.id",
-			"c.name",
-			"c.type",
-			"c.enabled",
-			"c.host",
-			"c.port",
-			"c.tls",
-			"c.tls_skip_verify",
-			"c.username",
-			"c.password",
-			"c.settings",
-		).
-		From("action a").
-		Join("client c ON a.client_id = c.id").
-		Where(sq.Eq{"a.filter_id": filterID})
-
-	if active != nil {
-		queryBuilder = queryBuilder.Where(sq.Eq{"enabled": *active})
-	}
-
-	query, args, err := queryBuilder.ToSql()
-	if err != nil {
-		return nil, errors.Wrap(err, "error building query")
-	}
-
-	rows, err := r.db.Handler.QueryContext(ctx, query, args...)
-	if err != nil {
-		return nil, errors.Wrap(err, "error executing query")
-	}
-
-	defer rows.Close()
-
-	actions := make([]*domain.Action, 0)
-	for rows.Next() {
-		var a domain.Action
-		var c domain.Downloader
-
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-
-		var externalClientID, clientID sql.NullInt32
-
-		var clientClientId, clientPort sql.Null[int32]
-		var clientName, clientType, clientHost, clientUsername, clientPassword, clientSettings sql.Null[string]
-		var clientEnabled, clientTLS, clientTLSSkip sql.Null[bool]
-
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &clientClientId, &clientName, &clientType, &clientEnabled, &clientHost, &clientPort, &clientTLS, &clientTLSSkip, &clientUsername, &clientPassword, &clientSettings); err != nil {
-			return nil, errors.Wrap(err, "error scanning row")
-		}
-
-		a.ExecCmd = execCmd.String
-		a.ExecArgs = execArgs.String
-		a.WatchFolder = watchFolder.String
-
-		a.WebhookHost = webhookHost.String
-		a.WebhookType = webhookType.String
-		a.WebhookMethod = webhookMethod.String
-		a.WebhookData = webhookData.String
-
-		a.ExternalDownloadClientID = externalClientID.Int32
-		a.ExternalDownloadClient = externalClient.String
-		a.ClientID = clientID.Int32
-
-		c.ID = clientClientId.V
-		c.Name = clientName.V
-		c.Type = domain.DownloaderType(clientType.V)
-		c.Enabled = clientEnabled.V
-		c.Host = clientHost.V
-		c.Port = int(clientPort.V)
-		c.TLS = clientTLS.V
-		c.TLSSkipVerify = clientTLSSkip.V
-		c.Username = clientUsername.V
-		c.Password = clientPassword.V
-		// c.Settings = clientSettings.String
-
-		if a.ClientID > 0 {
-			if clientSettings.Valid {
-				if err := json.Unmarshal([]byte(clientSettings.V), &c.Settings); err != nil {
-					return nil, errors.Wrap(err, "could not unmarshal download client settings: %v", clientSettings.V)
-				}
-			}
-
-			a.Client = &c
-		}
-
-		actions = append(actions, &a)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, errors.Wrap(err, "row error")
-	}
-
-	return actions, nil
-}
-
-func (r *ActionRepo) FindByFilterIDTx(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error) {
-	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
-	if err != nil {
-		return nil, err
-	}
-
-	defer tx.Rollback()
-
-	actions, err := r.findByFilterIDTx(ctx, tx, filterID, active)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, action := range actions {
-		if action.ClientID > 0 {
-			client, err := r.attachDownloader(ctx, tx, action.ClientID)
-			if err != nil {
-				return nil, err
-			}
-
-			if client != nil {
-				action.Client = client
-			}
-		}
-	}
-
-	return actions, nil
-}
-
-func (r *ActionRepo) findByFilterIDTx(ctx context.Context, tx *Tx, filterID int, active *bool) ([]*domain.Action, error) {
-	queryBuilder := r.db.squirrel.
-		Select(
-			"id",
-			"name",
-			"type",
-			"enabled",
-			"exec_cmd",
-			"exec_args",
-			"watch_folder",
-			"webhook_host",
-			"webhook_type",
-			"webhook_method",
-			"webhook_data",
-			"external_client_id",
-			"external_client",
-			"client_id",
-		).
-		From("action").
-		Where(sq.Eq{"filter_id": filterID})
-
-	if active != nil {
-		queryBuilder = queryBuilder.Where(sq.Eq{"enabled": *active})
-	}
-
-	query, args, err := queryBuilder.ToSql()
-	if err != nil {
-		return nil, errors.Wrap(err, "error building query")
-	}
-
-	rows, err := tx.QueryContext(ctx, query, args...)
-	if err != nil {
-		return nil, errors.Wrap(err, "error executing query")
-	}
-
-	defer rows.Close()
-
-	actions := make([]*domain.Action, 0)
-	for rows.Next() {
-		var a domain.Action
-
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-
-		var externalClientID, clientID sql.NullInt32
-
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
-			return nil, errors.Wrap(err, "error scanning row")
-		}
-
-		a.ExecCmd = execCmd.String
-		a.ExecArgs = execArgs.String
-		a.WatchFolder = watchFolder.String
-
-		a.WebhookHost = webhookHost.String
-		a.WebhookType = webhookType.String
-		a.WebhookMethod = webhookMethod.String
-		a.WebhookData = webhookData.String
-
-		a.ExternalDownloadClientID = externalClientID.Int32
-		a.ExternalDownloadClient = externalClient.String
-		a.ClientID = clientID.Int32
-
-		actions = append(actions, &a)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, errors.Wrap(err, "row error")
-	}
-
-	return actions, nil
-}
-
-func (r *ActionRepo) attachDownloader(ctx context.Context, tx *Tx, clientID int32) (*domain.Downloader, error) {
-	queryBuilder := r.db.squirrel.
-		Select(
-			"id",
-			"name",
-			"type",
-			"enabled",
-			"host",
-			"port",
-			"tls",
-			"tls_skip_verify",
-			"username",
-			"password",
-			"settings",
-		).
-		From("client").
-		Where(sq.Eq{"id": clientID})
-
-	query, args, err := queryBuilder.ToSql()
-	if err != nil {
-		return nil, errors.Wrap(err, "error building query")
-	}
-
-	row := tx.QueryRowContext(ctx, query, args...)
-	if err := row.Err(); err != nil {
-		return nil, errors.Wrap(err, "error executing query")
-	}
-
-	var client domain.Downloader
-	var settingsJsonStr string
-
-	if err := row.Scan(&client.ID, &client.Name, &client.Type, &client.Enabled, &client.Host, &client.Port, &client.TLS, &client.TLSSkipVerify, &client.Username, &client.Password, &settingsJsonStr); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			r.log.Warn().Int32("client_id", clientID).Msg("no download client")
-			return nil, domain.ErrRecordNotFound
-		}
-
-		return nil, errors.Wrap(err, "error scanning row")
-	}
-
-	if settingsJsonStr != "" {
-		if err := json.Unmarshal([]byte(settingsJsonStr), &client.Settings); err != nil {
-			return nil, errors.Wrap(err, "could not unmarshal download client settings: %v", settingsJsonStr)
-		}
-	}
-
-	return &client, nil
 }
 
 func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
@@ -382,9 +103,6 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 			"webhook_type",
 			"webhook_method",
 			"webhook_data",
-			"external_client_id",
-			"external_client",
-			"client_id",
 		).
 		From("action")
 
@@ -404,10 +122,8 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-		var externalClientID, clientID sql.NullInt32
-
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID); err != nil {
+		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
@@ -415,10 +131,6 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 		a.WebhookType = webhookType.String
 		a.WebhookMethod = webhookMethod.String
 		a.WebhookData = webhookData.String
-
-		a.ExternalDownloadClientID = externalClientID.Int32
-		a.ExternalDownloadClient = externalClient.String
-		a.ClientID = clientID.Int32
 
 		actions = append(actions, a)
 
@@ -444,9 +156,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 			"webhook_type",
 			"webhook_method",
 			"webhook_data",
-			"external_client_id",
-			"external_client",
-			"client_id",
 			"filter_id",
 		).
 		From("action").
@@ -464,10 +173,10 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 
 	var a domain.Action
 
-	var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData, externalClient sql.NullString
-	var externalClientID, clientID, filterID sql.NullInt32
+	var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
+	var filterID sql.NullInt32
 
-	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &externalClientID, &externalClient, &clientID, &filterID); err != nil {
+	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &filterID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.ErrRecordNotFound
 		}
@@ -484,9 +193,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 	a.WebhookMethod = webhookMethod.String
 	a.WebhookData = webhookData.String
 
-	a.ExternalDownloadClientID = externalClientID.Int32
-	a.ExternalDownloadClient = externalClient.String
-	a.ClientID = clientID.Int32
 	a.FilterID = int(filterID.Int32)
 
 	return &a, nil
@@ -552,9 +258,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			"webhook_type",
 			"webhook_method",
 			"webhook_data",
-			"external_client_id",
-			"external_client",
-			"client_id",
 			"filter_id",
 		).
 		Values(
@@ -568,9 +271,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			toNullString(action.WebhookType),
 			toNullString(action.WebhookMethod),
 			toNullString(action.WebhookData),
-			toNullInt32(action.ExternalDownloadClientID),
-			toNullString(action.ExternalDownloadClient),
-			toNullInt32(action.ClientID),
 			toNullInt32(int32(action.FilterID)),
 		).
 		Suffix("RETURNING id").RunWith(r.db.Handler)
@@ -602,9 +302,6 @@ func (r *ActionRepo) Update(ctx context.Context, action domain.Action) (*domain.
 		Set("webhook_type", toNullString(action.WebhookType)).
 		Set("webhook_method", toNullString(action.WebhookMethod)).
 		Set("webhook_data", toNullString(action.WebhookData)).
-		Set("external_client_id", toNullInt32(action.ExternalDownloadClientID)).
-		Set("external_client", toNullString(action.ExternalDownloadClient)).
-		Set("client_id", toNullInt32(action.ClientID)).
 		Set("filter_id", toNullInt32(int32(action.FilterID))).
 		Where(sq.Eq{"id": action.ID})
 
@@ -651,9 +348,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 				Set("webhook_type", toNullString(action.WebhookType)).
 				Set("webhook_method", toNullString(action.WebhookMethod)).
 				Set("webhook_data", toNullString(action.WebhookData)).
-				Set("external_client_id", toNullInt32(action.ExternalDownloadClientID)).
-				Set("external_client", toNullString(action.ExternalDownloadClient)).
-				Set("client_id", toNullInt32(action.ClientID)).
 				Set("filter_id", toNullInt64(filterID)).
 				Where(sq.Eq{"id": action.ID})
 
@@ -682,9 +376,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					"webhook_type",
 					"webhook_method",
 					"webhook_data",
-					"external_client_id",
-					"external_client",
-					"client_id",
 					"filter_id",
 				).
 				Values(
@@ -698,9 +389,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					toNullString(action.WebhookType),
 					toNullString(action.WebhookMethod),
 					toNullString(action.WebhookData),
-					toNullInt32(action.ExternalDownloadClientID),
-					toNullString(action.ExternalDownloadClient),
-					toNullInt32(action.ClientID),
 					toNullInt64(filterID),
 				).
 				Suffix("RETURNING id").RunWith(tx)

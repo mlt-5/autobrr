@@ -31,7 +31,7 @@ import { EmptySimple } from "@components/emptystates";
 import { browserNotificationsSupported } from "@hooks/useInbox";
 import { SettingsContext } from "@utils/Context";
 
-import { componentMapType } from "./DownloaderForms";
+import { componentMapType } from "./types";
 import { AddFormProps, UpdateFormProps } from "@forms/_shared";
 
 function FormFieldsDiscord() {

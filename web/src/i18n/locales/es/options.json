@@ -10,32 +10,6 @@
     "FIXED": "Fija (reinicio de calendario)",
     "ROLLING": "Deslizante (ventana deslizante)"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Enviar a Radarr y dejar que decida"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Enviar a Sonarr y dejar que decida"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Enviar a Lidarr y dejar que decida"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Enviar a Whisparr y dejar que decida"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Enviar a Whisparr y dejar que decida"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Enviar a Readarr y dejar que decida"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "Prueba",
@@ -52,30 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "Ejecutar un comando personalizado después de una coincidencia de filtro"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Enviar a Radarr y dejar que decida"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Enviar a Sonarr y dejar que decida"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Enviar a Lidarr y dejar que decida"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Enviar a Whisparr y dejar que decida"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Enviar a Whisparr y dejar que decida"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Enviar a Readarr y dejar que decida"
     }
   },
   "pushStatus": {

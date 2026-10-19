@@ -59,22 +59,6 @@ func TestAddAPIKey(t *testing.T) {
 	page.ExpectRow("e2e-key")
 }
 
-// The download client form validates the host before it will save, so this also
-// covers the form actually reaching the backend.
-func TestAddDownloadClient(t *testing.T) {
-	app := harness.Start(t)
-	page := app.NewAuthedPage()
-
-	page.Open("/settings/clients")
-	page.AddNew()
-
-	page.Fill("name", "sonarr-e2e")
-	page.Fill("host", "http://localhost:8080")
-	page.Submit()
-
-	page.ExpectRow("sonarr-e2e")
-}
-
 // The log level select saves on change rather than on submit, so the toast is
 // the only signal that the write reached the config file.
 func TestChangeLogLevel(t *testing.T) {

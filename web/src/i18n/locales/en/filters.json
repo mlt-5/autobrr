@@ -78,8 +78,7 @@
     "resetSuccess": "Reset all filter values.",
     "save": "Save",
     "validationError": "Validation error",
-    "validationErrors": "Validation errors",
-    "mustSelectClient": "Must select client"
+    "validationErrors": "Validation errors"
   },
   "importer": {
     "title": "Import filter (in JSON or autodl-irssi format)",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "Instance",
-      "subtitle": "Select the specific instance which you want to handle this release filter."
-    },
     "test": {
       "alert": "Heads up!",
       "text": "The test action does nothing except to show if the filter works. Make sure to have your Logs page open while testing."
@@ -515,12 +510,6 @@
       "endpointTooltip": "URL or IP to your API. Pass params and set API tokens etc.",
       "payload": "Payload (json)",
       "payloadPlaceholder": "Request data: { \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "Override download client name for arr",
-      "overrideClientNameTooltip": "Override download client name from the one set in Clients. Useful if you have multiple clients inside the arr.",
-      "overrideClientId": "Override download client id for arr DEPRECATED",
-      "overrideClientIdTooltip": "Override download client ID from the one set in Clients. Useful if you have multiple clients inside the arr."
     }
   },
   "addForm": {

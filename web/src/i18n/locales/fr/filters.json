@@ -78,8 +78,7 @@
     "resetSuccess": "Toutes les valeurs du filtre ont été réinitialisées.",
     "save": "Enregistrer",
     "validationError": "Erreur de validation",
-    "validationErrors": "Erreurs de validation",
-    "mustSelectClient": "Un client doit être sélectionné"
+    "validationErrors": "Erreurs de validation"
   },
   "importer": {
     "title": "Importer un filtre (en format JSON ou autodl-irssi)",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "Instance",
-      "subtitle": "Sélectionner l'instance spécifique qui doit gérer ce filtre de release."
-    },
     "test": {
       "alert": "Attention !",
       "text": "L'action de test ne fait rien d'autre que vérifier si le filtre fonctionne. Assure-toi que la page Journaux est ouverte pendant le test."
@@ -515,12 +510,6 @@
       "endpointTooltip": "URL ou IP vers ton API. Passer des paramètres et configurer les tokens API, etc.",
       "payload": "Charge utile (json)",
       "payloadPlaceholder": "Données de la requête : { \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "Remplacer le nom du client de téléchargement pour arr",
-      "overrideClientNameTooltip": "Remplacer le nom du client de téléchargement par rapport à celui défini dans Clients. Utile si tu as plusieurs clients dans l'arr.",
-      "overrideClientId": "Remplacer l'ID du client de téléchargement pour arr DÉPRÉCIÉ",
-      "overrideClientIdTooltip": "Remplacer l'ID du client de téléchargement par rapport à celui défini dans Clients. Utile si tu as plusieurs clients dans l'arr."
     }
   },
   "addForm": {

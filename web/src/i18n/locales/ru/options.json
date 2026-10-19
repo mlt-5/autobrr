@@ -10,32 +10,6 @@
     "FIXED": "Фиксированное (сброс по календарю)",
     "ROLLING": "Скользящее (скользящее окно)"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Отправить в Radarr, пусть он решает"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Отправить в Sonarr, пусть он решает"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Отправить в Lidarr, пусть он решает"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Отправить в Whisparr, пусть он решает"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Отправить в Whisparr, пусть он решает"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Отправить в Readarr, пусть он решает"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "Тест",
@@ -52,30 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "Выполнить пользовательскую команду после совпадения фильтра"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Отправить в Radarr, пусть он решает"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Отправить в Sonarr, пусть он решает"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Отправить в Lidarr, пусть он решает"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Отправить в Whisparr, пусть он решает"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Отправить в Whisparr, пусть он решает"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Отправить в Readarr, пусть он решает"
     }
   },
   "pushStatus": {

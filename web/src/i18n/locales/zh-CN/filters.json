@@ -78,8 +78,7 @@
     "resetSuccess": "已重置所有过滤器字段。",
     "save": "保存",
     "validationError": "校验错误",
-    "validationErrors": "校验错误",
-    "mustSelectClient": "必须选择客户端"
+    "validationErrors": "校验错误"
   },
   "importer": {
     "title": "导入过滤器（JSON 或 autodl-irssi 格式）",
@@ -485,10 +484,6 @@
     }
   },
   "actionComponents": {
-    "instance": {
-      "title": "实例",
-      "subtitle": "选择要处理此发布过滤器的具体实例。"
-    },
     "test": {
       "alert": "提示",
       "text": "测试动作本身不会执行任何下载，只用于展示过滤器是否命中。测试时请打开日志页面观察结果。"
@@ -515,12 +510,6 @@
       "endpointTooltip": "填写你的 API URL 或 IP。可附带参数并设置 API token 等。",
       "payload": "负载（json）",
       "payloadPlaceholder": "请求数据：{ \"key\": \"value\" }"
-    },
-    "arr": {
-      "overrideClientName": "为 arr 覆盖下载客户端名称",
-      "overrideClientNameTooltip": "覆盖 Clients 中设置的下载客户端名称。如果 arr 内配置了多个客户端，这会很有用。",
-      "overrideClientId": "为 arr 覆盖下载客户端 ID（已弃用）",
-      "overrideClientIdTooltip": "覆盖 Clients 中设置的下载客户端 ID。如果 arr 内配置了多个客户端，这会很有用。"
     }
   },
   "addForm": {

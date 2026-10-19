@@ -52,7 +52,7 @@ type filterRepo interface {
 
 type actionService interface {
 	StoreFilterActions(ctx context.Context, filterID int64, actions []*domain.Action) ([]*domain.Action, error)
-	FindByFilterID(ctx context.Context, filterID int, active *bool, withClient bool) ([]*domain.Action, error)
+	FindByFilterID(ctx context.Context, filterID int, active *bool) ([]*domain.Action, error)
 	DeleteByFilterID(ctx context.Context, filterID int) error
 }
 
@@ -169,7 +169,7 @@ func (s *Service) FindByID(ctx context.Context, filterID int) (*domain.Filter, e
 	}
 	filter.External = externalFilters
 
-	actions, err := s.actionService.FindByFilterID(ctx, filter.ID, nil, false)
+	actions, err := s.actionService.FindByFilterID(ctx, filter.ID, nil)
 	if err != nil {
 		s.log.Error().Err(err).Int("filter_id", filter.ID).Msg("could not find filter actions")
 	}

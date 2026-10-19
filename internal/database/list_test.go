@@ -41,13 +41,11 @@ func TestListRepo_List(t *testing.T) {
 				seeded[item.name] = struct{}{}
 
 				list := &domain.List{
-					Name:        item.name,
-					Type:        domain.ListTypePlaintext,
-					Enabled:     item.enabled,
-					URL:         "https://example.com/list.txt",
-					Headers:     []string{},
-					TagsInclude: []string{},
-					TagsExclude: []string{},
+					Name:    item.name,
+					Type:    domain.ListTypePlaintext,
+					Enabled: item.enabled,
+					URL:     "https://example.com/list.txt",
+					Headers: []string{},
 				}
 				require.NoError(t, repo.Store(ctx, list))
 

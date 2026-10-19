@@ -8,16 +8,11 @@ interface List {
   name: string;
   enabled: boolean;
   type: ListType;
-  client_id: number;
   url: string;
   headers: string[];
   api_key: string;
   filters: ListFilter[];
   match_release: boolean;
-  tags_included: string[];
-  tags_excluded: string[];
-  include_unmonitored: boolean;
-  include_alternate_titles: boolean;
   include_year: boolean;
   skip_clean_sanitize: boolean;
   last_refresh_status: string;
@@ -32,28 +27,16 @@ interface ListCreate {
   name: string;
   enabled: boolean;
   type: ListType;
-  client_id: number;
   url: string;
   headers: string[];
   api_key: string;
   filters: number[];
   match_release: boolean;
-  tags_include: string[];
-  tags_exclude: string[];
-  include_unmonitored: boolean;
-  include_alternate_titles: boolean;
   include_year: boolean;
   skip_clean_sanitize: boolean;
 }
 
 type ListType =
-  | "SONARR"
-  | "RADARR"
-  | "LIDARR"
-  | "READARR"
-  | "WHISPARR"
-  | "WHISPARR_V3"
-  | "SPORTARR"
   | "MDBLIST"
   | "TRAKT"
   | "METACRITIC"

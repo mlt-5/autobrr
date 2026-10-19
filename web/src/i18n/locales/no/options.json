@@ -10,32 +10,6 @@
     "FIXED": "Fast (kalendernullstilling)",
     "ROLLING": "Rullerende (glidende vindu)"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Send til Radarr og la den bestemme"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Send til Sonarr og la den bestemme"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Send til Lidarr og la den bestemme"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Send til Whisparr og la den bestemme"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Send til Whisparr og la den bestemme"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Send til Readarr og la den bestemme"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "Test",
@@ -52,30 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "Kjør en egendefinert kommando etter et filtersamsvar"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Send til Radarr og la den bestemme"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Send til Sonarr og la den bestemme"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Send til Lidarr og la den bestemme"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Send til Whisparr og la den bestemme"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Send til Whisparr og la den bestemme"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Send til Readarr og la den bestemme"
     }
   },
   "pushStatus": {

@@ -43,7 +43,7 @@ export const resolutions = [
   "810p",
   "720p",
   "576p",
-  "480p",
+  "480p"
 ];
 
 export const RESOLUTION_OPTIONS: MultiSelectOption[] = resolutions.map(r => ({ value: r, label: r, key: r }));
@@ -297,147 +297,33 @@ export interface RadioFieldsetOption {
   type?: string;
 }
 
-export const DownloaderTypeOptions: RadioFieldsetOption[] = [
-  {
-    label: "Radarr",
-    description: "Send to Radarr and let it decide",
-    value: "RADARR"
-  },
-  {
-    label: "Sonarr",
-    description: "Send to Sonarr and let it decide",
-    value: "SONARR"
-  },
-  {
-    label: "Lidarr",
-    description: "Send to Lidarr and let it decide",
-    value: "LIDARR"
-  },
-  {
-    label: "Whisparr (v2)",
-    description: "Send to Whisparr and let it decide",
-    value: "WHISPARR"
-  },
-  {
-    label: "Whisparr (v3)",
-    description: "Send to Whisparr and let it decide",
-    value: "WHISPARR_V3"
-  },
-  {
-    label: "Readarr",
-    description: "Send to Readarr and let it decide",
-    value: "READARR"
-  },
-  {
-    label: "Sportarr",
-    description: "Send to Sportarr and let it decide",
-    value: "SPORTARR"
-  }
-];
-
-export const getDownloaderTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
-  {
-    label: t("options:downloadClient.RADARR.label"),
-    description: t("options:downloadClient.RADARR.description"),
-    value: "RADARR"
-  },
-  {
-    label: t("options:downloadClient.SONARR.label"),
-    description: t("options:downloadClient.SONARR.description"),
-    value: "SONARR"
-  },
-  {
-    label: t("options:downloadClient.LIDARR.label"),
-    description: t("options:downloadClient.LIDARR.description"),
-    value: "LIDARR"
-  },
-  {
-    label: t("options:downloadClient.WHISPARR.label"),
-    description: t("options:downloadClient.WHISPARR.description"),
-    value: "WHISPARR"
-  },
-  {
-    label: t("options:downloadClient.WHISPARR_V3.label"),
-    description: t("options:downloadClient.WHISPARR_V3.description"),
-    value: "WHISPARR_V3"
-  },
-  {
-    label: t("options:downloadClient.READARR.label"),
-    description: t("options:downloadClient.READARR.description"),
-    value: "READARR"
-  },
-  {
-    label: t("options:downloadClient.SPORTARR.label"),
-    description: t("options:downloadClient.SPORTARR.description"),
-    value: "SPORTARR"
-  }
-];
-
 export const ActionTypeOptions: RadioFieldsetOption[] = [
   { label: "Test", description: "A simple action to test a filter.", value: "TEST" },
   { label: "Watch dir", description: "Add filtered torrents to a watch directory", value: "WATCH_FOLDER" },
   { label: "Webhook", description: "Run webhook", value: "WEBHOOK" },
-  { label: "Exec", description: "Run a custom command after a filter match", value: "EXEC" },
-  { label: "Radarr", description: "Send to Radarr and let it decide", value: "RADARR" },
-  { label: "Sonarr", description: "Send to Sonarr and let it decide", value: "SONARR" },
-  { label: "Lidarr", description: "Send to Lidarr and let it decide", value: "LIDARR" },
-  { label: "Whisparr (v2)", description: "Send to Whisparr and let it decide", value: "WHISPARR" },
-  { label: "Whisparr (v3)", description: "Send to Whisparr and let it decide", value: "WHISPARR_V3" },
-  { label: "Readarr", description: "Send to Readarr and let it decide", value: "READARR" },
-  { label: "Sportarr", description: "Send to Sportarr and let it decide", value: "SPORTARR" }
+  { label: "Exec", description: "Run a custom command after a filter match", value: "EXEC" }
 ];
 
 export const getActionTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
   { label: t("options:actionType.TEST.label"), description: t("options:actionType.TEST.description"), value: "TEST" },
   { label: t("options:actionType.WATCH_FOLDER.label"), description: t("options:actionType.WATCH_FOLDER.description"), value: "WATCH_FOLDER" },
   { label: t("options:actionType.WEBHOOK.label"), description: t("options:actionType.WEBHOOK.description"), value: "WEBHOOK" },
-  { label: t("options:actionType.EXEC.label"), description: t("options:actionType.EXEC.description"), value: "EXEC" },
-  { label: t("options:actionType.RADARR.label"), description: t("options:actionType.RADARR.description"), value: "RADARR" },
-  { label: t("options:actionType.SONARR.label"), description: t("options:actionType.SONARR.description"), value: "SONARR" },
-  { label: t("options:actionType.LIDARR.label"), description: t("options:actionType.LIDARR.description"), value: "LIDARR" },
-  { label: t("options:actionType.WHISPARR.label"), description: t("options:actionType.WHISPARR.description"), value: "WHISPARR" },
-  { label: t("options:actionType.WHISPARR_V3.label"), description: t("options:actionType.WHISPARR_V3.description"), value: "WHISPARR_V3" },
-  { label: t("options:actionType.READARR.label"), description: t("options:actionType.READARR.description"), value: "READARR" },
-  { label: t("options:actionType.SPORTARR.label"), description: t("options:actionType.SPORTARR.description"), value: "SPORTARR" }
+  { label: t("options:actionType.EXEC.label"), description: t("options:actionType.EXEC.description"), value: "EXEC" }
 ];
 
 export const ActionTypeNameMap: Record<ActionType, string> = {
   "TEST": "Test",
   "WATCH_FOLDER": "Watch folder",
   "WEBHOOK": "Webhook",
-  "EXEC": "Exec",
-  "RADARR": "Radarr",
-  "SONARR": "Sonarr",
-  "LIDARR": "Lidarr",
-  "WHISPARR": "Whisparr (v2)",
-  "WHISPARR_V3": "Whisparr (v3)",
-  "READARR": "Readarr",
-  "SPORTARR": "Sportarr"
+  "EXEC": "Exec"
 } as const;
 
 export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> => ({
   "TEST": t("options:actionType.TEST.label"),
   "WATCH_FOLDER": t("options:actionType.WATCH_FOLDER.label"),
   "WEBHOOK": t("options:actionType.WEBHOOK.label"),
-  "EXEC": t("options:actionType.EXEC.label"),
-  "RADARR": t("options:actionType.RADARR.label"),
-  "SONARR": t("options:actionType.SONARR.label"),
-  "LIDARR": t("options:actionType.LIDARR.label"),
-  "WHISPARR": t("options:actionType.WHISPARR.label"),
-  "WHISPARR_V3": t("options:actionType.WHISPARR_V3.label"),
-  "READARR": t("options:actionType.READARR.label"),
-  "SPORTARR": t("options:actionType.SPORTARR.label")
+  "EXEC": t("options:actionType.EXEC.label")
 });
-
-export const DOWNLOAD_CLIENTS = [
-  "RADARR",
-  "SONARR",
-  "LIDARR",
-  "WHISPARR",
-  "WHISPARR_V3",
-  "READARR",
-  "SPORTARR"
-];
 
 export interface OptionBasic {
   label: string;
@@ -477,34 +363,6 @@ export const getPushStatusOptions = (t: TFunction): OptionBasic[] => [
 
 export const ListTypeOptions: OptionBasicTyped<ListType>[] = [
   {
-    label: "Sonarr",
-    value: "SONARR"
-  },
-  {
-    label: "Radarr",
-    value: "RADARR"
-  },
-  {
-    label: "Lidarr",
-    value: "LIDARR"
-  },
-  {
-    label: "Readarr",
-    value: "READARR"
-  },
-  {
-    label: "Whisparr (v2)",
-    value: "WHISPARR"
-  },
-  {
-    label: "Whisparr (v3)",
-    value: "WHISPARR_V3"
-  },
-  {
-    label: "Sportarr",
-    value: "SPORTARR"
-  },
-  {
     label: "MDBList",
     value: "MDBLIST"
   },
@@ -527,17 +385,10 @@ export const ListTypeOptions: OptionBasicTyped<ListType>[] = [
   {
     label: "AniList",
     value: "ANILIST"
-  },
+  }
 ];
 
 export const ListTypeNameMap: Record<ListType, string> = {
-  "SONARR": "Sonarr",
-  "RADARR": "Radarr",
-  "LIDARR": "Lidarr",
-  "READARR": "Readarr",
-  "SPORTARR": "Sportarr",
-  "WHISPARR": "Whisparr (v2)",
-  "WHISPARR_V3": "Whisparr (v3)",
   "MDBLIST": "MDBList",
   "TRAKT": "Trakt",
   "METACRITIC": "Metacritic",
@@ -586,7 +437,7 @@ export const NotificationTypeOptions: OptionBasicTyped<NotificationType>[] = [
   {
     label: "Webhook",
     value: "WEBHOOK"
-  },
+  }
 ];
 
 export const getNotificationTypeOptions = (t: TFunction): OptionBasicTyped<NotificationType>[] => [
@@ -815,7 +666,7 @@ export const PushoverSoundOptions: OptionBasic[] = [
   { label: "Pushover Echo (long)", value: "echo" },
   { label: "Up Down (long)", value: "updown" },
   { label: "Vibrate Only", value: "vibrate" },
-  { label: "None (silent)", value: "none" },
+  { label: "None (silent)", value: "none" }
 ];
 
 export const tagsMatchLogicOptions: OptionBasic[] = [
@@ -843,7 +694,7 @@ export const ExternalFilterOnErrorValues: ExternalFilterOnError[] = ["REJECT", "
 
 export const ExternalFilterOnErrorOptions: SelectGenericOption<ExternalFilterOnError>[] = [
   { label: "Reject", description: "Reject on error, default", value: "REJECT" },
-  { label: "Continue to next", description: "Continue on error", value: "CONTINUE" },
+  { label: "Continue to next", description: "Continue on error", value: "CONTINUE" }
 ];
 
 export const ExternalFilterWebhookMethodOptions: OptionBasicTyped<WebhookMethod>[] = [
@@ -862,7 +713,7 @@ export const ProxyTypeOptions: OptionBasicTyped<ProxyType>[] = [
   {
     label: "HTTP",
     value: "HTTP"
-  },
+  }
 ];
 
 export const ListsTraktOptions: OptionBasic[] = [
@@ -889,7 +740,7 @@ export const ListsTraktOptions: OptionBasic[] = [
   {
     label: "Steven Lu",
     value: "https://api.autobrr.com/lists/stevenlu"
-  },
+  }
 ];
 
 export const ListsMetacriticOptions: OptionBasic[] = [
@@ -907,7 +758,7 @@ export const ListsMDBListOptions: OptionBasic[] = [
   {
     label: "Latest TV Shows",
     value: "https://mdblist.com/lists/garycrawfordgc/latest-tv-shows/json"
-  },
+  }
 ];
 
 export const ListsAniListOptions: OptionBasic[] = [
@@ -922,5 +773,5 @@ export const ListsAniListOptions: OptionBasic[] = [
   {
     label: "Next anime season",
     value: "https://api.autobrr.com/lists/anilist/upcoming"
-  },
+  }
 ];

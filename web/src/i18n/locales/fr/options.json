@@ -10,32 +10,6 @@
     "FIXED": "Fixe (réinitialisation calendaire)",
     "ROLLING": "Glissante (fenêtre glissante)"
   },
-  "downloadClient": {
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Envoyer à Radarr et laisser décider"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Envoyer à Sonarr et laisser décider"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Envoyer à Lidarr et laisser décider"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Envoyer à Whisparr et laisser décider"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Envoyer à Whisparr et laisser décider"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Envoyer à Readarr et laisser décider"
-    }
-  },
   "actionType": {
     "TEST": {
       "label": "Test",
@@ -52,30 +26,6 @@
     "EXEC": {
       "label": "Exec",
       "description": "Exécuter une commande personnalisée après une correspondance de filtre"
-    },
-    "RADARR": {
-      "label": "Radarr",
-      "description": "Envoyer à Radarr et laisser décider"
-    },
-    "SONARR": {
-      "label": "Sonarr",
-      "description": "Envoyer à Sonarr et laisser décider"
-    },
-    "LIDARR": {
-      "label": "Lidarr",
-      "description": "Envoyer à Lidarr et laisser décider"
-    },
-    "WHISPARR": {
-      "label": "Whisparr (v2)",
-      "description": "Envoyer à Whisparr et laisser décider"
-    },
-    "WHISPARR_V3": {
-      "label": "Whisparr (v3)",
-      "description": "Envoyer à Whisparr et laisser décider"
-    },
-    "READARR": {
-      "label": "Readarr",
-      "description": "Envoyer à Readarr et laisser décider"
     }
   },
   "pushStatus": {
