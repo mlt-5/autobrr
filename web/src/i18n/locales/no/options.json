@@ -10,41 +10,7 @@
     "FIXED": "Fast (kalendernullstilling)",
     "ROLLING": "Rullerende (glidende vindu)"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "Standard",
-    "LOW": "Lav",
-    "NORMAL": "Normal",
-    "HIGH": "Høy"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Legg torrenter direkte til qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Legg torrenter direkte til Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "Legg torrenter direkte til Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Legg torrenter direkte til rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Legg torrenter direkte til Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Legg torrenter direkte til Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Legg torrenter direkte til aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Send til Radarr og la den bestemme"
@@ -68,14 +34,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Send til Readarr og la den bestemme"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Legg nzber direkte til SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Legg nzber direkte til NZBGet"
     }
   },
   "actionType": {
@@ -95,34 +53,6 @@
       "label": "Exec",
       "description": "Kjør en egendefinert kommando etter et filtersamsvar"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Legg torrenter direkte til qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Legg torrenter direkte til Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "Legg torrenter direkte til Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Legg torrenter direkte til rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Legg torrenter direkte til Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Legg torrenter direkte til Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Legg torrenter direkte til aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Send til Radarr og la den bestemme"
@@ -146,14 +76,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Send til Readarr og la den bestemme"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Legg til SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Legg til NZBGet"
     }
   },
   "pushStatus": {

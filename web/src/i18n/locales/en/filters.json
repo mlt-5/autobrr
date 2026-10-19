@@ -489,35 +489,6 @@
       "title": "Instance",
       "subtitle": "Select the specific instance which you want to handle this release filter."
     },
-    "common": {
-      "category": "Category",
-      "categoryPlaceholder": "eg. category",
-      "categoryTooltip": "Category must exist already.",
-      "savePath": "Save path",
-      "savePathPlaceholder": "eg. /full/path/to/download_folder",
-      "numberNoLimit": "Takes any number (0 is no limit)",
-      "limitsTitle": "Limits",
-      "limitsSubtitle": "Configure your speed/ratio/seed time limits",
-      "limitDownloadKib": "Limit download speed (KiB/s)",
-      "limitUploadKib": "Limit upload speed (KiB/s)",
-      "limitDownloadKb": "Limit download speed (KB/s)",
-      "limitUploadKb": "Limit upload speed (KB/s)",
-      "ratioLimit": "Ratio limit",
-      "seedTimeMinutes": "Seed time limit (minutes)",
-      "addPaused": "Add paused",
-      "addPausedDescription": "Add torrent as paused",
-      "skipHashCheck": "Skip hash check",
-      "skipHashCheckDescription": "Add torrent and skip hash check",
-      "announceTitle": "Announce",
-      "announceSubtitle": "Set number of reannounces (if needed), delete after Y announce failures, etc.",
-      "disableReannounce": "Disable reannounce",
-      "disableReannounceDescription": "Reannounce is enabled by default. Disable if it's not needed",
-      "reannounceInterval": "Reannounce interval. Run every X seconds",
-      "reannounceIntervalPlaceholder": "7 is default and recommended",
-      "deleteStalled": "Delete stalled",
-      "deleteStalledDescription": "Delete stalled torrents after Y attempts",
-      "reannounceMaxAttempts": "Run reannounce Y times"
-    },
     "test": {
       "alert": "Heads up!",
       "text": "The test action does nothing except to show if the filter works. Make sure to have your Logs page open while testing."
@@ -550,54 +521,6 @@
       "overrideClientNameTooltip": "Override download client name from the one set in Clients. Useful if you have multiple clients inside the arr.",
       "overrideClientId": "Override download client id for arr DEPRECATED",
       "overrideClientIdTooltip": "Override download client ID from the one set in Clients. Useful if you have multiple clients inside the arr."
-    },
-    "qbittorrent": {
-      "macrosTooltip": "The field can use macros to transform/add values from metadata:",
-      "tags": "Tags",
-      "tagsPlaceholder": "eg. tag1,tag2",
-      "savePathPlaceholder": "eg. /full/path/to/save_folder",
-      "savePathTooltip": "Set a custom save path for this action. Automatic Torrent Management will take care of this if using qBittorrent with categories.",
-      "downloadPath": "Download path",
-      "downloadPathPlaceholder": "eg. /full/path/to/download_folder",
-      "downloadPathTooltip": "Set a custom download (incomplete) path for this action. Automatic Torrent Management will take care of this if using qBittorrent with categories.",
-      "rulesTitle": "Rules",
-      "rulesSubtitle": "Configure your torrent client rules",
-      "ignoreRules": "Ignore existing client rules",
-      "ignoreRulesDescription": "Choose to ignore rules set in Client Settings.",
-      "contentLayout": "Content Layout",
-      "contentLayoutDefault": "Select content layout",
-      "priority": "Priority",
-      "priorityDefault": "Disabled",
-      "priorityTooltip": "Torrent Queueing will be enabled for you if it is disabled. Ensure you set your preferred limits for it in your client.",
-      "firstLastPiece": "Download first and last pieces first",
-      "firstLastPieceDescription": "Add torrent and download first and last pieces first"
-    },
-    "deluge": {
-      "label": "Label",
-      "labelPlaceholder": "eg. label1 (must exist in Deluge to work)",
-      "skipHashCheckTooltip": "This will only work on Deluge v2."
-    },
-    "transmission": {
-      "label": "Torrent Label(s)",
-      "labelPlaceholder": "eg. label1,label2"
-    },
-    "rtorrent": {
-      "label": "Label",
-      "labelPlaceholder": "eg. label1,label2",
-      "renameToPath": "Do not add torrent name to path",
-      "renameDefault": "No",
-      "priority": "Priority",
-      "priorityDefault": "Default",
-      "priorityTooltip": "rTorrent bandwidth priority. Higher priority torrents get a bigger share of the upload and download slots.",
-      "ratioGroup": "Ratio group",
-      "ratioGroupPlaceholder": "eg. rat_0",
-      "ratioGroupTooltip": "ruTorrent ratio group to add the torrent to. The ratio plugin names its groups rat_0 to rat_7, in the order they are listed in the ruTorrent ratio settings. Leave empty to use the default ratio group."
-    },
-    "porla": {
-      "preset": "Preset",
-      "presetPlaceholder": "eg. default",
-      "presetTooltip": "A case-sensitive preset name as configured in Porla.",
-      "savePathPlaceholder": "eg. /full/path/to/torrent/data"
     }
   },
   "addForm": {

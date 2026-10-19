@@ -10,41 +10,7 @@
     "FIXED": "Фиксированное (сброс по календарю)",
     "ROLLING": "Скользящее (скользящее окно)"
   },
-  "rtorrentPriority": {
-    "DEFAULT": "По умолчанию",
-    "LOW": "Низкий",
-    "NORMAL": "Обычный",
-    "HIGH": "Высокий"
-  },
   "downloadClient": {
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Добавить торренты напрямую в qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Добавить торренты напрямую в Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge 2",
-      "description": "Добавить торренты напрямую в Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Добавить торренты напрямую в rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Добавить торренты напрямую в Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Добавить торренты напрямую в Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Добавить торренты напрямую в aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Отправить в Radarr, пусть он решает"
@@ -68,14 +34,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Отправить в Readarr, пусть он решает"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Добавить nzb напрямую в SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Добавить nzb напрямую в NZBGet"
     }
   },
   "actionType": {
@@ -95,34 +53,6 @@
       "label": "Exec",
       "description": "Выполнить пользовательскую команду после совпадения фильтра"
     },
-    "QBITTORRENT": {
-      "label": "qBittorrent",
-      "description": "Добавить торренты напрямую в qBittorrent"
-    },
-    "DELUGE_V1": {
-      "label": "Deluge",
-      "description": "Добавить торренты напрямую в Deluge"
-    },
-    "DELUGE_V2": {
-      "label": "Deluge v2",
-      "description": "Добавить торренты напрямую в Deluge 2"
-    },
-    "RTORRENT": {
-      "label": "rTorrent",
-      "description": "Добавить торренты напрямую в rTorrent"
-    },
-    "TRANSMISSION": {
-      "label": "Transmission",
-      "description": "Добавить торренты напрямую в Transmission"
-    },
-    "PORLA": {
-      "label": "Porla",
-      "description": "Добавить торренты напрямую в Porla"
-    },
-    "ARIA2": {
-      "label": "aria2",
-      "description": "Добавить торренты напрямую в aria2"
-    },
     "RADARR": {
       "label": "Radarr",
       "description": "Отправить в Radarr, пусть он решает"
@@ -146,14 +76,6 @@
     "READARR": {
       "label": "Readarr",
       "description": "Отправить в Readarr, пусть он решает"
-    },
-    "SABNZBD": {
-      "label": "SABnzbd",
-      "description": "Добавить в SABnzbd"
-    },
-    "NZBGET": {
-      "label": "NZBGet",
-      "description": "Добавить в NZBGet"
     }
   },
   "pushStatus": {

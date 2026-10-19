@@ -489,35 +489,6 @@
       "title": "Instans",
       "subtitle": "Velg den spesifikke instansen som du vil at skal håndtere dette utgivelsesfilteret."
     },
-    "common": {
-      "category": "Kategori",
-      "categoryPlaceholder": "f.eks. kategori",
-      "categoryTooltip": "Kategorien må eksistere allerede.",
-      "savePath": "Lagringssti",
-      "savePathPlaceholder": "f.eks. /full/sti/til/nedlastingsmappe",
-      "numberNoLimit": "Tar ethvert tall (0 er ingen grense)",
-      "limitsTitle": "Grenser",
-      "limitsSubtitle": "Konfigurer grensene for hastighet/ratio/seed-tid",
-      "limitDownloadKib": "Begrens nedlastingshastighet (KiB/s)",
-      "limitUploadKib": "Begrens opplastingshastighet (KiB/s)",
-      "limitDownloadKb": "Begrens nedlastingshastighet (KB/s)",
-      "limitUploadKb": "Begrens opplastingshastighet (KB/s)",
-      "ratioLimit": "Ratiogrense",
-      "seedTimeMinutes": "Seed-tidsgrense (minutter)",
-      "addPaused": "Legg til satt på pause",
-      "addPausedDescription": "Legg til torrent satt på pause",
-      "skipHashCheck": "Hopp over hash-sjekk",
-      "skipHashCheckDescription": "Legg til torrent og hopp over hash-sjekk",
-      "announceTitle": "Annonser",
-      "announceSubtitle": "Sett antall gjenannonsering (hvis nødvendig), slett etter Y annonseringsfeil, osv.",
-      "disableReannounce": "Deaktiver gjenannonsering",
-      "disableReannounceDescription": "Gjenannonsering er aktivert som standard. Deaktiver hvis det ikke er nødvendig",
-      "reannounceInterval": "Gjenannonseringintervall. Kjør hver X sekunder",
-      "reannounceIntervalPlaceholder": "7 er standard og anbefalt",
-      "deleteStalled": "Slett fastlåste",
-      "deleteStalledDescription": "Slett fastlåste torrenter etter Y forsøk",
-      "reannounceMaxAttempts": "Kjør gjenannonsering Y ganger"
-    },
     "test": {
       "alert": "Obs!",
       "text": "Testhandlingen gjør ingenting annet enn å vise om filteret fungerer. Sørg for å ha Logger-siden åpen mens du tester."
@@ -550,54 +521,6 @@
       "overrideClientNameTooltip": "Overstyr nedlastingsklientens navn fra det som er satt i Klienter. Nyttig hvis du har flere klienter inne i arr.",
       "overrideClientId": "Overstyr nedlastingsklientens ID for arr AVLEGS (DEPRECATED)",
       "overrideClientIdTooltip": "Overstyr nedlastingsklientens ID fra det som er satt i Klienter. Nyttig hvis du har flere klienter inne i arr."
-    },
-    "qbittorrent": {
-      "macrosTooltip": "Feltet kan bruke makroer for å transformere/legge til verdier fra metadata:",
-      "tags": "Tagger",
-      "tagsPlaceholder": "f.eks. tag1,tag2",
-      "savePathPlaceholder": "f.eks. /full/sti/til/lagringsmappe",
-      "savePathTooltip": "Sett en egendefinert lagringssti for denne handlingen. Automatisk torrenthåndtering vil ta seg av dette hvis du bruker qBittorrent med kategorier.",
-      "downloadPath": "Nedlastingssti",
-      "downloadPathPlaceholder": "f.eks. /full/sti/til/nedlastingsmappe",
-      "downloadPathTooltip": "Sett en egendefinert (uferdig) nedlastingssti for denne handlingen. Automatisk torrenthåndtering vil ta seg av dette hvis du bruker qBittorrent med kategorier.",
-      "rulesTitle": "Regler",
-      "rulesSubtitle": "Konfigurer reglene for torrentklienten din",
-      "ignoreRules": "Ignorer eksisterende klientregler",
-      "ignoreRulesDescription": "Velg å ignorere regler satt i Klientinnstillinger.",
-      "contentLayout": "Innholdslayout",
-      "contentLayoutDefault": "Velg innholdslayout",
-      "priority": "Prioritet",
-      "priorityDefault": "Deaktivert",
-      "priorityTooltip": "Torrent-kø vil bli aktivert for deg hvis den er deaktivert. Sørg for at du setter dine foretrukne grenser for det i klienten din.",
-      "firstLastPiece": "Last ned første og siste biter først",
-      "firstLastPieceDescription": "Legg til torrent og last ned første og siste biter først"
-    },
-    "deluge": {
-      "label": "Etikett",
-      "labelPlaceholder": "f.eks. etikett1 (må eksistere i Deluge for å fungere)",
-      "skipHashCheckTooltip": "Dette vil kun fungere på Deluge v2."
-    },
-    "transmission": {
-      "label": "Torrentetiketter",
-      "labelPlaceholder": "f.eks. etikett1,etikett2"
-    },
-    "rtorrent": {
-      "label": "Etikett",
-      "labelPlaceholder": "f.eks. etikett1,etikett2",
-      "renameToPath": "Ikke legg til torrentnavn i stien",
-      "renameDefault": "Nei",
-      "priority": "Prioritet",
-      "priorityDefault": "Standard",
-      "priorityTooltip": "Båndbreddeprioritet i rTorrent. Torrenter med høyere prioritet får en større andel av opplastings- og nedlastingsplassene.",
-      "ratioGroup": "Ratiogruppe",
-      "ratioGroupPlaceholder": "f.eks. rat_0",
-      "ratioGroupTooltip": "ruTorrent-ratiogruppen torrenten legges til i. Ratio-pluginen navngir gruppene rat_0 til rat_7, i rekkefølgen de vises i ratioinnstillingene i ruTorrent. La stå tomt for å bruke standard ratiogruppe."
-    },
-    "porla": {
-      "preset": "Forhåndsinnstilling",
-      "presetPlaceholder": "f.eks. standard",
-      "presetTooltip": "Et skiller-mellom-store-og-små-bokstaver (case-sensitive) navn på forhåndsinnstilling som konfigurert i Porla.",
-      "savePathPlaceholder": "f.eks. /full/sti/til/torrent/data"
     }
   },
   "addForm": {

@@ -10,41 +10,7 @@
       "FIXED": "Pevné (reset kalendáře)",
       "ROLLING": "Klouzavé (klouzavé okno)"
     },
-    "rtorrentPriority": {
-      "DEFAULT": "Výchozí",
-      "LOW": "Nízká",
-      "NORMAL": "Normální",
-      "HIGH": "Vysoká"
-    },
     "downloadClient": {
-      "QBITTORRENT": {
-        "label": "qBittorrent",
-        "description": "Přidat torrenty přímo do qBittorrentu"
-      },
-      "DELUGE_V1": {
-        "label": "Deluge",
-        "description": "Přidat torrenty přímo do Deluge"
-      },
-      "DELUGE_V2": {
-        "label": "Deluge 2",
-        "description": "Přidat torrenty přímo do Deluge 2"
-      },
-      "RTORRENT": {
-        "label": "rTorrent",
-        "description": "Přidat torrenty přímo do rTorrentu"
-      },
-      "TRANSMISSION": {
-        "label": "Transmission",
-        "description": "Přidat torrenty přímo do Transmission"
-      },
-      "PORLA": {
-        "label": "Porla",
-        "description": "Přidat torrenty přímo do Porla"
-      },
-      "ARIA2": {
-        "label": "aria2",
-        "description": "Přidat torrenty přímo do aria2"
-      },
       "RADARR": {
         "label": "Radarr",
         "description": "Odeslat do Radarr a nechat ho rozhodnout"
@@ -68,14 +34,6 @@
       "READARR": {
         "label": "Readarr",
         "description": "Odeslat do Readarr a nechat ho rozhodnout"
-      },
-      "SABNZBD": {
-        "label": "SABnzbd",
-        "description": "Přidat nzbs přímo do SABnzbd"
-      },
-      "NZBGET": {
-        "label": "NZBGet",
-        "description": "Přidat nzbs přímo do NZBGet"
       }
     },
     "actionType": {
@@ -95,34 +53,6 @@
         "label": "Příkaz",
         "description": "Spustit vlastní příkaz po shodě filtru"
       },
-      "QBITTORRENT": {
-        "label": "qBittorrent",
-        "description": "Přidat torrenty přímo do qBittorrent"
-      },
-      "DELUGE_V1": {
-        "label": "Deluge",
-        "description": "Přidat torrenty přímo do Deluge"
-      },
-      "DELUGE_V2": {
-        "label": "Deluge v2",
-        "description": "Přidat torrenty přímo do Deluge 2"
-      },
-      "RTORRENT": {
-        "label": "rTorrent",
-        "description": "Přidat torrenty přímo do rTorrent"
-      },
-      "TRANSMISSION": {
-        "label": "Transmission",
-        "description": "Přidat torrenty přímo do Transmission"
-      },
-      "PORLA": {
-        "label": "Porla",
-        "description": "Přidat torrenty přímo do Porla"
-      },
-      "ARIA2": {
-        "label": "aria2",
-        "description": "Přidat torrenty přímo do aria2"
-      },
       "RADARR": {
         "label": "Radarr",
         "description": "Odeslat do Radarr a nechat ho rozhodnout"
@@ -146,14 +76,6 @@
       "READARR": {
         "label": "Readarr",
         "description": "Odeslat do Readarr a nechat ho rozhodnout"
-      },
-      "SABNZBD": {
-        "label": "SABnzbd",
-        "description": "Přidat do SABnzbd"
-      },
-      "NZBGET": {
-        "label": "NZBGet",
-        "description": "Přidat do NZBGet"
       }
     },
     "pushStatus": {

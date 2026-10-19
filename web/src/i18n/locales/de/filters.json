@@ -489,35 +489,6 @@
       "title": "Instanz",
       "subtitle": "Die spezifische Instanz auswählen, die diesen Releasefilter verarbeiten soll."
     },
-    "common": {
-      "category": "Kategorie",
-      "categoryPlaceholder": "z.B. kategorie",
-      "categoryTooltip": "Kategorie muss bereits vorhanden sein.",
-      "savePath": "Speicherpfad",
-      "savePathPlaceholder": "z.B. /vollständiger/pfad/zum/download_ordner",
-      "numberNoLimit": "Beliebige Zahl (0 ist kein Limit)",
-      "limitsTitle": "Limits",
-      "limitsSubtitle": "Geschwindigkeits-/Ratio-/Seedzeit-Limits konfigurieren",
-      "limitDownloadKib": "Downloadgeschwindigkeit begrenzen (KiB/s)",
-      "limitUploadKib": "Uploadgeschwindigkeit begrenzen (KiB/s)",
-      "limitDownloadKb": "Downloadgeschwindigkeit begrenzen (KB/s)",
-      "limitUploadKb": "Uploadgeschwindigkeit begrenzen (KB/s)",
-      "ratioLimit": "Ratiobegrenzung",
-      "seedTimeMinutes": "Seedzeitlimit (Minuten)",
-      "addPaused": "Angehalten hinzufügen",
-      "addPausedDescription": "Torrent als angehalten hinzufügen",
-      "skipHashCheck": "Hashprüfung überspringen",
-      "skipHashCheckDescription": "Torrent hinzufügen und Hashprüfung überspringen",
-      "announceTitle": "Ankündigung",
-      "announceSubtitle": "Anzahl der Wiederankündigungen (bei Bedarf), Löschen nach Y Ankündigungsfehlern usw. festlegen.",
-      "disableReannounce": "Wiederankündigung deaktivieren",
-      "disableReannounceDescription": "Wiederankündigung ist standardmäßig aktiviert. Deaktivieren wenn nicht benötigt",
-      "reannounceInterval": "Wiederankündigungsintervall. Alle X Sekunden ausführen",
-      "reannounceIntervalPlaceholder": "7 ist Standard und empfohlen",
-      "deleteStalled": "Abgebrochene löschen",
-      "deleteStalledDescription": "Abgebrochene Torrents nach Y Versuchen löschen",
-      "reannounceMaxAttempts": "Wiederankündigung Y Mal ausführen"
-    },
     "test": {
       "alert": "Achtung!",
       "text": "Die Testaktion macht nichts außer zu zeigen, ob der Filter funktioniert. Stelle sicher, dass die Protokollseite während des Tests geöffnet ist."
@@ -550,54 +521,6 @@
       "overrideClientNameTooltip": "Downloadclientnamen von dem in Clients festgelegten überschreiben. Nützlich, wenn mehrere Clients innerhalb des arr vorhanden sind.",
       "overrideClientId": "Downloadclient-ID für arr überschreiben VERALTET",
       "overrideClientIdTooltip": "Downloadclient-ID von der in Clients festgelegten überschreiben. Nützlich, wenn mehrere Clients innerhalb des arr vorhanden sind."
-    },
-    "qbittorrent": {
-      "macrosTooltip": "Das Feld kann Makros verwenden, um Werte aus Metadaten zu transformieren/hinzuzufügen:",
-      "tags": "Tags",
-      "tagsPlaceholder": "z.B. tag1,tag2",
-      "savePathPlaceholder": "z.B. /vollständiger/pfad/zum/speicher_ordner",
-      "savePathTooltip": "Einen benutzerdefinierten Speicherpfad für diese Aktion festlegen. Das automatische Torrentmanagement übernimmt dies, wenn qBittorrent mit Kategorien verwendet wird.",
-      "downloadPath": "Downloadpfad",
-      "downloadPathPlaceholder": "z.B. /vollständiger/pfad/zum/download_ordner",
-      "downloadPathTooltip": "Einen benutzerdefinierten (unvollständigen) Downloadpfad für diese Aktion festlegen. Das automatische Torrentanagement übernimmt dies, wenn qBittorrent mit Kategorien verwendet wird.",
-      "rulesTitle": "Regeln",
-      "rulesSubtitle": "Torrentclientregeln konfigurieren",
-      "ignoreRules": "Vorhandene Clientregeln ignorieren",
-      "ignoreRulesDescription": "Regeln in den Clienteinstellungen ignorieren.",
-      "contentLayout": "Inhaltslayout",
-      "contentLayoutDefault": "Inhaltslayout wählen",
-      "priority": "Priorität",
-      "priorityDefault": "Deaktiviert",
-      "priorityTooltip": "Torrentwarteschlangen wird für dich aktiviert, wenn es deaktiviert ist. Stelle sicher, dass du deine bevorzugten Limits dafür in deinem Client festlegst.",
-      "firstLastPiece": "Erste und letzte Teile zuerst herunterladen",
-      "firstLastPieceDescription": "Torrent hinzufügen und erste und letzte Teile zuerst herunterladen"
-    },
-    "deluge": {
-      "label": "Label",
-      "labelPlaceholder": "z.B. label1 (muss in Deluge vorhanden sein)",
-      "skipHashCheckTooltip": "Dies funktioniert nur mit Deluge v2."
-    },
-    "transmission": {
-      "label": "Torrentlabel (mme)",
-      "labelPlaceholder": "z.B. label1,label2"
-    },
-    "rtorrent": {
-      "label": "Label",
-      "labelPlaceholder": "z.B. label1,label2",
-      "renameToPath": "Torrentnamen nicht zum Pfad hinzufügen",
-      "renameDefault": "Nein",
-      "priority": "Priorität",
-      "priorityDefault": "Standard",
-      "priorityTooltip": "rTorrent-Bandbreitenpriorität. Torrents mit höherer Priorität erhalten einen größeren Anteil der Upload- und Download-Slots.",
-      "ratioGroup": "Ratio-Gruppe",
-      "ratioGroupPlaceholder": "z.B. rat_0",
-      "ratioGroupTooltip": "ruTorrent-Ratio-Gruppe, zu der der Torrent hinzugefügt wird. Das Ratio-Plugin benennt seine Gruppen rat_0 bis rat_7, in der Reihenfolge der ruTorrent-Ratio-Einstellungen. Leer lassen, um die Standard-Ratio-Gruppe zu verwenden."
-    },
-    "porla": {
-      "preset": "Voreinstellung",
-      "presetPlaceholder": "z.B. standard",
-      "presetTooltip": "Ein groß-/kleinschreibungssensitiver Voreinstellungsname wie in Porla konfiguriert.",
-      "savePathPlaceholder": "z.B. /vollständiger/pfad/zu/torrent/daten"
     }
   },
   "addForm": {
