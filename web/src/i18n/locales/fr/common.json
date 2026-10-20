@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Expression régulière invalide"
   },
-  "keyField": {
-    "show": "Afficher",
-    "copyToClipboard": "Copier dans le presse-papiers",
-    "copySuccess": "Clé API copiée dans le presse-papiers!",
-    "copyFailed": "Échec de la copie de la clé API."
-  },
   "modal": {
     "remove": "Supprimer",
     "cancel": "Annuler",

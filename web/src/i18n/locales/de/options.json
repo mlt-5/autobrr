@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Push Abgelehnt",
-      "description": "Bei abgelehnten Pushes an die ARRs oder den Downloadclient"
+      "description": "Bei abgelehntem Push durch eine Aktion"
     },
     "PUSH_APPROVED": {
       "label": "Push Angenommen",
-      "description": "Bei angenommen Pushes an die ARRs oder den Downloadclient"
+      "description": "Bei genehmigtem Push durch eine Aktion"
     },
     "PUSH_ERROR": {
       "label": "Push Fehler",
-      "description": "Bei Fehlern beim Pushen an die ARRs oder den Downloadclient"
+      "description": "Bei Push-Fehler in einer Aktion"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC Getrennt",

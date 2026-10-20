@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Ungültiger Regex-Ausdruck"
   },
-  "keyField": {
-    "show": "Anzeigen",
-    "copyToClipboard": "In Zwischenablage kopieren",
-    "copySuccess": "API-Schlüssel in Zwischenablage kopiert!",
-    "copyFailed": "API-Schlüssel konnte nicht kopiert werden."
-  },
   "modal": {
     "remove": "Entfernen",
     "cancel": "Abbrechen",

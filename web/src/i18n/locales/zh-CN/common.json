@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "无效的正则表达式"
   },
-  "keyField": {
-    "show": "显示",
-    "copyToClipboard": "复制到剪贴板",
-    "copySuccess": "API 密钥已复制到剪贴板！",
-    "copyFailed": "复制 API 密钥失败。"
-  },
   "modal": {
     "remove": "移除",
     "cancel": "取消",

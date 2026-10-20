@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Push rejeté",
-      "description": "Lors du rejet d'un push par les ARRs ou le client de téléchargement"
+      "description": "Lors d'un push rejeté par une action"
     },
     "PUSH_APPROVED": {
       "label": "Push approuvé",
-      "description": "Lors de l'approbation d'un push par les ARRs ou le client de téléchargement"
+      "description": "Lors d'un push approuvé par une action"
     },
     "PUSH_ERROR": {
       "label": "Erreur de push",
-      "description": "Lors d'une erreur de push par les ARRs ou le client de téléchargement"
+      "description": "Lors d'une erreur de push dans une action"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC déconnecté",

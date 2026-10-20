@@ -37,15 +37,15 @@
     "event": {
       "PUSH_REJECTED": {
         "label": "Odmítnutý push",
-        "description": "Při odmítnutém push pro arrs nebo stahovací klienty"
+        "description": "Při odmítnutí push akcí"
       },
       "PUSH_APPROVED": {
         "label": "Schválený push",
-        "description": "Při schváleném push pro arrs nebo stahovací klienty"
+        "description": "Při schválení push akcí"
       },
       "PUSH_ERROR": {
         "label": "Chybný push",
-        "description": "Při chybném push pro arrs nebo stahovací klienty"
+        "description": "Při chybě push v akci"
       },
       "IRC_DISCONNECTED": {
         "label": "IRC Odpojeno",

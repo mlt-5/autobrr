@@ -387,7 +387,6 @@ export const APIClient = {
   },
   lists: {
     list: () => appClient.Get<List[]>("api/lists"),
-    getByID: (id: number) => appClient.Get<List>(`api/lists/${id}`),
     store: (list: List) => appClient.Post("api/lists", {
       body: list
     }),
@@ -396,10 +395,7 @@ export const APIClient = {
     }),
     delete: (id: number) => appClient.Delete(`api/lists/${id}`),
     refreshList: (id: number) => appClient.Post(`api/lists/${id}/refresh`),
-    refreshAll: () => appClient.Post(`api/lists/refresh`),
-    test: (list: List) => appClient.Post("api/lists/test", {
-      body: list
-    })
+    refreshAll: () => appClient.Post(`api/lists/refresh`)
   },
   proxy: {
     list: () => appClient.Get<Proxy[]>("api/proxy"),

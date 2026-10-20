@@ -14,12 +14,6 @@
     "input": {
       "invalidRegex": "Neplatný regex"
     },
-    "keyField": {
-      "show": "Zobrazit",
-      "copyToClipboard": "Kopírovat do schránky",
-      "copySuccess": "API klíč byl zkopírován do schránky!",
-      "copyFailed": "Nepodařilo se zkopírovat API klíč."
-    },
     "modal": {
       "remove": "Odstranit",
       "cancel": "Zrušit",

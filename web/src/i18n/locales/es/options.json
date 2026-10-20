@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Envío rechazado",
-      "description": "Cuando el envío es rechazado por los arrs o el cliente de descarga"
+      "description": "Al rechazar un push en una acción"
     },
     "PUSH_APPROVED": {
       "label": "Envío aprobado",
-      "description": "Cuando el envío es aprobado por los arrs o el cliente de descarga"
+      "description": "Al aprobar un push en una acción"
     },
     "PUSH_ERROR": {
       "label": "Error de envío",
-      "description": "Cuando hay un error de envío en los arrs o el cliente de descarga"
+      "description": "Al producirse un error de push en una acción"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC desconectado",

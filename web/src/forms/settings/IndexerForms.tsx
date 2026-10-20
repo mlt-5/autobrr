@@ -785,8 +785,6 @@ function IndexerExternalIdentifierField({ fallbackName }: IndexerExternalIdentif
         <div>
           <p>{t("forms.indexer.externalIdentifierTooltip1")}</p>
           <br/>
-          <p>{t("forms.indexer.externalIdentifierTooltip2", { name: indexerName })}</p>
-          <br/>
           <DocsLink href="https://autobrr.com/configuration/indexers#setup"/>
         </div>
       }

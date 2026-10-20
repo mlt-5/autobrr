@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "推送被拒绝",
-      "description": "当 arr 或下载客户端下载时推送被拒绝"
+      "description": "操作推送被拒绝时"
     },
     "PUSH_APPROVED": {
       "label": "推送已批准",
-      "description": "当 arr 或下载客户端推送被批准"
+      "description": "操作推送被批准时"
     },
     "PUSH_ERROR": {
       "label": "推送错误",
-      "description": "当 arr 或下载客户端推送时发生错误"
+      "description": "操作推送出错时"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC 已断开",

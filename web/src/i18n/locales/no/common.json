@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Ugyldig regex"
   },
-  "keyField": {
-    "show": "Vis",
-    "copyToClipboard": "Kopier til utklippstavle",
-    "copySuccess": "API-nøkkel kopiert til utklippstavlen!",
-    "copyFailed": "API-nøkkel kopiering feilet!"
-  },
   "modal": {
     "remove": "Fjern",
     "cancel": "Avbryt",

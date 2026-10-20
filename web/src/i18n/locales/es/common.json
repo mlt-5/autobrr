@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Regex inválida"
   },
-  "keyField": {
-    "show": "Mostrar",
-    "copyToClipboard": "Copiar al portapapeles",
-    "copySuccess": "¡Clave API copiada al portapapeles!",
-    "copyFailed": "Error al copiar la clave API."
-  },
   "modal": {
     "remove": "Eliminar",
     "cancel": "Cancelar",

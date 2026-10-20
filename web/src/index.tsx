@@ -12,7 +12,7 @@ import "./i18n";
 import { App } from "./App";
 import { InitializeGlobalContext } from "./utils/Context";
 
-// Initializes auth and theme contexts
+// Initializes the theme context
 InitializeGlobalContext();
 
 const root = createRoot(document.getElementById("root")!);

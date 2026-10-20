@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Push avvist",
-      "description": "Når push avvises for arr-klientene eller nedlastingsklienten"
+      "description": "Ved push avvist av en handling"
     },
     "PUSH_APPROVED": {
       "label": "Push godkjent",
-      "description": "Når push godkjennes for arr-klientene eller nedlastingsklienten"
+      "description": "Ved push godkjent av en handling"
     },
     "PUSH_ERROR": {
       "label": "Push-feil",
-      "description": "Ved push-feil for arr-klientene eller nedlastingsklienten"
+      "description": "Ved push-feil i en handling"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC frakoblet",
