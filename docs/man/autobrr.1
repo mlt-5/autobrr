@@ -5,10 +5,7 @@ autobrr \- modern download automation for torrents
 .SH SYNOPSIS
 .SY autobrr
 .OP \-\-config path
-.YS
-.SY autobrrctl
-.OP \-\-config path
-.I action
+.RI [ command ]
 .RI [ options ]
 .YS
 .SH DESCRIPTION
@@ -20,38 +17,37 @@ The application supports over 100 torrent trackers with IRC announces,
 Torznab and RSS feeds. It features powerful filtering with RegEx support and
 a mobile-friendly web UI.
 .SH OPTIONS
-.SS "autobrr options"
 .TP
 .BR \-\-config=\fIPATH\fR
 Path to configuration directory (default: ~/.config/autobrr)
-.SS "autobrrctl actions"
+.SH COMMANDS
 .TP
-.B create-user \fIusername\fR
+.B serve
+Start the service. This is the default when no command is given
+.TP
+.B user create \fIusername\fR
 Create a new user
 .TP
-.B change-password \fIusername\fR
+.B user change-password \fIusername\fR
 Change the password for a user
 .TP
-.B db:seed
+.B filter export
+Export all filters to individual JSON files in the current directory
+.TP
+.B db seed
 Seed the sqlite database. Requires \fB\-\-db-path\fR and
 .BR \-\-seed-db
 .TP
-.B db:reset
+.B db reset
 Reset and seed the sqlite database. Requires \fB\-\-db-path\fR and
 .BR \-\-seed-db
 .TP
+.B db convert
+Convert a SQLite database to PostgreSQL. Requires \fB\-\-sqlite-db\fR and
+.BR \-\-postgres-url
+.TP
 .B version
 Display version information
-.TP
-.B help
-Show help message
-.SS "autobrrctl options"
-.TP
-.BR \-\-db-path=\fIPATH\fR
-Path to database file (for db:seed and db:reset)
-.TP
-.BR \-\-seed-db=\fIPATH\fR
-Path to SQL seed file (for db:seed and db:reset)
 .SH FEATURES
 .TP
 .B Actions

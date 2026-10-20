@@ -1,4 +1,4 @@
-.PHONY: all deps test build build/app build/ctl build/web build/docker clean install install-man dev
+.PHONY: all deps test build build/app build/web build/docker clean install install-man dev
 .POSIX:
 .SUFFIXES:
 
@@ -27,9 +27,6 @@ build: deps build/web build/app
 
 build/app:
 	go build -ldflags $(GOFLAGS) -o bin/$(SERVICE) cmd/$(SERVICE)/main.go
-
-build/ctl:
-	go build -ldflags $(GOFLAGS) -o bin/autobrrctl cmd/autobrrctl/main.go
 
 build/web:
 	pnpm --dir web run build
