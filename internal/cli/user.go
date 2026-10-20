@@ -15,7 +15,6 @@ import (
 	"github.com/autobrr/autobrr/pkg/errors"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/term"
 )
 
@@ -27,7 +26,6 @@ func CommandUser() *cobra.Command {
 
 	command.AddCommand(CommandUserCreate())
 	command.AddCommand(CommandUserChangePassword())
-	command.AddCommand(CommandUserGenPass())
 
 	return command
 }
@@ -136,31 +134,6 @@ func CommandUserChangePassword() *cobra.Command {
 	return command
 }
 
-func CommandUserGenPass() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "htpasswd",
-		Short: "Generate a bcrypt password hash for basic auth",
-	}
-
-	command.RunE = func(cmd *cobra.Command, args []string) error {
-		password, err := readPassword()
-		if err != nil {
-			return err
-		}
-
-		hash, err := CreateHtpasswdHash(string(password))
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(hash)
-
-		return nil
-	}
-
-	return command
-}
-
 func readPassword() (password []byte, err error) {
 	fd := int(os.Stdin.Fd())
 
@@ -190,16 +163,4 @@ func readPassword() (password []byte, err error) {
 	}
 
 	return password, nil
-}
-
-// CreateHtpasswdHash generates a bcrypt hash of the password for use in basic auth
-func CreateHtpasswdHash(password string) (string, error) {
-	// Generate a bcrypt hash from the input password
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", errors.Wrap(err, "could not generate hash")
-	}
-
-	// Return the formatted bcrypt hash (with the bcrypt marker "$2y$")
-	return string(hash), nil
 }

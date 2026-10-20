@@ -25,7 +25,6 @@ import (
 	"github.com/autobrr/autobrr/internal/list"
 	"github.com/autobrr/autobrr/internal/logger"
 	"github.com/autobrr/autobrr/internal/meta"
-	"github.com/autobrr/autobrr/internal/metrics"
 	"github.com/autobrr/autobrr/internal/notification"
 	"github.com/autobrr/autobrr/internal/proxy"
 	"github.com/autobrr/autobrr/internal/release"
@@ -55,10 +54,9 @@ type App struct {
 	sse      *sse.Server
 	eventBus *events.EventBus
 
-	db            *database.DB
-	httpServer    *http.Server
-	metricsServer *http.MetricsServer
-	profiler      *diagnostics.Profiler
+	db         *database.DB
+	httpServer *http.Server
+	profiler   *diagnostics.Profiler
 
 	actionService       *action.Service
 	alertService        *alert.Service
@@ -74,7 +72,6 @@ type App struct {
 	rlsDownloadService  *release.DownloadService
 	scheduler           *scheduler.Service
 	listService         *list.Service
-	metricsManager      *metrics.Manager
 	proxyService        *proxy.Service
 	userService         *user.Service
 }
@@ -253,25 +250,6 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 		},
 	)
 
-	if app.metricsServer != nil {
-		components = append(components, component{
-			name:     "metrics",
-			optional: true,
-			start: func(context.Context) error {
-				if err := app.metricsServer.Listen(); err != nil {
-					return err
-				}
-
-				serve(app.metricsServer.Serve, func(err error) {
-					app.log.Error().Err(err).Str("component", "metrics").Msg("server stopped unexpectedly")
-				})
-
-				return nil
-			},
-			stop: app.metricsServer.Shutdown,
-		})
-	}
-
 	return components
 }
 
@@ -390,11 +368,6 @@ func (app *App) setup(ctx context.Context) error {
 		ProxyService:        app.proxyService,
 		ReleaseService:      app.releaseService,
 	})
-
-	if app.cfg.Config.MetricsEnabled {
-		app.metricsManager = metrics.NewMetricsManager(meta.GetVersion(), meta.GetCommit(), meta.GetDate(), app.releaseService, app.ircService, app.feedService, app.listService, app.filterService)
-		app.metricsServer = http.NewMetricsServer(app.log, app.cfg, meta.GetVersion(), meta.GetCommit(), meta.GetDate(), app.metricsManager)
-	}
 
 	if app.cfg.Config.ProfilingEnabled {
 		app.profiler = diagnostics.NewProfiler(app.cfg)

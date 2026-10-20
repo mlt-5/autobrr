@@ -29,7 +29,6 @@ import (
 	"github.com/autobrr/autobrr/pkg/sharedhttp"
 
 	_ "github.com/lib/pq"
-	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/term"
 )
 
@@ -309,19 +308,6 @@ func main() {
 			fmt.Println("Database reset and reseed completed successfully!")
 		}
 
-	case "htpasswd":
-		password, err := readPassword()
-		if err != nil {
-			log.Fatalf("failed to read password: %v", err)
-		}
-
-		hash, err := CreateHtpasswdHash(string(password))
-		if err != nil {
-			log.Fatalf("failed to hash password: %v", err)
-		}
-
-		fmt.Println(hash)
-
 	case "export-filters":
 		if configPath == "" {
 			log.Fatal("--config required")
@@ -427,18 +413,6 @@ func readPassword() (password []byte, err error) {
 	}
 
 	return password, nil
-}
-
-// CreateHtpasswdHash generates a bcrypt hash of the password for use in basic auth
-func CreateHtpasswdHash(password string) (string, error) {
-	// Generate a bcrypt hash from the input password
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return "", fmt.Errorf("failed to generate hash: %v", err)
-	}
-
-	// Return the formatted bcrypt hash (with the bcrypt marker "$2y$")
-	return string(hash), nil
 }
 
 // FilterExport contains all the fields of domain.Filter useful for export
