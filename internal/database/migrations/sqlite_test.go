@@ -711,6 +711,19 @@ func TestRunMigrationTest_SQLite(t *testing.T) {
 			},
 			want: "",
 		},
+		{
+			name:   "api key removal drops the api_key table",
+			fields: fields{},
+			args: MigrationTestCase{
+				Name:                "api key removal drops the api_key table",
+				MigrationIndex:      108,
+				MigrationsUntilName: "108_remove_exec",
+				MigrationToRun:      "109_remove_api_keys",
+				SetupData:           setupAPIKeyData,
+				ValidateResult:      validateAPIKeysRemoved,
+			},
+			want: "",
+		},
 	}
 
 	for _, tt := range tests {

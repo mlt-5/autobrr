@@ -520,14 +520,6 @@ CREATE TABLE feed_cache
 CREATE INDEX feed_cache_feed_id_key_index
     ON feed_cache (feed_id, key);
 
-CREATE TABLE api_key
-(
-    name       TEXT,
-    key        TEXT PRIMARY KEY,
-    scopes     TEXT []   DEFAULT '{}' NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE list
 (
     id                       INTEGER PRIMARY KEY,

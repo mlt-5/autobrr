@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export { default as Api } from "./Api";
 export { default as Application } from "./Application";
 export { default as Feed } from "./Feed";
 export { default as Indexer } from "./Indexer";

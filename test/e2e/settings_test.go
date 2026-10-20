@@ -46,19 +46,6 @@ func TestAddNotification(t *testing.T) {
 	page.ExpectRow("Webhook E2E")
 }
 
-func TestAddAPIKey(t *testing.T) {
-	app := harness.Start(t)
-	page := app.NewAuthedPage()
-
-	page.Open("/settings/api")
-	page.AddNew()
-
-	page.Fill("name", "e2e-key")
-	page.Submit()
-
-	page.ExpectRow("e2e-key")
-}
-
 // The log level select saves on change rather than on submit, so the toast is
 // the only signal that the write reached the config file.
 func TestChangeLogLevel(t *testing.T) {

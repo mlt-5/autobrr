@@ -24,7 +24,6 @@
     "feeds": "Feeds",
     "lists": "Listes",
     "notifications": "Notifications",
-    "apiKeys": "Clés API",
     "proxies": "Proxys",
     "releases": "Releases",
     "account": "Compte"
@@ -82,26 +81,6 @@
     "regexFilter": "Filtre RegExp",
     "linesToMatch": "Lignes à faire correspondre",
     "matches": "Correspondances"
-  },
-  "apiKey": {
-    "createTitle": "Créer une clé API",
-    "description": "Ajouter une nouvelle clé API.",
-    "created": "La clé API {{name}} a été ajoutée",
-    "deleted": "La clé API {{name}} a été supprimée",
-    "name": "Nom",
-    "key": "Clé",
-    "required": "Requis",
-    "closePanel": "Fermer le panneau",
-    "cancel": "Annuler",
-    "create": "Créer",
-    "listTitle": "Clés API",
-    "listDescription": "Gérer tes clés API autobrr ici.",
-    "addNew": "Ajouter",
-    "noItems": "Aucune clé API",
-    "createCta": "Créer une clé API",
-    "removeTitle": "Supprimer la clé API : {{name}}",
-    "removeText": "Es-tu sûr de vouloir supprimer cette clé API ? Cette action est irréversible.",
-    "deleteKey": "Supprimer la clé"
   },
   "irc": {
     "listTitle": "IRC",
@@ -386,26 +365,6 @@
       "usageIrcNetworks": "Réseaux IRC",
       "usageFeeds": "Feeds",
       "usageDisableText": "Sa désactivation désactivera les réseaux IRC suivants, tandis que les indexeurs et les flux se connecteront sans proxy :"
-    },
-    "apiKey": {
-      "createTitle": "Créer une clé API",
-      "description": "Ajouter une nouvelle clé API.",
-      "created": "La clé API {{name}} a été ajoutée",
-      "deleted": "La clé API {{name}} a été supprimée",
-      "name": "Nom",
-      "key": "Clé",
-      "required": "Requis",
-      "closePanel": "Fermer le panneau",
-      "cancel": "Annuler",
-      "create": "Créer",
-      "listTitle": "Clés API",
-      "listDescription": "Gérer tes clés API autobrr ici.",
-      "addNew": "Ajouter",
-      "noItems": "Aucune clé API",
-      "createCta": "Créer une clé API",
-      "removeTitle": "Supprimer la clé API : {{name}}",
-      "removeText": "Es-tu sûr de vouloir supprimer cette clé API ? Cette action est irréversible.",
-      "deleteKey": "Supprimer la clé"
     },
     "notification": {
       "settings": "Paramètres",

@@ -19,7 +19,6 @@ import { NotFound } from "@components/alerts/NotFound";
 import { FilterNotFound } from "@screens/filters/NotFound";
 import { Settings } from "@screens/Settings";
 import {
-  ApikeysQueryOptions,
   CanOnboardQueryOptions,
   ConfigQueryOptions,
   FeedsQueryOptions,
@@ -207,13 +206,6 @@ export const SettingsNotificationsRoute = createRoute({
   component: lazyRouteComponent(() => import("@screens/settings/Notifications"))
 });
 
-export const SettingsApiRoute = createRoute({
-  getParentRoute: () => SettingsRoute,
-  path: 'api',
-  loader: (opts) => opts.context.queryClient.query({ ...ApikeysQueryOptions(), staleTime: "static" }),
-  component: lazyRouteComponent(() => import("@screens/settings/Api"))
-});
-
 export const SettingsProxiesRoute = createRoute({
   getParentRoute: () => SettingsRoute,
   path: 'proxies',
@@ -328,7 +320,7 @@ export const RootRoute = createRootRouteWithContext<{
 });
 
 const filterRouteTree = FiltersRoute.addChildren([FilterIndexRoute, FilterGetByIdRoute.addChildren([FilterGeneralRoute, FilterMoviesTvRoute, FilterMusicRoute, FilterBooksRoute, FilterAdvancedRoute, FilterExternalRoute, FilterActionsRoute, FilterNotificationsRoute])])
-const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsNotificationsRoute, SettingsApiRoute, SettingsProxiesRoute, SettingsReleasesRoute, SettingsAccountRoute])
+const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsNotificationsRoute, SettingsProxiesRoute, SettingsReleasesRoute, SettingsAccountRoute])
 const authenticatedTree = AuthRoute.addChildren([AuthIndexRoute.addChildren([DashboardRoute, filterRouteTree, ReleasesRoute, settingsRouteTree, LogsRoute, NotificationInboxRoute])])
 const routeTree = RootRoute.addChildren([
   authenticatedTree,

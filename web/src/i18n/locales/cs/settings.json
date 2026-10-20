@@ -24,7 +24,6 @@
       "feeds": "Vlákna",
       "lists": "Listy",
       "notifications": "Notifikace",
-      "apiKeys": "API klíče",
       "proxies": "Proxy",
       "releases": "Releasy",
       "account": "Účet"
@@ -82,26 +81,6 @@
       "regexFilter": "RegExp filtr",
       "linesToMatch": "Řádky k otestování",
       "matches": "Shody"
-    },
-    "apiKey": {
-      "createTitle": "Vytvořit API klíč",
-      "description": "Přidat nový API klíč.",
-      "created": "API klíč {{name}} byl přidán",
-      "deleted": "API klíč {{name}} byl odstraněn",
-      "name": "Název",
-      "key": "Klíč",
-      "required": "Povinné",
-      "closePanel": "Zavřít panel",
-      "cancel": "Zrušit",
-      "create": "Vytvořit",
-      "listTitle": "API klíče",
-      "listDescription": "Spravovat vaše autobrr API klíče zde.",
-      "addNew": "Přidat nový",
-      "noItems": "Žádné API klíče",
-      "createCta": "Vytvořit API klíč",
-      "removeTitle": "Odstranit API klíč: {{name}}",
-      "removeText": "Jste si jisti, že chcete odstranit tento API klíč? Tato akce je nevratná.",
-      "deleteKey": "Odstranit klíč"
     },
     "irc": {
       "listTitle": "IRC",
@@ -387,26 +366,6 @@
         "usageFeeds": "Kanály",
         "usageDisableText": "Vypnutím se vypnou následující IRC sítě, zatímco indexery a kanály se budou připojovat bez proxy:"
       },
-    "apiKey": {
-      "createTitle": "Vytvořit API klíč",
-      "description": "Přidat nový API klíč.",
-      "created": "API klíč {{name}} byl přidán",
-      "deleted": "API klíč {{name}} byl odstraněn",
-      "name": "Jméno",
-      "key": "Klíč",
-      "required": "Povinné",
-      "closePanel": "Zavřít panel",
-      "cancel": "Zrušit",
-      "create": "Vytvořit",
-      "listTitle": "API klíče",
-      "listDescription": "Správa vašich autobrr API klíčů.",
-      "addNew": "Přidat nový",
-      "noItems": "Žádné API klíče",
-      "createCta": "Vytvořit API klíč",
-      "removeTitle": "Odstranit API klíč: {{name}}",
-      "removeText": "Jste si jisti, že chcete odstranit tento API klíč? Tato akce je nevratná.",
-      "deleteKey": "Smazat klíč"
-    },
       "notification": {
         "settings": "Nastavení",
         "settingsDescBuiltin": "Oznámení se ukládají v autobrr a zobrazují se pod ikonou zvonku v záhlaví. Uchovává se posledních 1000 po dobu až 30 dnů.",

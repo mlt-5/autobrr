@@ -35,7 +35,6 @@ const subNavigation: NavTabType[] = [
   { labelKey: "nav.feeds", href: "/settings/feeds", icon: RssIcon },
   { labelKey: "nav.lists", href: "/settings/lists", icon: BarsArrowDownIcon },
   { labelKey: "nav.notifications", href: "/settings/notifications", icon: BellIcon },
-  { labelKey: "nav.apiKeys", href: "/settings/api", icon: KeyIcon },
   { labelKey: "nav.proxies", href: "/settings/proxies", icon: GlobeAltIcon },
   { labelKey: "nav.releases", href: "/settings/releases", icon: RectangleStackIcon },
   { labelKey: "nav.account", href: "/settings/account", icon: UserCircleIcon }

@@ -10,7 +10,6 @@ import (
 
 	"github.com/autobrr/autobrr/internal/action"
 	"github.com/autobrr/autobrr/internal/alert"
-	"github.com/autobrr/autobrr/internal/api"
 	"github.com/autobrr/autobrr/internal/auth"
 	"github.com/autobrr/autobrr/internal/config"
 	"github.com/autobrr/autobrr/internal/database"
@@ -58,7 +57,6 @@ type App struct {
 	actionService       *action.Service
 	alertService        *alert.Service
 	authService         *auth.Service
-	apiService          *api.Service
 	indexerService      *indexer.Service
 	indexerAPIService   *indexer.APIService
 	ircService          *irc.Service
@@ -280,7 +278,6 @@ func (app *App) setup(ctx context.Context) error {
 	sessionManager.Store = sqlite3store.New(db, sqlite3store.WithLogger(app.log.With().Str("module", "session-store").Logger()))
 
 	var (
-		apikeyRepo       = database.NewAPIRepo(app.log, db)
 		actionRepo       = database.NewActionRepo(app.log, db)
 		filterRepo       = database.NewFilterRepo(app.log, db)
 		feedRepo         = database.NewFeedRepo(app.log, db)
@@ -295,7 +292,6 @@ func (app *App) setup(ctx context.Context) error {
 		proxyRepo        = database.NewProxyRepo(app.log, db)
 	)
 
-	app.apiService = api.NewService(app.log, apikeyRepo)
 	app.scheduler = scheduler.NewService(app.log)
 	app.notificationService = notification.NewService(app.log, app.eventBus, app.sse, notificationRepo, inboxRepo, app.scheduler)
 	app.userService = user.NewService(userRepo)
@@ -323,7 +319,6 @@ func (app *App) setup(ctx context.Context) error {
 		Date:                meta.GetDate(),
 		ActionService:       app.actionService,
 		AlertService:        app.alertService,
-		ApiService:          app.apiService,
 		AuthService:         app.authService,
 		FilterService:       app.filterService,
 		FeedService:         app.feedService,

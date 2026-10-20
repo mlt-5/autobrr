@@ -24,7 +24,6 @@
     "feeds": "Feeds",
     "lists": "Listen",
     "notifications": "Benachrichtigungen",
-    "apiKeys": "API-Schlüssel",
     "proxies": "Proxys",
     "releases": "Releases",
     "account": "Konto"
@@ -82,26 +81,6 @@
     "regexFilter": "Regex-Filter",
     "linesToMatch": "Zu filternde Zeilen",
     "matches": "Treffer"
-  },
-  "apiKey": {
-    "createTitle": "API-Schlüssel erstellen",
-    "description": "Neuen API-Schlüssel hinzufügen.",
-    "created": "API-Schlüssel {{name}} wurde hinzugefügt",
-    "deleted": "API-Schlüssel {{name}} wurde gelöscht",
-    "name": "Name",
-    "key": "Schlüssel",
-    "required": "Pflichtfeld",
-    "closePanel": "Panel schließen",
-    "cancel": "Abbrechen",
-    "create": "Erstellen",
-    "listTitle": "API-Schlüssel",
-    "listDescription": "Hier autobrr API-Schlüssel verwalten.",
-    "addNew": "Neu hinzufügen",
-    "noItems": "Keine API-Schlüssel",
-    "createCta": "API-Schlüssel erstellen",
-    "removeTitle": "API-Schlüssel entfernen: {{name}}",
-    "removeText": "Bist du sicher, dass du diesen API-Schlüssel entfernen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "deleteKey": "Schlüssel löschen"
   },
   "irc": {
     "listTitle": "IRC",
@@ -386,26 +365,6 @@
       "usageIrcNetworks": "IRC-Netzwerke",
       "usageFeeds": "Feeds",
       "usageDisableText": "Beim Deaktivieren werden die folgenden IRC-Netzwerke deaktiviert, während sich Indexer und Feeds ohne Proxy verbinden:"
-    },
-    "apiKey": {
-      "createTitle": "API-Schlüssel erstellen",
-      "description": "Neuen API-Schlüssel hinzufügen.",
-      "created": "API-Schlüssel {{name}} wurde hinzugefügt",
-      "deleted": "API-Schlüssel {{name}} wurde gelöscht",
-      "name": "Name",
-      "key": "Schlüssel",
-      "required": "Pflichtfeld",
-      "closePanel": "Panel schließen",
-      "cancel": "Abbrechen",
-      "create": "Erstellen",
-      "listTitle": "API-Schlüssel",
-      "listDescription": "Hier autobrr API-Schlüssel verwalten.",
-      "addNew": "Neu hinzufügen",
-      "noItems": "Keine API-Schlüssel",
-      "createCta": "API-Schlüssel erstellen",
-      "removeTitle": "API-Schlüssel entfernen: {{name}}",
-      "removeText": "Bist du sicher, dass du diesen API-Schlüssel entfernen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
-      "deleteKey": "Schlüssel löschen"
     },
     "notification": {
       "settings": "Einstellungen",

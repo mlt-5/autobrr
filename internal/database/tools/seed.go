@@ -31,7 +31,6 @@ var defaultTables = []string{
 	"filter_notification",
 	"feed",
 	"feed_cache",
-	"api_key",
 	"list",
 	"list_filter",
 }

@@ -3,17 +3,6 @@
 
 package domain
 
-import (
-	"time"
-)
-
-type APIKey struct {
-	Name      string    `json:"name"`
-	Key       string    `json:"key"`
-	Scopes    []string  `json:"scopes"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
 const RedactedStr = "<redacted>"
 
 func RedactString(s string) string {
