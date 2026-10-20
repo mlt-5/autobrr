@@ -203,7 +203,6 @@ func (s *Server) Handler() http.Handler {
 			r.Route("/notification", newNotificationHandler(encoder, s.notificationService).Routes)
 			r.Route("/proxy", newProxyHandler(encoder, s.proxyService).Routes)
 			r.Route("/release", newReleaseHandler(encoder, s.releaseService).Routes)
-			r.Route("/webhook", newWebhookHandler(encoder, s.listService).Routes)
 
 			r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
 				s.sse.Headers = map[string]string{
