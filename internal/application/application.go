@@ -34,7 +34,6 @@ import (
 	"github.com/autobrr/autobrr/pkg/sqlite3store"
 
 	"github.com/KimMachineGun/automemlimit/memlimit"
-	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/dcarbone/zadapters/zstdlog"
 	"github.com/r3labs/sse/v2"
@@ -275,16 +274,10 @@ func (app *App) setup(ctx context.Context) error {
 		Str("commit", meta.GetCommit()).
 		Str("build_date", meta.GetDate()).
 		Str("log_level", app.cfg.Config.LogLevel).
-		Str("database", db.Driver).
 		Msg("starting autobrr")
 
 	sessionManager := scs.New()
-	switch db.Driver {
-	case database.DriverSQLite:
-		sessionManager.Store = sqlite3store.New(db, sqlite3store.WithLogger(app.log.With().Str("module", "session-store").Logger()))
-	case database.DriverPostgres:
-		sessionManager.Store = postgresstore.New(db.Handler)
-	}
+	sessionManager.Store = sqlite3store.New(db, sqlite3store.WithLogger(app.log.With().Str("module", "session-store").Logger()))
 
 	var (
 		apikeyRepo       = database.NewAPIRepo(app.log, db)

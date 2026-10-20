@@ -6,12 +6,40 @@ package tools
 import (
 	"database/sql"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/autobrr/autobrr/pkg/errors"
 
 	_ "modernc.org/sqlite"
 )
+
+var defaultTables = []string{
+	"users",
+	"proxy",
+	"indexer",
+	"irc_network",
+	"irc_channel",
+	"release_profile_duplicate",
+	"filter",
+	"filter_external",
+	"filter_indexer",
+	"action",
+	"release",
+	"release_action_status",
+	"notification",
+	"filter_notification",
+	"feed",
+	"feed_cache",
+	"api_key",
+	"list",
+	"list_filter",
+}
+
+// GetTables returns the tables a reset clears, in dependency order.
+func GetTables() []string {
+	return slices.Clone(defaultTables)
+}
 
 type Seeder interface {
 	Reset() error

@@ -59,35 +59,11 @@ logLevel = "TRACE"
 #
 #logMaxBackups = 5
 
-# Database configuration
+# Database file
 #
-#databaseType = "postgres"
-#databaseDSN = "postgresql://autobrr:postgres@localhost:5432/autobrr?sslmode=disable"
+# Optional. Defaults to autobrr.db in the config directory.
 #
-#databaseType = "sqlite"
 #databaseDSN = "file:/config/data/autobrr.db"
-#
-# Use databaseDSN or the individual fields
-#
-#postgresHost = "localhost"
-#
-#postgresPort = 5432
-#
-#postgresUser = "autobrr"
-#
-#postgresPass = "postgres"
-#
-#postgresDatabase = "autobrr"
-#
-#postgresSSLMode = "disable"
-#
-# Optional
-#
-#postgresSocket = "/run/socket.sock"
-#
-# Optional
-#
-#postgresExtraParams = "connect_timeout=10"
 
 # Custom definitions
 #

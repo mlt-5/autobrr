@@ -60,7 +60,7 @@ The backend follows a layered architecture with clear separation of concerns:
 - **Feed**: RSS/Torznab feed processing for indexers without IRC
 
 ### Database Support
-- **SQLite** (default) and **PostgreSQL** support
+- **SQLite** only
 - Database migrations handled automatically
 - Repository pattern for data access
 
@@ -97,7 +97,7 @@ Applies to Go and TypeScript alike. Excessive low-value comments are the most co
 - Some older code contains narration comments (`// get filters`) - do not take them as license to add more, and feel free to drop them in code you're already touching
 
 ## Testing
-- `make test` runs the untagged Go suite. Database and other integration tests carry `//go:build integration` next to the code they test and run with `go test -tags=integration ./...`; Postgres is embedded (downloaded on first run), so no Docker is needed
+- `make test` runs the untagged Go suite. Database and other integration tests carry `//go:build integration` next to the code they test and run with `go test -tags=integration ./...` against an in-memory SQLite database, so no Docker is needed
 - IRC integration tests in `test/irc/`, run with `go test -tags=irc_integration_test ./test/irc/...` (in-process ircd, no Docker) - see `test/irc/README.md`
 - Browser end-to-end tests in `test/e2e/`, run with `go test -tags=e2e ./test/e2e/...` (needs a built `web/dist` and a Playwright browser) - see `test/e2e/README.md`
 - Build-tagged packages are invisible to a plain `go list ./...`; pass the tag to tooling that discovers packages first
@@ -115,7 +115,7 @@ Applies to Go and TypeScript alike. Excessive low-value comments are the most co
 - Use the PR template at `.github/pull_request_template.md` - fill out the relevant sections and delete those that don't apply
 - PR titles follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) (e.g. `feat(indexers): add NewTracker`, `fix(irc): reconnect on timeout`) - commits are squashed on merge, so the PR title becomes the commit message
 - Indexer definitions live as YAML files in `internal/indexer/definitions/` - adding a new indexer is the most common contribution, and usually only touches a single definition file there. Removing one requires a tombstone in `internal/indexer/definitions/deprecated/` (CI rejects a removal without it) - see `CONTRIBUTING.md`
-- Database schema changes require migrations for **both SQLite and PostgreSQL** (`internal/database/`)
+- Database schema changes require a SQLite migration (`internal/database/migrations/`)
 - The template has an **AI disclosure** section - always answer it truthfully, stating what was AI-generated and which model/tool was used
 - Do **not** add AI attribution to commit messages or PR descriptions - no `Co-Authored-By: Claude`, `Generated with ...` trailers, or similar. AI usage belongs in the PR template's AI disclosure section, not in the git history
 - See `CONTRIBUTING.md` for the full contribution guide

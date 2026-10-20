@@ -14,9 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Migration cases shared by the SQLite and Postgres suites. Their SQL sticks to literals and
-// syntax that both drivers accept.
-
 const insertIrcNetwork = `INSERT INTO irc_network (
 	id, enabled, name, server, port, tls, tls_skip_verify, pass, nick,
 	auth_mechanism, auth_account, auth_password, invite_command,

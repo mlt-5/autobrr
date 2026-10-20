@@ -40,7 +40,6 @@
     "buildDate": "Builddatum",
     "application": "Anwendung",
     "configPath": "Konfigurationspfad",
-    "database": "Datenbank",
     "webuiDebugMode": "WebUI-Debugmodus",
     "theme": "Design",
     "themeDescription": "Zwischen hellem, dunklem oder Systemdesign wählen.",

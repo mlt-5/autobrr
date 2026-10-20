@@ -1,2 +1,0 @@
-ALTER TABLE list
-    ADD COLUMN skip_clean_sanitize BOOLEAN DEFAULT FALSE;

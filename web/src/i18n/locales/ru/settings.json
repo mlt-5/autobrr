@@ -40,7 +40,6 @@
     "buildDate": "Дата сборки",
     "application": "Приложение",
     "configPath": "Путь конфигурации",
-    "database": "База данных",
     "webuiDebugMode": "Режим отладки WebUI",
     "theme": "Тема",
     "themeDescription": "Выберите светлую, тёмную или системную тему.",

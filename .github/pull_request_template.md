@@ -33,7 +33,7 @@ Fixes # (issue)
 - [ ] My PR title follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) format (it becomes the squashed commit message)
 - [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [ ] I ran `go fmt` and the test suite passes locally
-- [ ] If this changes the database schema, I have added migrations for both SQLite and PostgreSQL
+- [ ] If this changes the database schema, I have added a SQLite migration
 - [ ] I have linked any related issue and updated docs if needed
 
 ## AI disclosure

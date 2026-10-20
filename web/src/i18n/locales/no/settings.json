@@ -40,7 +40,6 @@
     "buildDate": "Byggedato",
     "application": "Applikasjon",
     "configPath": "Konfigurasjonssti",
-    "database": "Database",
     "webuiDebugMode": "WebUI-feilsøkingsmodus",
     "theme": "Tema",
     "themeDescription": "Velg mellom lyst, mørkt eller følg systemtemaet.",

@@ -78,7 +78,6 @@ function ApplicationSettings() {
         {data?.date && <RowItem label={t("settings:application.buildDate")} value={data.date} />}
         <RowItem label={t("settings:application.application")} value={data?.application} />
         <RowItem label={t("settings:application.configPath")} value={data?.config_dir} />
-        <RowItem label={t("settings:application.database")} value={data?.database} />
         <div className="py-0.5">
           <Checkbox
             name="debug"

@@ -40,7 +40,6 @@
     "buildDate": "Date de build",
     "application": "Application",
     "configPath": "Chemin de configuration",
-    "database": "Base de données",
     "webuiDebugMode": "Mode débogage WebUI",
     "theme": "Thème",
     "themeDescription": "Choisir entre le thème clair, sombre ou celui du système.",
