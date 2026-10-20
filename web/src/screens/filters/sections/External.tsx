@@ -23,7 +23,6 @@ import {
 } from "@domain/constants";
 
 import { DeleteModal } from "@components/modals";
-import { DocsLink } from "@components/ExternalLink";
 import { Checkbox } from "@components/Checkbox";
 import { TitleSubtitle } from "@components/headings";
 import { FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
@@ -38,8 +37,10 @@ export function External() {
     index: 0,
     name: `External ${values.external.length + 1}`,
     enabled: true,
-    type: "EXEC",
+    type: "WEBHOOK",
     on_error: "REJECT",
+    webhook_method: "POST",
+    webhook_expect_status: 200,
   };
 
   // Rows load and run highest index first, so the displayed order is written top-down as n-1..0
@@ -297,42 +298,6 @@ interface TypeFormProps {
 const TypeForm = ({ external, idx }: TypeFormProps) => {
   const { t } = useTranslation("filters");
   switch (external.type) {
-  case "EXEC": {
-    return (
-      <FilterSection
-        title={t("external.execute.title")}
-        subtitle={t("external.execute.subtitle")}
-      >
-        <FilterLayout>
-          <TextAreaAutoResize
-            name={`external[${idx}].exec_cmd`}
-            label={t("external.execute.path")}
-            columns={5}
-            placeholder={t("external.execute.pathPlaceholder")}
-            tooltip={
-              <div>
-                <p>{t("external.execute.pathTooltip")}</p>
-                <DocsLink href="https://autobrr.com/filters/actions#custom-commands--exec" />
-              </div>
-            }
-          />
-          <TextAreaAutoResize
-            name={`external[${idx}].exec_args`}
-            label={t("external.execute.args")}
-            columns={5}
-            placeholder={t("external.execute.argsPlaceholder")}
-          />
-          <div className="col-span-12 sm:col-span-2">
-            <NumberField
-              name={`external[${idx}].exec_expect_status`}
-              label={t("external.execute.expectedExitStatus")}
-              placeholder="0"
-            />
-          </div>
-        </FilterLayout>
-      </FilterSection>
-    );
-  }
   case "WEBHOOK": {
     return (
       <>

@@ -22,10 +22,6 @@
     "WEBHOOK": {
       "label": "Webhook",
       "description": "Exécuter un webhook"
-    },
-    "EXEC": {
-      "label": "Exec",
-      "description": "Exécuter une commande personnalisée après une correspondance de filtre"
     }
   },
   "pushStatus": {

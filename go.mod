@@ -7,7 +7,6 @@ replace github.com/r3labs/sse/v2 => github.com/autobrr/sse/v2 v2.0.0-20230520125
 replace github.com/moistari/rls => github.com/autobrr/rls v0.8.1
 
 require (
-	github.com/Hellseher/go-shellquote v0.1.0
 	github.com/KimMachineGun/automemlimit v1.0.0
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/Masterminds/squirrel v1.5.4

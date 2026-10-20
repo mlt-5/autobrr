@@ -14,8 +14,6 @@ type Action struct {
 	Name           string     `json:"name"`
 	Type           ActionType `json:"type"`
 	Enabled        bool       `json:"enabled"`
-	ExecCmd        string     `json:"exec_cmd,omitempty"`
-	ExecArgs       string     `json:"exec_args,omitempty"`
 	WatchFolder    string     `json:"watch_folder,omitempty"`
 	WebhookHost    string     `json:"webhook_host,omitempty"`
 	WebhookType    string     `json:"webhook_type,omitempty"`
@@ -40,7 +38,7 @@ func (a *Action) NeedsTorrentDownloaded() bool {
 // macroFields returns the action fields that get macro expanded and could
 // reference the torrent file. Keep in sync with ParseMacros.
 func (a *Action) macroFields() []string {
-	return []string{a.ExecArgs, a.WatchFolder, a.WebhookData}
+	return []string{a.WatchFolder, a.WebhookData}
 }
 
 // CheckMacrosNeedTorrentTmpFile check if macros need the torrent written to disk.
@@ -90,11 +88,6 @@ func (a *Action) ParseMacros(release *Release) error {
 
 	m := NewMacro(*release)
 
-	a.ExecArgs, err = m.Parse(a.ExecArgs)
-	if err != nil {
-		return errors.Wrap(err, "could not parse exec args")
-	}
-
 	a.WatchFolder, err = m.Parse(a.WatchFolder)
 	if err != nil {
 		return errors.Wrap(err, "could not parse watch folder")
@@ -112,7 +105,6 @@ type ActionType string
 
 const (
 	ActionTypeTest        ActionType = "TEST"
-	ActionTypeExec        ActionType = "EXEC"
 	ActionTypeWatchFolder ActionType = "WATCH_FOLDER"
 	ActionTypeWebhook     ActionType = "WEBHOOK"
 )

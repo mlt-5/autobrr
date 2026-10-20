@@ -22,8 +22,6 @@ func getMockAction() *domain.Action {
 		Name:           "randomAction",
 		Type:           domain.ActionTypeTest,
 		Enabled:        true,
-		ExecCmd:        "/home/user/Downloads/test.sh",
-		ExecArgs:       "WGET_URL",
 		WatchFolder:    "/home/user/Downloads",
 		WebhookHost:    "http://localhost:8080",
 		WebhookType:    "test",

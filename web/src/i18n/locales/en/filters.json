@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "Dismiss",
       "status": {
-        "EXEC": "Script exited with code {{status}} (expected {{expected}}) in {{duration}} ms",
         "WEBHOOK": "Webhook responded with status {{status}} (expected {{expected}}) in {{duration}} ms"
       },
       "error": {
-        "EXEC": "Script failed: {{error}}",
         "WEBHOOK": "Webhook request failed: {{error}}"
       }
     },
     "types": {
-      "EXEC": "Exec",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "Reject",
       "CONTINUE": "Continue to next"
-    },
-    "execute": {
-      "title": "Execute",
-      "subtitle": "Specify the executable, the argument and the expected exit status to run as a pre-filter",
-      "path": "Path to Executable",
-      "pathPlaceholder": "Absolute path to executable eg. /bin/test",
-      "pathTooltip": "For custom commands you should specify the full path to the binary/program you want to run. And you can include your own static variables:",
-      "args": "Exec Arguments",
-      "argsPlaceholder": "Arguments eg. --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "Expected exit status"
     },
     "request": {
       "title": "Request",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "Heads up!",
       "text": "The test action does nothing except to show if the filter works. Make sure to have your Logs page open while testing."
-    },
-    "exec": {
-      "title": "Exec Arguments",
-      "subtitle": "Specify the executable and its arguments to be executed upon filter match. Use an absolute path.",
-      "path": "Path to Executable",
-      "pathPlaceholder": "Path to program eg. /bin/test",
-      "arguments": "Arguments",
-      "argumentsPlaceholder": "Arguments eg. --test"
     },
     "watchFolder": {
       "title": "Watch Folder Arguments",

@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os/exec"
 	"slices"
 	"strconv"
 	"strings"
@@ -21,7 +20,6 @@ import (
 	"github.com/autobrr/autobrr/pkg/errors"
 	"github.com/autobrr/autobrr/pkg/sharedhttp"
 
-	"github.com/Hellseher/go-shellquote"
 	"github.com/avast/retry-go/v4"
 	"github.com/rs/zerolog"
 )
@@ -970,8 +968,8 @@ func (s *Service) RunExternalFilters(ctx context.Context, f *domain.Filter, exte
 				return false, errors.Wrap(err, "could not download torrent file for release: %s", release.TorrentName)
 			}
 
-			// the path macro hands a file to the script or webhook, so the
-			// in-memory torrent has to be written to disk first
+			// the path macro hands a file to the webhook, so the in-memory
+			// torrent has to be written to disk first
 			if external.NeedTorrentTmpFile() {
 				if err := release.WriteTemporaryFile(); err != nil {
 					return false, errors.Wrap(err, "could not write torrent file for release: %s", release.TorrentName)
@@ -980,24 +978,6 @@ func (s *Service) RunExternalFilters(ctx context.Context, f *domain.Filter, exte
 		}
 
 		switch external.Type {
-		case domain.ExternalFilterTypeExec:
-			exitCode, _, err := s.execCmd(ctx, external, release)
-			if err != nil {
-				l.Error().Err(err).Msg("error executing external script")
-
-				if external.OnError == domain.FilterExternalOnErrorContinue {
-					l.Debug().Msg("external script error, and OnError set to continue")
-					continue
-				}
-				return false, errors.Wrap(err, "error executing external command")
-			}
-
-			if exitCode != external.ExecExpectStatus {
-				l.Debug().Int("expected_status", external.ExecExpectStatus).Int("actual_status", exitCode).Msg("external script got unexpected exit code")
-				f.RejectReasons.Add("external script exit code", exitCode, external.ExecExpectStatus)
-				return false, nil
-			}
-
 		case domain.ExternalFilterTypeWebhook:
 			res, err := s.webhook(ctx, external, release)
 			if err != nil {
@@ -1022,8 +1002,8 @@ func (s *Service) RunExternalFilters(ctx context.Context, f *domain.Filter, exte
 	return true, nil
 }
 
-// TestExternal runs one external filter against a sample release so a script
-// or webhook can be verified from the filter form before it is saved. Failures
+// TestExternal runs one external filter against a sample release so a webhook
+// can be verified from the filter form before it is saved. Failures
 // are reported in the result rather than returned, since they are the point of
 // the test.
 func (s *Service) TestExternal(ctx context.Context, external *domain.FilterExternal) (*domain.FilterExternalTestResult, error) {
@@ -1036,17 +1016,6 @@ func (s *Service) TestExternal(ctx context.Context, external *domain.FilterExter
 	start := time.Now()
 
 	switch external.Type {
-	case domain.ExternalFilterTypeExec:
-		exitCode, output, err := s.execCmd(ctx, *external, release)
-		if err != nil {
-			l.Debug().Err(err).Msg("external script test failed")
-			result.Error = err.Error()
-		}
-
-		result.Status = exitCode
-		result.ExpectStatus = external.ExecExpectStatus
-		result.Output = output
-
 	case domain.ExternalFilterTypeWebhook:
 		res, err := s.webhook(ctx, *external, release)
 		if err != nil {
@@ -1084,74 +1053,9 @@ func newSampleRelease() *domain.Release {
 	return rls
 }
 
-// externalOutputMaxBytes caps how much script output or webhook response body
-// is kept for logging and the test result.
+// externalOutputMaxBytes caps how much webhook response body is kept for
+// logging and the test result.
 const externalOutputMaxBytes = 4096
-
-// outputBuffer keeps the first externalOutputMaxBytes written and drops the
-// rest, so a chatty script cannot grow memory unbounded. The bytes.Buffer is a
-// named field rather than embedded: os/exec pumps output with io.Copy, which
-// would take a promoted ReadFrom and bypass the cap.
-type outputBuffer struct {
-	buf bytes.Buffer
-}
-
-func (b *outputBuffer) Write(p []byte) (int, error) {
-	if remaining := externalOutputMaxBytes - b.buf.Len(); remaining > 0 {
-		b.buf.Write(p[:min(len(p), remaining)])
-	}
-
-	return len(p), nil
-}
-
-func (b *outputBuffer) String() string {
-	return b.buf.String()
-}
-
-func (s *Service) execCmd(_ context.Context, external domain.FilterExternal, release *domain.Release) (int, string, error) {
-	l := s.log.With().Str("method", "execCmd").Str("trace_id", release.TraceID).Str("external_filter", external.Name).Str("release", release.TorrentName).Logger()
-
-	cmd, err := exec.LookPath(external.ExecCmd)
-	if err != nil {
-		return 0, "", errors.Wrap(err, "exec failed, could not find program: %s", external.ExecCmd)
-	}
-
-	m := domain.NewMacro(*release)
-
-	parsedArgs, err := m.Parse(external.ExecArgs)
-	if err != nil {
-		return 0, "", errors.Wrap(err, "could not parse macro")
-	}
-
-	commandArgs, err := shellquote.Split(parsedArgs)
-	if err != nil {
-		return 0, "", errors.Wrap(err, "could not parse into shell-words")
-	}
-
-	var output outputBuffer
-
-	command := exec.Command(cmd, commandArgs...)
-	command.Stdout = &output
-	command.Stderr = &output
-
-	l.Debug().Str("script", cmd).Str("args", strings.Join(commandArgs, " ")).Msg("executing script")
-
-	start := time.Now()
-
-	if err := command.Run(); err != nil {
-		if exitErr, ok := errors.AsType[*exec.ExitError](err); ok {
-			l.Debug().Int("exit_code", exitErr.ExitCode()).Str("output", output.String()).Msg("filter script exited with non-zero code")
-			return exitErr.ExitCode(), output.String(), nil
-		}
-
-		return 0, output.String(), errors.Wrap(err, "error running command")
-	}
-
-	l.Debug().Str("script", cmd).Str("args", parsedArgs).Str("indexer", release.Indexer.Identifier).Dur("duration", time.Since(start)).Msg("executed external script")
-	l.Trace().Str("output", output.String()).Msg("external script output")
-
-	return 0, output.String(), nil
-}
 
 type webhookResponse struct {
 	statusCode int

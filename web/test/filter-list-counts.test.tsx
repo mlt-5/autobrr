@@ -97,7 +97,7 @@ test.each([
   }
   fireEvent.click(await screen.findByRole("button", { name: "Add new" }));
   if (section === "External") {
-    fireEvent.change(await screen.findByRole("textbox", { name: /Path to Executable/ }), { target: { value: "true" } });
+    fireEvent.change(await screen.findByRole("textbox", { name: /Endpoint/ }), { target: { value: "http://localhost/webhook" } });
   }
   await act(async () => {
     fireEvent.click(screen.getByRole("button", { name: "Save" }));

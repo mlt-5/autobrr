@@ -698,6 +698,19 @@ func TestRunMigrationTest_SQLite(t *testing.T) {
 			},
 			want: "",
 		},
+		{
+			name:   "exec removal deletes exec actions and external filters",
+			fields: fields{},
+			args: MigrationTestCase{
+				Name:                "exec removal deletes exec actions and external filters",
+				MigrationIndex:      107,
+				MigrationsUntilName: "107_remove_update_checker",
+				MigrationToRun:      "108_remove_exec",
+				SetupData:           setupExecData,
+				ValidateResult:      validateExecRemoved,
+			},
+			want: "",
+		},
 	}
 
 	for _, tt := range tests {

@@ -22,32 +22,6 @@ export const Test = () => {
   );
 };
 
-export const Exec = ({ idx }: ClientActionProps) => {
-  const { t } = useTranslation("filters");
-
-  return (
-  <FilterSection
-    title={t("actionComponents.exec.title")}
-    subtitle={t("actionComponents.exec.subtitle")}
-  >
-    <FilterLayout>
-      <TextField
-        name={`actions[${idx}].exec_cmd`}
-        label={t("actionComponents.exec.path")}
-        placeholder={t("actionComponents.exec.pathPlaceholder")}
-      />
-
-      <TextAreaAutoResize
-        name={`actions[${idx}].exec_args`}
-        label={t("actionComponents.exec.arguments")}
-        placeholder={t("actionComponents.exec.argumentsPlaceholder")}
-      />
-    </FilterLayout>
-
-  </FilterSection>
-  );
-};
-
 export const WatchFolder = ({ idx }: ClientActionProps) => {
   const { t } = useTranslation("filters");
 

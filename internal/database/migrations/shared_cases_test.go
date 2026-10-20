@@ -270,3 +270,56 @@ func validateUpdateCheckerRemoved(db *sql.DB, t *testing.T) {
 	require.NoError(t, rows.Err())
 	assert.Equal(t, []string{"PUSH_ERROR"}, inbox)
 }
+
+func setupExecData(db *sql.DB) error {
+	stmts := []string{
+		`INSERT INTO filter (id, name) VALUES (1, 'exec filter')`,
+		`INSERT INTO action (id, name, type, enabled, exec_cmd, exec_args, filter_id) VALUES (1, 'script', 'EXEC', TRUE, '/bin/true', '{{ .TorrentName }}', 1)`,
+		`INSERT INTO action (id, name, type, enabled, webhook_host, filter_id) VALUES (2, 'hook', 'WEBHOOK', TRUE, 'https://hook.example', 1)`,
+		`INSERT INTO "release" (id, torrent_name) VALUES (1, 'Test.Release-GRP')`,
+		`INSERT INTO release_action_status (id, status, action, action_id, type, filter_id, release_id) VALUES (1, 'PUSH_APPROVED', 'script', 1, 'EXEC', 1, 1)`,
+		`INSERT INTO release_action_status (id, status, action, action_id, type, filter_id, release_id) VALUES (2, 'PUSH_APPROVED', 'hook', 2, 'WEBHOOK', 1, 1)`,
+		`INSERT INTO filter_external (id, name, type, enabled, exec_cmd, exec_args, exec_expect_status, filter_id) VALUES (1, 'script', 'EXEC', TRUE, '/bin/true', '', 0, 1)`,
+		`INSERT INTO filter_external (id, name, type, enabled, webhook_host, webhook_expect_status, filter_id) VALUES (2, 'hook', 'WEBHOOK', TRUE, 'https://hook.example', 200, 1)`,
+	}
+	for _, stmt := range stmts {
+		if _, err := db.Exec(stmt); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func validateExecRemoved(db *sql.DB, t *testing.T) {
+	var actions []int
+	rows, err := db.Query(`SELECT id FROM action ORDER BY id`)
+	require.NoError(t, err)
+	defer rows.Close()
+	for rows.Next() {
+		var id int
+		require.NoError(t, rows.Scan(&id))
+		actions = append(actions, id)
+	}
+	require.NoError(t, rows.Err())
+	assert.Equal(t, []int{2}, actions)
+
+	var externals int
+	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM filter_external WHERE type = 'EXEC'`).Scan(&externals))
+	assert.Equal(t, 0, externals)
+	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM filter_external WHERE type = 'WEBHOOK'`).Scan(&externals))
+	assert.Equal(t, 1, externals)
+
+	var execHistoryActionID sql.NullInt64
+	require.NoError(t, db.QueryRow(`SELECT action_id FROM release_action_status WHERE id = 1`).Scan(&execHistoryActionID))
+	assert.False(t, execHistoryActionID.Valid, "release history is kept but unlinked from the deleted action")
+
+	var webhookHistoryActionID int
+	require.NoError(t, db.QueryRow(`SELECT action_id FROM release_action_status WHERE id = 2`).Scan(&webhookHistoryActionID))
+	assert.Equal(t, 2, webhookHistoryActionID)
+
+	_, err = db.Exec(`SELECT exec_cmd FROM action`)
+	assert.Error(t, err, "action.exec_cmd must be dropped")
+	_, err = db.Exec(`SELECT exec_expect_status FROM filter_external`)
+	assert.Error(t, err, "filter_external.exec_expect_status must be dropped")
+}

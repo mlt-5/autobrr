@@ -5,7 +5,6 @@ package domain
 
 import (
 	"fmt"
-	"os/exec"
 	"slices"
 	"strconv"
 	"strings"
@@ -208,9 +207,6 @@ type FilterExternal struct {
 	Index                    int                   `json:"index"`
 	Type                     FilterExternalType    `json:"type"`
 	Enabled                  bool                  `json:"enabled"`
-	ExecCmd                  string                `json:"exec_cmd,omitempty"`
-	ExecArgs                 string                `json:"exec_args,omitempty"`
-	ExecExpectStatus         int                   `json:"exec_expect_status,omitempty"`
 	WebhookHost              string                `json:"webhook_host,omitempty"`
 	WebhookMethod            string                `json:"webhook_method,omitempty"`
 	WebhookData              string                `json:"webhook_data,omitempty"`
@@ -226,7 +222,7 @@ type FilterExternal struct {
 // macroFields returns the external filter fields that get macro expanded and
 // could reference the torrent file.
 func (f FilterExternal) macroFields() []string {
-	return []string{f.ExecArgs, f.WebhookData}
+	return []string{f.WebhookData}
 }
 
 // NeedTorrentDownloaded check if the external filter needs the torrent contents.
@@ -238,7 +234,7 @@ func (f FilterExternal) NeedTorrentDownloaded() bool {
 
 // NeedTorrentTmpFile check if the external filter needs the torrent written to
 // disk. The torrent is otherwise kept in memory, so only the path macros need
-// an actual file to hand to the script or webhook.
+// an actual file to hand to the webhook.
 func (f FilterExternal) NeedTorrentTmpFile() bool {
 	return containsAnyMacro(f.macroFields(), "TorrentPathName", "TorrentTmpFile")
 }
@@ -246,13 +242,12 @@ func (f FilterExternal) NeedTorrentTmpFile() bool {
 type FilterExternalType string
 
 const (
-	ExternalFilterTypeExec    FilterExternalType = "EXEC"
 	ExternalFilterTypeWebhook FilterExternalType = "WEBHOOK"
 )
 
 // FilterExternalTestResult is the outcome of running one external filter
-// against a sample release from the filter form. Status holds the exit code
-// for scripts and the HTTP status code for webhooks.
+// against a sample release from the filter form. Status holds the HTTP status
+// code the webhook returned.
 type FilterExternalTestResult struct {
 	Type         FilterExternalType `json:"type"`
 	Success      bool               `json:"success"`
@@ -374,30 +369,6 @@ func (f *Filter) Validate() error {
 	case "", FilterMaxDownloadsWindowFixed, FilterMaxDownloadsWindowRolling:
 	default:
 		return errors.New("validation: invalid max downloads window type: %s", f.MaxDownloadsWindowType)
-	}
-
-	for _, external := range f.External {
-		if external.Type == ExternalFilterTypeExec {
-			if external.ExecCmd != "" && external.Enabled {
-				// check if program exists
-				_, err := exec.LookPath(external.ExecCmd)
-				if err != nil {
-					return errors.Wrap(err, "could not find external exec command: %s", external.ExecCmd)
-				}
-			}
-		}
-	}
-
-	for _, action := range f.Actions {
-		if action.Type == ActionTypeExec {
-			if action.ExecCmd != "" && action.Enabled {
-				// check if program exists
-				_, err := exec.LookPath(action.ExecCmd)
-				if err != nil {
-					return errors.Wrap(err, "could not find action exec command: %s", action.ExecCmd)
-				}
-			}
-		}
 	}
 
 	return nil

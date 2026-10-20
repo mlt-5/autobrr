@@ -107,7 +107,7 @@ func TestCheckActionPreconditions_WritesTmpFileForPathMacro(t *testing.T) {
 	svc := newTestService(dl)
 
 	release := &domain.Release{TorrentName: "Test.Release-GRP", Protocol: domain.ReleaseProtocolTorrent}
-	action := &domain.Action{Type: domain.ActionTypeExec, ExecArgs: "--torrent {{.TorrentPathName}}"}
+	action := &domain.Action{Type: domain.ActionTypeWebhook, WebhookData: `{"torrent":"{{.TorrentPathName}}"}`}
 
 	err := svc.CheckActionPreconditions(t.Context(), action, release)
 	assert.NoError(t, err)
@@ -120,15 +120,15 @@ func TestCheckActionPreconditions_WritesTmpFileForPathMacro(t *testing.T) {
 	})
 }
 
-// An exec action without torrent macros has nothing to download.
-func TestCheckActionPreconditions_SkipsDownloadForPlainExec(t *testing.T) {
+// A webhook action without torrent macros has nothing to download.
+func TestCheckActionPreconditions_SkipsDownloadForPlainWebhook(t *testing.T) {
 	t.Parallel()
 
 	dl := &fakeDownloadService{}
 	svc := newTestService(dl)
 
 	release := &domain.Release{TorrentName: "Test.Release-GRP", Protocol: domain.ReleaseProtocolTorrent}
-	action := &domain.Action{Type: domain.ActionTypeExec, ExecArgs: "--name {{.TorrentName}}"}
+	action := &domain.Action{Type: domain.ActionTypeWebhook, WebhookData: `{"name":"{{.TorrentName}}"}`}
 
 	err := svc.CheckActionPreconditions(t.Context(), action, release)
 

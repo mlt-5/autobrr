@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "Lukk",
       "status": {
-        "EXEC": "Skriptet avsluttet med kode {{status}} (forventet {{expected}}) på {{duration}} ms",
         "WEBHOOK": "Webhook svarte med status {{status}} (forventet {{expected}}) på {{duration}} ms"
       },
       "error": {
-        "EXEC": "Skriptet feilet: {{error}}",
         "WEBHOOK": "Webhook-forespørselen feilet: {{error}}"
       }
     },
     "types": {
-      "EXEC": "Exec",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "Avvis",
       "CONTINUE": "Fortsett til neste"
-    },
-    "execute": {
-      "title": "Kjør (Execute)",
-      "subtitle": "Spesifiser den kjørbare filen, argumentet og forventet avslutningsstatus for å kjøre som et forhåndsfilter",
-      "path": "Sti til kjørbar fil",
-      "pathPlaceholder": "Absolutt sti til kjørbar fil f.eks. /bin/test",
-      "pathTooltip": "For egendefinerte kommandoer bør du spesifisere den fulle stien til binærfilen/programmet du vil kjøre. Og du kan inkludere dine egne statiske variabler:",
-      "args": "Exec-argumenter",
-      "argsPlaceholder": "Argumenter f.eks. --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "Forventet avslutningsstatus"
     },
     "request": {
       "title": "Forespørsel (Request)",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "Obs!",
       "text": "Testhandlingen gjør ingenting annet enn å vise om filteret fungerer. Sørg for å ha Logger-siden åpen mens du tester."
-    },
-    "exec": {
-      "title": "Exec-argumenter",
-      "subtitle": "Spesifiser den kjørbare filen og dens argumenter som skal kjøres ved filtersamsvar. Bruk en absolutt sti.",
-      "path": "Sti til kjørbar fil",
-      "pathPlaceholder": "Sti til program f.eks. /bin/test",
-      "arguments": "Argumenter",
-      "argumentsPlaceholder": "Argumenter f.eks. --test"
     },
     "watchFolder": {
       "title": "Overvåket mappe-argumenter (Watch Folder)",

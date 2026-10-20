@@ -173,9 +173,7 @@ const collectFieldErrors = (form: AnyFormApi) => {
 const actionSchema = z.object({
   enabled: z.boolean(),
   name: z.string().min(1, { message: "Required" }),
-  type: z.enum(["TEST", "EXEC", "WATCH_FOLDER", "WEBHOOK"]),
-  exec_cmd: z.string().optional(),
-  exec_args: z.string().optional(),
+  type: z.enum(["TEST", "WATCH_FOLDER", "WEBHOOK"]),
   watch_folder: z.string().optional(),
   webhook_host: z.string().optional(),
   webhook_type: z.string().optional(),
@@ -187,11 +185,8 @@ const externalFilterSchema = z.object({
   enabled: z.boolean(),
   index: z.number(),
   name: z.string(),
-  type: z.enum(["EXEC", "WEBHOOK"]),
+  type: z.enum(["WEBHOOK"]),
   on_error: z.enum([...ExternalFilterOnErrorValues]),
-  exec_cmd: z.string().optional(),
-  exec_args: z.string().optional(),
-  exec_expect_status: z.number().optional(),
   webhook_host: z.string().optional(),
   webhook_type: z.string().optional(),
   webhook_method: z.string().optional(),
@@ -229,16 +224,6 @@ const externalFilterSchema = z.object({
         message: "Must have webhook expect status",
         code: "custom",
         path: ["webhook_expect_status"]
-      });
-    }
-  }
-
-  if (value.type == "EXEC") {
-    if (!value.exec_cmd) {
-      ctx.addIssue({
-        message: "Must have exec cmd",
-        code: "custom",
-        path: ["exec_cmd"]
       });
     }
   }

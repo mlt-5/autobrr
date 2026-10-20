@@ -22,10 +22,6 @@
     "WEBHOOK": {
       "label": "Webhook",
       "description": "运行 webhook"
-    },
-    "EXEC": {
-      "label": "Exec",
-      "description": "在过滤器命中后运行自定义命令"
     }
   },
   "pushStatus": {

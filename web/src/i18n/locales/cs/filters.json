@@ -429,31 +429,18 @@
       "testResult": {
         "dismiss": "Zavřít",
         "status": {
-          "EXEC": "Skript skončil s kódem {{status}} (očekáváno {{expected}}) za {{duration}} ms",
           "WEBHOOK": "Webhook odpověděl stavem {{status}} (očekáváno {{expected}}) za {{duration}} ms"
         },
         "error": {
-          "EXEC": "Skript selhal: {{error}}",
           "WEBHOOK": "Požadavek na webhook selhal: {{error}}"
         }
       },
       "types": {
-        "EXEC": "Spustit",
         "WEBHOOK": "Webhook"
       },
       "onErrorOptions": {
         "REJECT": "Odmítnout",
         "CONTINUE": "Pokračovat na další"
-      },
-      "execute": {
-        "title": "Spustit",
-        "subtitle": "Specifikujte spustitelný soubor, argument a očekávaný exit kód který se spustí před filtrováním",
-        "path": "Cesta ke spustitelnému souboru",
-        "pathPlaceholder": "Absolutní cesta ke spustitelnému souboru např. /bin/test",
-        "pathTooltip": "Pro vlastní příkazy byste měli specifikovat plnou cestu k binárnímu/programu, který chcete spustit. A můžete zahrnout vlastní statické proměnné:",
-        "args": "Argumenty spustitelného souboru",
-        "argsPlaceholder": "Argumenty např. --test \"{{ .TorrentName }}\"",
-        "expectedExitStatus": "Očekávaný exit kód"
       },
       "request": {
         "title": "Požadavek",
@@ -487,14 +474,6 @@
       "test": {
         "alert": "Upozornění!",
         "text": "Testovací akce nic neprovede, kromě toho, aby ukázala, zda filtr funguje. Ujistěte se, že máte otevřenou stránku Logy při testování."
-      },
-      "exec": {
-        "title": "Spustitelné soubory",
-        "subtitle": "Specifikujte spustitelný soubor a jeho argumenty, které se mají spustit při shodě filtru. Použijte absolutní cestu.",
-        "path": "Cesta ke spustitelnému souboru",
-        "pathPlaceholder": "Cesta ke spustitelnému souboru např. /bin/test",
-        "arguments": "Argumenty",
-        "argumentsPlaceholder": "Argumenty např. --test"
       },
       "watchFolder": {
         "title": "Sledované složky",

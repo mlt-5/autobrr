@@ -118,6 +118,7 @@ func PostgresMigrations(db *sql.DB, logger zerolog.Logger) *migrator.Migrator {
 	migrate.AddFileMigration("95_remove_notification_senders.sql")
 	migrate.AddFileMigration("96_remove_list_sources.sql")
 	migrate.AddFileMigration("97_remove_update_checker.sql")
+	migrate.AddFileMigration("98_remove_exec.sql")
 
 	return migrate
 }
