@@ -89,26 +89,6 @@ logLevel = "TRACE"
 #
 #postgresExtraParams = "connect_timeout=10"
 
-# OpenID Connect Configuration
-#
-# Enable OIDC authentication
-#oidcEnabled = false
-#
-# OIDC Issuer URL (e.g. https://auth.example.com)
-#oidcIssuer = ""
-#
-# OIDC Client ID
-#oidcClientId = ""
-#
-# OIDC Client Secret
-#oidcClientSecret = ""
-#
-# OIDC Redirect URL (e.g. http://localhost:7474/api/auth/oidc/callback)
-#oidcRedirectUrl = ""
-#
-# Disable Built In Login Form (only works when using external auth)
-#oidcDisableBuiltInLogin = false
-
 # Custom definitions
 #
 #customDefinitions = "test/definitions"

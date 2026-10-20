@@ -14,12 +14,10 @@ import { Section } from "./_components";
 import { PasswordField, TextField } from "@components/inputs";
 import toast from "@components/hot-toast";
 import Toast from "@components/notifications/Toast";
-import { OpenIdIcon } from "@components/Icons";
 import { AuthContext } from "@utils/Context";
 
 const AccountSettings = () => {
   const { t } = useTranslation("settings");
-  const auth = AuthContext.get();
 
   return (
     <Section
@@ -27,7 +25,7 @@ const AccountSettings = () => {
       description={t("account.description")}
     >
       <div className="py-0.5">
-        {auth.authMethod === 'oidc' ? <OIDCAccount /> : <Credentials />}
+        <Credentials />
       </div>
     </Section>
   );
@@ -167,81 +165,6 @@ function Credentials() {
             </div>
           </form>
         </form.AppForm>
-      </div>
-    </Section>
-  );
-}
-
-function OIDCAccount() {
-  const { t } = useTranslation("settings");
-  const auth = AuthContext.get();
-  
-  // Helper function to format the issuer URL for display
-  const getFormattedIssuerName = () => {
-    if (!auth.issuerUrl) return t("account.identityProvider");
-    
-    try {
-      const url = new URL(auth.issuerUrl);
-      // Return domain name without 'www.'
-      return url.hostname.replace(/^www\./i, '');
-    } catch {
-      return t("account.identityProvider");
-    }
-  };
-  
-  return (
-    <Section
-      titleElement={
-        <div className="flex items-center space-x-2">
-          <span className="text-gray-700 dark:text-gray-300 font-bold">{t("account.oidcTitle")}</span>
-          <OpenIdIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-        </div>
-      }
-      title={t("account.oidcTitle")}
-      description={t("account.oidcDescription")}
-      noLeftPadding
-    >
-      <div className="px-4 py-5 sm:p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 transition duration-150">
-        <div className="flex flex-col sm:flex-row items-center">
-          <div className="flex-shrink-0 relative">
-            {auth.profilePicture ? (
-              <img
-                src={auth.profilePicture}
-                alt={`${auth.username}'s profile picture`}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-full object-cover border-1 border-gray-200 dark:border-gray-700 transition duration-200"
-                onError={() => auth.profilePicture = undefined}
-              />
-            ) : (
-              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-700 transition duration-200">
-                <OpenIdIcon className="h-16 w-16 text-gray-500 dark:text-gray-400" />
-              </div>
-            )}
-          </div>
-          <div className="mt-4 sm:mt-0 sm:ml-6 text-center sm:text-left">
-            <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">
-              {auth.username}
-            </h3>
-            <div className="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <OpenIdIcon className="mr-1.5 h-4 w-4 flex-shrink-0" />
-              <p>{t("account.authenticatedViaOidc")}</p>
-            </div>
-            {auth.issuerUrl && (
-              <div className="mt-2">
-                <a 
-                  href={auth.issuerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-2.5 py-1.5 text-xs font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 transition-colors duration-150"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                  {getFormattedIssuerName()}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </Section>
   );

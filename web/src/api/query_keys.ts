@@ -12,7 +12,6 @@ export const LogKeys = {
 
 export const AuthKeys = {
   all: ["auth"] as const,
-  oidcConfig: () => [...AuthKeys.all, "oidc-config"] as const,
   canOnboard: () => [...AuthKeys.all, "can-onboard"] as const
 };
 

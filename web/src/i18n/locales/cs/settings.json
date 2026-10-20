@@ -62,11 +62,7 @@
       "requiredIfUpdatingCredentials": "Povinné při aktualizaci přihlašovacích údajů",
       "newPassword": "Nové heslo",
       "confirmNewPassword": "Potvrdit nové heslo",
-      "save": "Uložit",
-      "identityProvider": "your identity provider",
-      "oidcTitle": "OpenID Connect účet",
-      "oidcDescription": "Přihlašovací údaje vašeho účtu jsou spravovány vaším OpenID Connect poskytovatelem. Chcete-li změnit své uživatelské jméno, navštivte stránku nastavení vašeho poskytovatele a přihlaste se znovu.",
-      "authenticatedViaOidc": "Autentizováno přes OpenID Connect"
+      "save": "Uložit"
     },
     "logsPage": {
       "title": "Logy",

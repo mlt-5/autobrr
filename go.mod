@@ -17,7 +17,6 @@ require (
 	github.com/autobrr/go-torrent v1.1.1
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/avast/retry-go/v4 v4.7.0
-	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/dcarbone/zadapters/zstdlog v1.1.0
 	github.com/dustin/go-humanize v1.1.0
 	github.com/ergochat/irc-go v0.7.0
@@ -46,7 +45,6 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.57.0
 	golang.org/x/net v0.59.0
-	golang.org/x/oauth2 v0.37.0
 	golang.org/x/sync v0.23.0
 	golang.org/x/term v0.46.0
 	golang.org/x/text v0.42.0
@@ -62,7 +60,6 @@ require (
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect

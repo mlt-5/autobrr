@@ -46,7 +46,6 @@ type Server struct {
 	ircService          ircService
 	listService         listService
 	notificationService notificationService
-	oidcService         oidcService
 	proxyService        proxyService
 	releaseService      releaseService
 }
@@ -73,7 +72,6 @@ type Deps struct {
 	IrcService          ircService
 	ListService         listService
 	NotificationService notificationService
-	OIDCService         oidcService
 	ProxyService        proxyService
 	ReleaseService      releaseService
 }
@@ -118,7 +116,6 @@ func NewServer(deps Deps) *Server {
 		ircService:          deps.IrcService,
 		listService:         deps.ListService,
 		notificationService: deps.NotificationService,
-		oidcService:         deps.OIDCService,
 		proxyService:        deps.ProxyService,
 		releaseService:      deps.ReleaseService,
 	}
@@ -216,7 +213,7 @@ func (s *Server) Handler() http.Handler {
 
 	// Create a separate router for API
 	apiRouter := chi.NewRouter()
-	apiRouter.Route("/auth", newAuthHandler(encoder, s.log, s, s.config.Config, s.sessionManager, s.authService, s.oidcService).Routes)
+	apiRouter.Route("/auth", newAuthHandler(encoder, s.log, s, s.config.Config, s.sessionManager, s.authService).Routes)
 	apiRouter.Route("/healthz", newHealthHandler(encoder, s.db).Routes)
 	apiRouter.Group(func(r chi.Router) {
 		r.Group(func(r chi.Router) {

@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Erforderlich bei Aktualisierung der Anmeldedaten",
     "newPassword": "Neues Passwort",
     "confirmNewPassword": "Neues Passwort bestätigen",
-    "save": "Speichern",
-    "identityProvider": "deinem Identitätsanbieter",
-    "oidcTitle": "OpenID Connect-Konto",
-    "oidcDescription": "Deine Kontoanmeldedaten werden von deinem OpenID Connect-Anbieter verwaltet. Um deinen Benutzernamen zu ändern, besuche bitte die Einstellungsseite deines Anbieters und melde dich erneut an.",
-    "authenticatedViaOidc": "Über OpenID Connect authentifiziert"
+    "save": "Speichern"
   },
   "logsPage": {
     "title": "Protokolle",

@@ -63,7 +63,7 @@ autobrr can drop matches (torrent files that meet your filter's criteria) into a
   Windows, macOS) on different architectures (e.g. x86, ARM)
 - Great container support (Docker, k8s/Kubernetes)
 - Database engine supporting both PostgreSQL and SQLite
-- Authentication support including built-in auth and OpenID Connect (OIDC)
+- Built-in authentication
 - Notifications (built-in inbox and webhooks)
 - Base path / Subfolder (and subdomain) support for convenient reverse-proxy support
 
@@ -308,12 +308,6 @@ The following environment variables can be used:
 | `AUTOBRR__POSTGRES_SSLMODE`            | PostgreSQL SSL mode                                      | `disable`   |
 | `AUTOBRR__POSTGRES_SOCKET`             | PostgreSQL unix socket                                   | -           |
 | `AUTOBRR__POSTGRES_EXTRA_PARAMS`       | Additional PostgreSQL parameters                         | -           |
-| `AUTOBRR__OIDC_ENABLED`                | Enable OpenID Connect authentication                     | `false`     |
-| `AUTOBRR__OIDC_ISSUER`                 | OIDC issuer URL                                          | -           |
-| `AUTOBRR__OIDC_CLIENT_ID`              | OIDC client ID                                           | -           |
-| `AUTOBRR__OIDC_CLIENT_SECRET`          | OIDC client secret                                       | -           |
-| `AUTOBRR__OIDC_REDIRECT_URL`           | OIDC callback URL                                        | -           |
-| `AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN` | Disable login form (only works when using external auth) | `false`     |
 
 #### Docker secrets
 

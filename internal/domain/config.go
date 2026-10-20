@@ -4,36 +4,29 @@
 package domain
 
 type Config struct {
-	ConfigPath              string
-	Host                    string `toml:"host"`
-	Port                    int    `toml:"port"`
-	CorsAllowedOrigins      string `toml:"corsAllowedOrigins"`
-	LogLevel                string `toml:"logLevel"`
-	LogPath                 string `toml:"logPath"`
-	LogMaxSize              int    `toml:"logMaxSize"`
-	LogMaxBackups           int    `toml:"logMaxBackups"`
-	BaseURL                 string `toml:"baseUrl"`
-	BaseURLModeLegacy       bool   `toml:"baseUrlModeLegacy"`
-	CustomDefinitions       string `toml:"customDefinitions"`
-	DatabaseType            string `toml:"databaseType"`
-	DatabaseDSN             string `toml:"databaseDSN"`
-	DatabaseMaxBackups      int    `toml:"databaseMaxBackups"`
-	DatabaseAutoMigrate     bool   `toml:"databaseAutoMigrate"`
-	PostgresHost            string `toml:"postgresHost"`
-	PostgresPort            int    `toml:"postgresPort"`
-	PostgresDatabase        string `toml:"postgresDatabase"`
-	PostgresUser            string `toml:"postgresUser"`
-	PostgresPass            string `toml:"postgresPass"`
-	PostgresSSLMode         string `toml:"postgresSSLMode"`
-	PostgresSocket          string `toml:"postgresSocket"`
-	PostgresExtraParams     string `toml:"postgresExtraParams"`
-	OIDCEnabled             bool   `toml:"oidcEnabled"`
-	OIDCIssuer              string `toml:"oidcIssuer"`
-	OIDCClientID            string `toml:"oidcClientId"`
-	OIDCClientSecret        string `toml:"oidcClientSecret"`
-	OIDCRedirectURL         string `toml:"oidcRedirectUrl"`
-	OIDCScopes              string `toml:"oidcScopes"`
-	OIDCDisableBuiltInLogin bool   `toml:"oidcDisableBuiltInLogin"`
+	ConfigPath          string
+	Host                string `toml:"host"`
+	Port                int    `toml:"port"`
+	CorsAllowedOrigins  string `toml:"corsAllowedOrigins"`
+	LogLevel            string `toml:"logLevel"`
+	LogPath             string `toml:"logPath"`
+	LogMaxSize          int    `toml:"logMaxSize"`
+	LogMaxBackups       int    `toml:"logMaxBackups"`
+	BaseURL             string `toml:"baseUrl"`
+	BaseURLModeLegacy   bool   `toml:"baseUrlModeLegacy"`
+	CustomDefinitions   string `toml:"customDefinitions"`
+	DatabaseType        string `toml:"databaseType"`
+	DatabaseDSN         string `toml:"databaseDSN"`
+	DatabaseMaxBackups  int    `toml:"databaseMaxBackups"`
+	DatabaseAutoMigrate bool   `toml:"databaseAutoMigrate"`
+	PostgresHost        string `toml:"postgresHost"`
+	PostgresPort        int    `toml:"postgresPort"`
+	PostgresDatabase    string `toml:"postgresDatabase"`
+	PostgresUser        string `toml:"postgresUser"`
+	PostgresPass        string `toml:"postgresPass"`
+	PostgresSSLMode     string `toml:"postgresSSLMode"`
+	PostgresSocket      string `toml:"postgresSocket"`
+	PostgresExtraParams string `toml:"postgresExtraParams"`
 }
 
 type ConfigUpdate struct {

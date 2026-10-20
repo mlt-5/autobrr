@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Requis lors de la mise à jour des identifiants",
     "newPassword": "Nouveau mot de passe",
     "confirmNewPassword": "Confirmer le nouveau mot de passe",
-    "save": "Enregistrer",
-    "identityProvider": "ton fournisseur d'identité",
-    "oidcTitle": "Compte OpenID Connect",
-    "oidcDescription": "Tes identifiants sont gérés par ton fournisseur OpenID Connect. Pour modifier ton nom d'utilisateur, visite la page des paramètres de ton fournisseur et reconnecte-toi.",
-    "authenticatedViaOidc": "Authentifié via OpenID Connect"
+    "save": "Enregistrer"
   },
   "logsPage": {
     "title": "Journaux",

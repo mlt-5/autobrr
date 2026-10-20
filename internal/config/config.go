@@ -95,26 +95,6 @@ logLevel = "INFO"
 #
 #databaseMaxBackups = 5
 
-# OpenID Connect Configuration
-#
-# Enable OIDC authentication
-#oidcEnabled = false
-#
-# OIDC Issuer URL (e.g. https://auth.example.com)
-#oidcIssuer = ""
-#
-# OIDC Client ID
-#oidcClientId = ""
-#
-# OIDC Client Secret
-#oidcClientSecret = ""
-#
-# OIDC Redirect URL (e.g. http://localhost:7474/api/auth/oidc/callback)
-#oidcRedirectUrl = ""
-#
-# Disable Built In Login Form (only works when using external auth)
-#oidcDisableBuiltInLogin = false
-
 # Custom definitions
 #
 #customDefinitions = "test/definitions"
@@ -348,30 +328,6 @@ func (c *AppConfig) loadFromEnv() {
 		c.Config.PostgresExtraParams = v
 	}
 
-	// OIDC configuration
-	if v := GetEnvStr("OIDC_ENABLED"); v != "" {
-		c.Config.OIDCEnabled = strings.EqualFold(strings.ToLower(v), "true")
-	}
-
-	if v := GetEnvStr("OIDC_ISSUER"); v != "" {
-		c.Config.OIDCIssuer = v
-	}
-
-	if v := GetEnvStr("OIDC_CLIENT_ID"); v != "" {
-		c.Config.OIDCClientID = v
-	}
-
-	if v := GetEnvStr("OIDC_CLIENT_SECRET"); v != "" {
-		c.Config.OIDCClientSecret = v
-	}
-
-	if v := GetEnvStr("OIDC_REDIRECT_URL"); v != "" {
-		c.Config.OIDCRedirectURL = v
-	}
-
-	if v := GetEnvStr("OIDC_DISABLE_BUILT_IN_LOGIN"); v != "" {
-		c.Config.OIDCDisableBuiltInLogin = strings.EqualFold(strings.ToLower(v), "true")
-	}
 }
 
 func GetEnvStr(key string) string {

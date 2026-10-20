@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Obligatorio si actualizas credenciales",
     "newPassword": "Nueva contraseña",
     "confirmNewPassword": "Confirmar nueva contraseña",
-    "save": "Guardar",
-    "identityProvider": "tu proveedor de identidad",
-    "oidcTitle": "Cuenta OpenID Connect",
-    "oidcDescription": "Las credenciales de tu cuenta son administradas por tu proveedor de OpenID Connect. Para cambiar tu nombre de usuario, visita la página de configuración de tu proveedor e inicia sesión de nuevo.",
-    "authenticatedViaOidc": "Autenticado vía OpenID Connect"
+    "save": "Guardar"
   },
   "logsPage": {
     "title": "Registros",
