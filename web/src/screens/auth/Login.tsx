@@ -242,7 +242,7 @@ export const Login = () => {
                                                         </div>
                                                     }
                                                 >
-                                                    <p className="py-1">{t("forgotPasswordHelp")} <code>autobrrctl --config /home/username/.config/autobrr change-password $USERNAME</code></p>
+                                                    <p className="py-1">{t("forgotPasswordHelp")} <code>autobrr user change-password $USERNAME --config /home/username/.config/autobrr</code></p>
                                                 </Tooltip>
                                             </div>
                                         </div>

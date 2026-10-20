@@ -35,8 +35,7 @@ COPY --from=web-builder /web/build.go ./web
 #ENV GOOS=linux
 ENV CGO_ENABLED=0
 
-RUN go build -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${REVISION} -X main.date=${BUILDTIME}" -o bin/autobrr cmd/autobrr/main.go && \
-    go build -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${REVISION} -X main.date=${BUILDTIME}" -o bin/autobrrctl cmd/autobrrctl/main.go
+RUN go build -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${REVISION} -X main.date=${BUILDTIME}" -o bin/autobrr cmd/autobrr/main.go
 
 # build runner
 FROM alpine:3.24
@@ -54,7 +53,6 @@ WORKDIR /app
 VOLUME /config
 
 COPY --from=app-builder /src/bin/autobrr /usr/local/bin/
-COPY --from=app-builder /src/bin/autobrrctl /usr/local/bin/
 
 EXPOSE 7474
 

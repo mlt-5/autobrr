@@ -245,7 +245,7 @@ Run with `root` or `sudo`. If you do not have root, or are on a shared system, p
 tar -C /usr/local/bin -xzf autobrr*.tar.gz
 ```
 
-This will extract both `autobrr` and `autobrrctl` to `/usr/local/bin`.
+This will extract `autobrr` to `/usr/local/bin`.
 Note: If the command fails, prefix it with `sudo` and re-run again.
 
 #### Systemd (Recommended)
