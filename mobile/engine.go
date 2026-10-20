@@ -31,7 +31,7 @@ type Engine struct {
 
 // Start runs autobrr with its config, database and logs in configDir and
 // returns once it is ready to serve requests. Only one engine runs at a time.
-func Start(configDir string) (*Engine, error) {
+func Start(configDir string) (e *Engine, err error) {
 	if configDir == "" {
 		return nil, errors.New("config dir is required")
 	}
@@ -40,10 +40,17 @@ func Start(configDir string) (*Engine, error) {
 		return nil, errors.New("autobrr is already running")
 	}
 
-	e, err := start(configDir)
-	if err != nil {
-		running.Store(false)
+	defer func() {
+		// an unrecovered panic in a gomobile library aborts the host app
+		errors.RecoverPanic(recover(), &err)
 
+		if err != nil {
+			running.Store(false)
+		}
+	}()
+
+	e, err = start(configDir)
+	if err != nil {
 		return nil, errors.Wrap(err, "could not start autobrr")
 	}
 
@@ -67,7 +74,6 @@ func start(configDir string) (*Engine, error) {
 	go func() {
 		var err error
 
-		// an unrecovered panic in a gomobile library aborts the host app
 		defer func() {
 			errors.RecoverPanic(recover(), &err)
 			e.done <- err

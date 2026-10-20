@@ -34,7 +34,7 @@ var (
 
 // GetVersion returns the build version, "dev" for local builds.
 func GetVersion() string {
-	if version != devVersion {
+	if version != "" && version != devVersion {
 		// Only semver gets the v prefix: CI builds pr-<n> and develop images verbatim.
 		if version[0] >= '0' && version[0] <= '9' {
 			return "v" + version
