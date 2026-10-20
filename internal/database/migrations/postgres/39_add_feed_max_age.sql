@@ -1,2 +1,0 @@
-ALTER TABLE feed
-    ALTER COLUMN max_age SET DEFAULT 0;

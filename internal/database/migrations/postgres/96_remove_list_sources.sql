@@ -1,9 +1,0 @@
-DELETE
-FROM list_filter
-WHERE list_id IN (SELECT id FROM list WHERE type IN ('MDBLIST', 'METACRITIC', 'STEAM'));
-
-DELETE
-FROM list
-WHERE type IN ('MDBLIST', 'METACRITIC', 'STEAM');
-
-ALTER TABLE list DROP COLUMN include_year;

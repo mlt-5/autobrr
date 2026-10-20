@@ -19,7 +19,6 @@ import (
 type configJson struct {
 	Application   string `json:"application"`
 	ConfigDir     string `json:"config_dir"`
-	Database      string `json:"database"`
 	Host          string `json:"host"`
 	Port          int    `json:"port"`
 	LogLevel      string `json:"log_level"`
@@ -68,7 +67,6 @@ func (h configHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 		LogMaxSize:    h.cfg.Config.LogMaxSize,
 		LogMaxBackups: h.cfg.Config.LogMaxBackups,
 		BaseURL:       h.cfg.Config.BaseURL,
-		Database:      h.cfg.Config.DatabaseType,
 		Version:       h.versionInfo.version,
 		Commit:        h.versionInfo.commit,
 		Date:          h.versionInfo.date,

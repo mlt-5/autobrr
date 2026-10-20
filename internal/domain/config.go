@@ -15,18 +15,9 @@ type Config struct {
 	BaseURL             string `toml:"baseUrl"`
 	BaseURLModeLegacy   bool   `toml:"baseUrlModeLegacy"`
 	CustomDefinitions   string `toml:"customDefinitions"`
-	DatabaseType        string `toml:"databaseType"`
 	DatabaseDSN         string `toml:"databaseDSN"`
 	DatabaseMaxBackups  int    `toml:"databaseMaxBackups"`
 	DatabaseAutoMigrate bool   `toml:"databaseAutoMigrate"`
-	PostgresHost        string `toml:"postgresHost"`
-	PostgresPort        int    `toml:"postgresPort"`
-	PostgresDatabase    string `toml:"postgresDatabase"`
-	PostgresUser        string `toml:"postgresUser"`
-	PostgresPass        string `toml:"postgresPass"`
-	PostgresSSLMode     string `toml:"postgresSSLMode"`
-	PostgresSocket      string `toml:"postgresSocket"`
-	PostgresExtraParams string `toml:"postgresExtraParams"`
 }
 
 type ConfigUpdate struct {

@@ -49,7 +49,6 @@ func newDeprecationTestDB(t *testing.T) *DB {
 
 	return &DB{
 		Handler:  handler,
-		Driver:   DriverSQLite,
 		squirrel: sq.StatementBuilder.PlaceholderFormat(sq.Dollar),
 	}
 }

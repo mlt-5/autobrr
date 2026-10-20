@@ -322,8 +322,7 @@ func TestReleaseNameResolution_Coalesce(t *testing.T) {
 			storeTestIndexer(t, repo, "activetracker")
 			require.NoError(t, repo.UpsertDeprecation(ctx, domain.IndexerDeprecation{Identifier: "fnp", Name: "FearNoPeer"}))
 
-			// identifiers are test-controlled constants, so inlining them keeps the query
-			// db-agnostic (no ?/$1 placeholder differences between sqlite and postgres)
+			// identifiers are test-controlled constants, so they are inlined into the query
 			resolve := func(identifier string) string {
 				var name string
 				query := fmt.Sprintf(`

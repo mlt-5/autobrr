@@ -40,7 +40,6 @@
     "buildDate": "构建日期",
     "application": "应用",
     "configPath": "配置路径",
-    "database": "数据库",
     "webuiDebugMode": "WebUI 调试模式",
     "theme": "主题",
     "themeDescription": "可选择浅色、深色或跟随系统主题。",

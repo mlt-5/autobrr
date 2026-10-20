@@ -152,33 +152,13 @@ Run all non-integration tests:
 go test -v ./...
 ```
 
-### Run SQLite and PostgreSQL integration tests
+### Run integration tests
 
-The integration tests run against an in-memory SQLite database and currently require Docker for the Postgres tests.
-
-If you have Docker set up, run the `test_postgres` container with:
-
-```shell
-docker compose up -d test_postgres
-```
-
-Then run all tests:
+The integration tests run against an in-memory SQLite database:
 
 ```shell
 go test ./... -tags=integration
 ```
-> [!NOTE]
-> If you have issues with tests not passing, it might be related to timezones. The `test_postgres` container runs in timezone UTC.  If your host is not configured in timezone UTC, then the tests will fail.  To configure an Ubuntu host, execute:
-> 
-> ```shell
-> sudo timedatectl set-timezone Etc/UTC
-> ```
->
-> Or to change the timezone for just the test run, do:
->
-> ```
-> TZ=UTC go test ./... -tags=integration
-> ```
 
 ## Build Docker image
 

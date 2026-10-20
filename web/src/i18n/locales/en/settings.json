@@ -40,7 +40,6 @@
     "buildDate": "Build date",
     "application": "Application",
     "configPath": "Config path",
-    "database": "Database",
     "webuiDebugMode": "WebUI Debug mode",
     "theme": "Theme",
     "themeDescription": "Choose between light, dark, or follow system theme.",

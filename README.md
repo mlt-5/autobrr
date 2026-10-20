@@ -62,7 +62,7 @@ autobrr can drop matches (torrent files that meet your filter's criteria) into a
 - Built on Go and React making autobrr lightweight and perfect for supporting multiple platforms (Linux, FreeBSD,
   Windows, macOS) on different architectures (e.g. x86, ARM)
 - Great container support (Docker, k8s/Kubernetes)
-- Database engine supporting both PostgreSQL and SQLite
+- SQLite database
 - Built-in authentication
 - Notifications (built-in inbox and webhooks)
 - Base path / Subfolder (and subdomain) support for convenient reverse-proxy support
@@ -295,65 +295,12 @@ The following environment variables can be used:
 | `AUTOBRR__LOG_MAX_SIZE`                | Max size in MB before rotation                           | `10`        |
 | `AUTOBRR__LOG_MAX_BACKUPS`             | Number of rotated logs to keep                           | `5`         |
 | `AUTOBRR__CUSTOM_DEFINITIONS`          | Path to custom indexer definitions                       | -           |
-| `AUTOBRR__DATABASE_TYPE`               | Database type (sqlite/postgres)                          | `sqlite`    |
 | `AUTOBRR__DATABASE_MAX_BACKUPS`        | Number of backups to keep                                | `5`         |
-| `AUTOBRR__DATABASE_DSN`                | Database connection string. Use this or individual vars  | -           |
-| `AUTOBRR__POSTGRES_HOST`               | PostgreSQL host                                          | -           |
-| `AUTOBRR__POSTGRES_PORT`               | PostgreSQL port                                          | `5432`      |
-| `AUTOBRR__POSTGRES_DATABASE`           | PostgreSQL database name                                 | -           |
-| `AUTOBRR__POSTGRES_DB`                 | PostgreSQL database name                                 | -           |
-| `AUTOBRR__POSTGRES_USER`               | PostgreSQL username                                      | -           |
-| `AUTOBRR__POSTGRES_PASS`               | PostgreSQL password                                      | -           |
-| `AUTOBRR__POSTGRES_PASSWORD`           | PostgreSQL password                                      | -           |
-| `AUTOBRR__POSTGRES_SSLMODE`            | PostgreSQL SSL mode                                      | `disable`   |
-| `AUTOBRR__POSTGRES_SOCKET`             | PostgreSQL unix socket                                   | -           |
-| `AUTOBRR__POSTGRES_EXTRA_PARAMS`       | Additional PostgreSQL parameters                         | -           |
+| `AUTOBRR__DATABASE_DSN`                | SQLite database file path                                | -           |
 
 #### Docker secrets
 
-All ENV vars have a `_FILE` option where it can read contents from a file, such as docker secrets. See the example below:
-
-```yaml
-services:
-  autobrr:
-    image: ghcr.io/autobrr/autobrr:latest
-    container_name: autobrr
-    volumes:
-      - ./config:/config
-    ports:
-      - "7474:7474"
-    restart: unless-stopped
-    environment:
-      - AUTOBRR__DATABASE_TYPE=postgres
-      - AUTOBRR__POSTGRES_HOST=postgres
-      - AUTOBRR__POSTGRES_PORT=5432
-      - AUTOBRR__POSTGRES_USER=autobrr
-      - AUTOBRR__POSTGRES_PASSWORD_FILE=/run/secrets/db_password
-      - AUTOBRR__POSTGRES_DB=autobrr
-    secrets:
-      - db_password
-
-  postgres:
-    image: postgres:12.10
-    container_name: postgres
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=autobrr
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
-      - POSTGRES_DB=autobrr
-    secrets:
-      - db_password
-
-secrets:
-  db_password:
-    file: db_password.txt
-
-volumes:
-  postgres:
-```
+All ENV vars have a `_FILE` option where it can read contents from a file, such as docker secrets.
 
 ## Community
 

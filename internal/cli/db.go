@@ -5,11 +5,8 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/autobrr/autobrr/internal/database/tools"
-	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/logger"
 	"github.com/autobrr/autobrr/pkg/errors"
 
 	"github.com/spf13/cobra"
@@ -23,7 +20,6 @@ func CommandDb() *cobra.Command {
 
 	command.AddCommand(CommandDbSeed())
 	command.AddCommand(CommandDbReset())
-	command.AddCommand(CommandDbConvert())
 
 	return command
 }
@@ -75,45 +71,6 @@ func CommandDbReset() *cobra.Command {
 		}
 
 		fmt.Println("Database reset and reseed completed successfully!")
-
-		return nil
-	}
-
-	return command
-}
-
-func CommandDbConvert() *cobra.Command {
-	var command = &cobra.Command{
-		Use:     "convert",
-		Short:   "Convert a SQLite database to PostgreSQL",
-		Example: "  autobrr db convert --sqlite-db /path/to/autobrr.db --postgres-url postgres://username:password@127.0.0.1:5432/autobrr",
-	}
-
-	var (
-		sqlitePath    string
-		postgresURL   string
-		excludeTables string
-		dryRun        bool
-	)
-
-	command.Flags().StringVar(&sqlitePath, "sqlite-db", "", "path to SQLite database file")
-	command.Flags().StringVar(&postgresURL, "postgres-url", "", "DSN for PostgreSQL database: postgres://user:pass@host:port/db?sslmode=disable")
-	command.Flags().StringVar(&excludeTables, "exclude-tables", "", "comma separated list of tables to exclude from conversion")
-	command.Flags().BoolVar(&dryRun, "dry-run", false, "dry run")
-	_ = command.MarkFlagRequired("sqlite-db")
-	_ = command.MarkFlagRequired("postgres-url")
-
-	command.RunE = func(cmd *cobra.Command, args []string) error {
-		opts := tools.Opts{
-			DryRun:        dryRun,
-			ExcludeTables: strings.Split(excludeTables, ","),
-		}
-
-		l := logger.New(&domain.Config{LogLevel: "TRACE"}, nil)
-
-		if err := tools.NewConverter(l, sqlitePath, postgresURL).Convert(cmd.Context(), opts); err != nil {
-			return errors.Wrap(err, "database conversion failed")
-		}
 
 		return nil
 	}

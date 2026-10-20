@@ -69,8 +69,6 @@ func (db *DB) openSQLite() error {
 		// Enable foreign key checks. For historical reasons, SQLite does not check
 		// foreign key constraints by default. There's some overhead on inserts to
 		// verify foreign key integrity, but it's definitely worth it.
-
-		// Enable it for testing for consistency with postgres.
 		pragmaSlice = append(pragmaSlice, "_pragma=foreign_keys(ON)")
 	}
 

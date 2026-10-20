@@ -220,7 +220,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			if reskey := regex.FindAllStringSubmatch(search, -1); len(reskey) != 0 {
 				filter := sq.Or{}
 				for _, found := range reskey {
-					filter = append(filter, repo.db.ILike(dbField, strings.ReplaceAll(strings.Trim(strings.Trim(found[1], `"`), `'`), ".", "_")+"%"))
+					filter = append(filter, sq.Like{dbField: strings.ReplaceAll(strings.Trim(strings.Trim(found[1], `"`), `'`), ".", "_") + "%"})
 				}
 
 				if len(filter) == 0 {
@@ -234,9 +234,9 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 
 		if len(search) != 0 {
 			if len(whereQueryBuilder) > 1 {
-				whereQueryBuilder = append(whereQueryBuilder, repo.db.ILike("r.torrent_name", "%"+search+"%"))
+				whereQueryBuilder = append(whereQueryBuilder, sq.Like{"r.torrent_name": "%" + search + "%"})
 			} else {
-				whereQueryBuilder = append(whereQueryBuilder, repo.db.ILike("r.torrent_name", search+"%"))
+				whereQueryBuilder = append(whereQueryBuilder, sq.Like{"r.torrent_name": search + "%"})
 			}
 		}
 	}
@@ -987,12 +987,9 @@ func (repo *ReleaseRepo) statsWindow(days int) statsWindow {
 	w := statsWindow{days: days, now: time.Now().UTC()}
 	if days > 0 {
 		w.cutoff = w.now.AddDate(0, 0, -(days - 1)).Truncate(24 * time.Hour)
-		w.arg = w.cutoff
-		if repo.db.Driver == "sqlite" {
-			// raw string compare keeps the timestamp index usable and is exact at
-			// midnight boundaries for both timestamp formats found in old databases
-			w.arg = w.cutoff.Format("2006-01-02 15:04:05")
-		}
+		// raw string compare keeps the timestamp index usable and is exact at
+		// midnight boundaries for both timestamp formats found in old databases
+		w.arg = w.cutoff.Format("2006-01-02 15:04:05")
 	}
 	return w
 }
@@ -1036,21 +1033,15 @@ func minDateKey[T any](m map[string]*T) string {
 	return minKey
 }
 
+// statsDayExpr uses substr instead of strftime: both timestamp formats found in
+// old databases share the YYYY-MM-DD HH prefix, and skipping per-row date
+// parsing roughly halves the scan cost on large tables.
 func (repo *ReleaseRepo) statsDayExpr() string {
-	if repo.db.Driver == "sqlite" {
-		// substr instead of strftime: both timestamp formats found in old
-		// databases share the YYYY-MM-DD HH prefix, and skipping per-row date
-		// parsing roughly halves the scan cost on large tables
-		return "substr(timestamp, 1, 10)"
-	}
-	return "to_char(timestamp, 'YYYY-MM-DD')"
+	return "substr(timestamp, 1, 10)"
 }
 
 func (repo *ReleaseRepo) statsHourExpr() string {
-	if repo.db.Driver == "sqlite" {
-		return "CAST(substr(timestamp, 12, 2) AS INTEGER)"
-	}
-	return "EXTRACT(HOUR FROM timestamp)::int"
+	return "CAST(substr(timestamp, 12, 2) AS INTEGER)"
 }
 
 func (repo *ReleaseRepo) statsQueryRows(ctx context.Context, qb sq.SelectBuilder, scan func(rows *sql.Rows) error) error {
@@ -1375,16 +1366,7 @@ func (repo *ReleaseRepo) Delete(ctx context.Context, req *domain.DeleteReleaseRe
 	qb := repo.db.squirrel.Delete("release")
 
 	if req.OlderThan > 0 {
-		if repo.db.Driver == "sqlite" {
-			qb = qb.Where(fmt.Sprintf("datetime(timestamp) < datetime('now','-%d hours')", req.OlderThan))
-		} else {
-			// postgres compatible
-			thresholdTime := time.Now().Add(time.Duration(-req.OlderThan) * time.Hour)
-			qb = qb.Where(sq.Lt{
-				//"timestamp": fmt.Sprintf("(now() - interval '%d hours')", req.OlderThan),
-				"timestamp": thresholdTime,
-			})
-		}
+		qb = qb.Where(fmt.Sprintf("datetime(timestamp) < datetime('now','-%d hours')", req.OlderThan))
 	}
 
 	if len(req.Indexers) > 0 {
@@ -1479,7 +1461,7 @@ func (repo *ReleaseRepo) CheckSmartEpisodeCanDownload(ctx context.Context, p *do
 		From("release r").
 		LeftJoin("release_action_status ras ON r.id = ras.release_id").
 		Where(sq.And{
-			repo.db.ILike("r.title", p.Title+"%"),
+			sq.Like{"r.title": p.Title + "%"},
 			sq.Eq{"ras.status": "PUSH_APPROVED"},
 		})
 
@@ -1489,7 +1471,7 @@ func (repo *ReleaseRepo) CheckSmartEpisodeCanDownload(ctx context.Context, p *do
 	if p.Repack {
 		queryBuilder = queryBuilder.Where(sq.And{
 			sq.Eq{"r.repack": p.Repack},
-			repo.db.ILike("r.release_group", p.Group),
+			sq.Like{"r.release_group": p.Group},
 		})
 	}
 
@@ -1605,19 +1587,19 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 		Where("ras.status = 'PUSH_APPROVED'")
 
 	if profile.ReleaseName && profile.Hash {
-		//queryBuilder = queryBuilder.Where(repo.db.ILike("r.torrent_name", release.TorrentName))
+		//queryBuilder = queryBuilder.Where(sq.Like{"r.torrent_name": release.TorrentName})
 		queryBuilder = queryBuilder.Where(sq.Eq{"r.normalized_hash": release.NormalizedHash})
 	} else {
 		if profile.Title {
-			queryBuilder = queryBuilder.Where(repo.db.ILike("r.title", release.Title))
+			queryBuilder = queryBuilder.Where(sq.Like{"r.title": release.Title})
 		}
 
 		if profile.SubTitle {
-			queryBuilder = queryBuilder.Where(repo.db.ILike("r.sub_title", release.SubTitle))
+			queryBuilder = queryBuilder.Where(sq.Like{"r.sub_title": release.SubTitle})
 		}
 
 		if profile.ReleaseName && profile.Hash {
-			//queryBuilder = queryBuilder.Where(repo.db.ILike("r.torrent_name", release.TorrentName))
+			//queryBuilder = queryBuilder.Where(sq.Like{"r.torrent_name": release.TorrentName})
 			queryBuilder = queryBuilder.Where(sq.Eq{"r.normalized_hash": release.NormalizedHash})
 		}
 
@@ -1647,22 +1629,22 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 				var and sq.And
 				for _, cut := range release.Cut {
 					//and = append(and, sq.Eq{"r.cut": "%" + cut + "%"})
-					and = append(and, repo.db.ILike("r.cut", "%"+cut+"%"))
+					and = append(and, sq.Like{"r.cut": "%" + cut + "%"})
 				}
 				queryBuilder = queryBuilder.Where(and)
 			} else if len(release.Cut) == 1 {
-				queryBuilder = queryBuilder.Where(repo.db.ILike("r.cut", "%"+release.Cut[0]+"%"))
+				queryBuilder = queryBuilder.Where(sq.Like{"r.cut": "%" + release.Cut[0] + "%"})
 			}
 
 			//queryBuilder = queryBuilder.Where(sq.Eq{"r.edition": release.Edition})
 			if len(release.Edition) > 1 {
 				var and sq.And
 				for _, edition := range release.Edition {
-					and = append(and, repo.db.ILike("r.edition", "%"+edition+"%"))
+					and = append(and, sq.Like{"r.edition": "%" + edition + "%"})
 				}
 				queryBuilder = queryBuilder.Where(and)
 			} else if len(release.Edition) == 1 {
-				queryBuilder = queryBuilder.Where(repo.db.ILike("r.edition", "%"+release.Edition[0]+"%"))
+				queryBuilder = queryBuilder.Where(sq.Like{"r.edition": "%" + release.Edition[0] + "%"})
 			}
 		}
 
@@ -1682,7 +1664,7 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 			if len(release.Language) > 0 {
 				var and sq.And
 				for _, lang := range release.Language {
-					and = append(and, repo.db.ILike("r.language", "%"+lang+"%"))
+					and = append(and, sq.Like{"r.language": "%" + lang + "%"})
 				}
 
 				queryBuilder = queryBuilder.Where(and)
@@ -1695,7 +1677,7 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 			if len(release.Codec) > 1 {
 				var and sq.And
 				for _, codec := range release.Codec {
-					and = append(and, repo.db.ILike("r.codec", "%"+codec+"%"))
+					and = append(and, sq.Like{"r.codec": "%" + codec + "%"})
 				}
 				queryBuilder = queryBuilder.Where(and)
 			} else {
@@ -1712,7 +1694,7 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 			//if len(release.HDR) > 1 {
 			//	var and sq.And
 			//	for _, hdr := range release.HDR {
-			//		and = append(and, repo.db.ILike("r.hdr", "%"+hdr+"%"))
+			//		and = append(and, sq.Like{"r.hdr": "%"+hdr+"%"})
 			//	}
 			//	queryBuilder = queryBuilder.Where(and)
 			//} else {
@@ -1727,7 +1709,7 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 		}
 
 		if profile.Group {
-			queryBuilder = queryBuilder.Where(repo.db.ILike("r.release_group", release.Group))
+			queryBuilder = queryBuilder.Where(sq.Like{"r.release_group": release.Group})
 		}
 
 		if profile.Season {
@@ -1749,7 +1731,7 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 		if profile.Repack {
 			queryBuilder = queryBuilder.Where(sq.And{
 				sq.Eq{"r.repack": release.Repack},
-				repo.db.ILike("r.release_group", release.Group),
+				sq.Like{"r.release_group": release.Group},
 			})
 		}
 	}

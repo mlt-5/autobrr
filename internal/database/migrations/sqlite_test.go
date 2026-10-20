@@ -727,8 +727,7 @@ func setupTestSQLiteDB(t *testing.T) (*database.DB, func()) {
 
 	dbPath := ":memory:"
 	cfg := &domain.Config{
-		DatabaseType: "sqlite",
-		DatabaseDSN:  dbPath,
+		DatabaseDSN: dbPath,
 	}
 
 	log := logger.New(&domain.Config{LogLevel: "ERROR", LogPath: ""}, nil)

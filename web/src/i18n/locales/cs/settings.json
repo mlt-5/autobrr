@@ -40,7 +40,6 @@
       "buildDate": "Datum vytvoření",
       "application": "Aplikace",
       "configPath": "Lokalita konfiguračního souboru",
-      "database": "Databáze",
       "webuiDebugMode": "WebUI Debugovací režim",
       "theme": "Režim",
       "themeDescription": "Vyberte mezi světlým, tmavým nebo systémovým režimem.",

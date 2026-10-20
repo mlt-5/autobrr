@@ -26,10 +26,7 @@ type SQLDB interface {
 
 const DefaultTableName = "schema_migrations"
 
-const (
-	EngineSQLite   = "sqlite"
-	EnginePostgres = "postgres"
-)
+const EngineSQLite = "sqlite"
 
 type Migrator struct {
 	db             *sql.DB
@@ -253,51 +250,6 @@ func (m *Migrator) TotalMigrations() int {
 	return len(m.migrations)
 }
 
-// convertMigrationsTableSingleToMultiPG converts a single-row version table to a multi-row table
-func (m *Migrator) convertMigrationsTableSingleToMultiPG() error {
-	if err := m.initVersionTable(); err != nil {
-		return errors.Wrap(err, "migrator: could not init version table")
-	}
-
-	var count int
-	query, args, err := m.squirrel.Select("COUNT(*)").From(m.tableName).ToSql()
-	if err != nil {
-		return err
-	}
-	err = m.db.QueryRow(query, args...).Scan(&count)
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return nil
-	}
-
-	if count > 1 {
-		// all is well, so lets return
-		return nil
-	}
-
-	var appliedMigration struct {
-		id      int
-		version int
-	}
-	query, args, err = m.squirrel.Select("id", "version").From(m.tableName).Limit(1).ToSql()
-	if err != nil {
-		return err
-	}
-
-	if err = m.db.QueryRow(query, args...).Scan(&appliedMigration.id, &appliedMigration.version); err != nil {
-		return err
-	}
-
-	if err := m.migrateOldVersionTable(appliedMigration.version); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // convertMigrationsTableSingleToMultiSQLite converts sqlite PRAGMA to a multi-row table
 func (m *Migrator) convertMigrationsTableSingleToMultiSQLite() error {
 	if err := m.initVersionTable(); err != nil {
@@ -335,11 +287,6 @@ func (m *Migrator) convertMigrationsTableSingleToMultiSQLite() error {
 
 func (m *Migrator) checkPreReqs() error {
 	switch m.engine {
-	case EnginePostgres:
-		if err := m.convertMigrationsTableSingleToMultiPG(); err != nil {
-			return err
-		}
-		break
 	case EngineSQLite:
 		if err := m.convertMigrationsTableSingleToMultiSQLite(); err != nil {
 			return err
@@ -401,50 +348,6 @@ func (m *Migrator) migratePragmaToNewTable(currentVersion int) error {
 	}
 
 	m.logger.Info().Int("count", currentVersion).Msg("successfully migrated migrations from PRAGMA to table")
-
-	return err
-}
-
-// migrateOldVersionTable migrates from old single-row version table to new multi-row table
-func (m *Migrator) migrateOldVersionTable(currentVersion int) error {
-	m.logger.Info().Int("current_version", currentVersion).Msg("migrating from old single-row version table to multi-row format")
-
-	tx, err := m.db.Begin()
-	if err != nil {
-		return errors.Wrap(err, "could not begin transaction")
-	}
-
-	defer func() {
-		if err != nil {
-			if errRb := tx.Rollback(); errRb != nil {
-				err = errors.Wrapf(errRb, "error rolling back: %q", err)
-			}
-			return
-		}
-		err = tx.Commit()
-	}()
-
-	// Drop old table
-	if _, err = tx.Exec(fmt.Sprintf("DROP TABLE %s", m.tableName)); err != nil {
-		return errors.Wrapf(err, "could not drop old version table: %s", m.tableName)
-	}
-
-	if err := m.initVersionTableTx(tx); err != nil {
-		return errors.Wrap(err, "migrator: could not init version table")
-	}
-
-	migrations := m.GetUpToId(currentVersion)
-	if len(migrations) == 0 {
-		return nil
-	}
-
-	m.logger.Info().Int("count", len(migrations)).Msg("found migrations to convert to new table format")
-
-	if err := m.updateSchemaVersions(tx, migrations); err != nil {
-		return err
-	}
-
-	m.logger.Info().Int("count", currentVersion).Msg("successfully migrated migrations to new table format")
 
 	return err
 }

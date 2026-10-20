@@ -193,7 +193,7 @@ func (r *ProxyRepo) Delete(ctx context.Context, id int64) error {
 }
 
 // detachReferences clears the proxy from every indexer and irc network pointing at it: SQLite
-// does not enforce the ON DELETE SET NULL constraint, and Postgres leaves use_proxy set.
+// does not enforce the ON DELETE SET NULL constraint, and it would leave use_proxy set anyway.
 func (r *ProxyRepo) detachReferences(ctx context.Context, tx *Tx, id int64) error {
 	for _, table := range []string{"indexer", "irc_network"} {
 		queryBuilder := r.db.squirrel.
@@ -262,8 +262,8 @@ func (r *ProxyRepo) FindByID(ctx context.Context, id int64) (*domain.Proxy, erro
 }
 
 // Usage lists the indexers, irc networks and feeds that dial through the proxy. Rows with the
-// toggle off but a leftover proxy_id are left out on purpose, even though detachReferences and
-// the Postgres foreign key clear them on delete: the forms keep the id when use_proxy is turned
+// toggle off but a leftover proxy_id are left out on purpose, even though detachReferences
+// clears them on delete: the forms keep the id when use_proxy is turned
 // off, and such a row has nothing to warn about and nothing for subscribers to reconcile.
 func (r *ProxyRepo) Usage(ctx context.Context, id int64) (*domain.ProxyUsage, error) {
 	indexers, err := r.usageItems(ctx, r.db.squirrel.

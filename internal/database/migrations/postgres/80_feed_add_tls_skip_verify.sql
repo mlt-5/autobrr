@@ -1,2 +1,0 @@
-ALTER TABLE feed
-    ADD COLUMN tls_skip_verify BOOLEAN DEFAULT FALSE;

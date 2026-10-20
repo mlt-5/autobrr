@@ -42,10 +42,6 @@ Seed the sqlite database. Requires \fB\-\-db-path\fR and
 Reset and seed the sqlite database. Requires \fB\-\-db-path\fR and
 .BR \-\-seed-db
 .TP
-.B db convert
-Convert a SQLite database to PostgreSQL. Requires \fB\-\-sqlite-db\fR and
-.BR \-\-postgres-url
-.TP
 .B version
 Display version information
 .SH FEATURES
@@ -76,9 +72,6 @@ Base URL for reverse proxy (default: /)
 .TP
 .B AUTOBRR__LOG_LEVEL
 Log level (DEBUG, INFO, WARN, ERROR) (default: INFO)
-.TP
-.B AUTOBRR__DATABASE_TYPE
-Database type (sqlite/postgres) (default: sqlite)
 .PP
 For a complete list of environment variables, see:
 .br

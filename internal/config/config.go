@@ -10,7 +10,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -216,18 +215,9 @@ func (c *AppConfig) defaults() {
 		BaseURL:             "/",
 		BaseURLModeLegacy:   true,
 		CustomDefinitions:   "",
-		DatabaseType:        "sqlite",
 		DatabaseAutoMigrate: true,
 		DatabaseMaxBackups:  5,
 		DatabaseDSN:         "",
-		PostgresHost:        "",
-		PostgresPort:        5432,
-		PostgresDatabase:    "",
-		PostgresUser:        "",
-		PostgresPass:        "",
-		PostgresSSLMode:     "disable",
-		PostgresExtraParams: "",
-		PostgresSocket:      "",
 	}
 }
 
@@ -278,56 +268,9 @@ func (c *AppConfig) loadFromEnv() {
 		c.Config.DatabaseDSN = v
 	}
 
-	if v := GetEnvStr("DATABASE_TYPE"); v != "" {
-		if validDatabaseType(v) {
-			c.Config.DatabaseType = v
-		}
-	}
-
 	if v := GetEnvInt("DATABASE_MAX_BACKUPS"); v > 0 {
 		c.Config.DatabaseMaxBackups = v
 	}
-
-	if v := GetEnvStr("POSTGRES_HOST"); v != "" {
-		c.Config.PostgresHost = v
-	}
-
-	if v := GetEnvInt("POSTGRES_PORT"); v > 0 {
-		c.Config.PostgresPort = v
-	}
-
-	if v := GetEnvStr("POSTGRES_DATABASE"); v != "" {
-		c.Config.PostgresDatabase = v
-	}
-
-	if v := GetEnvStr("POSTGRES_DB"); v != "" {
-		c.Config.PostgresDatabase = v
-	}
-
-	if v := GetEnvStr("POSTGRES_USER"); v != "" {
-		c.Config.PostgresUser = v
-	}
-
-	if v := GetEnvStr("POSTGRES_PASS"); v != "" {
-		c.Config.PostgresPass = v
-	}
-
-	if v := GetEnvStr("POSTGRES_PASSWORD"); v != "" {
-		c.Config.PostgresPass = v
-	}
-
-	if v := GetEnvStr("POSTGRES_SSLMODE"); v != "" {
-		c.Config.PostgresSSLMode = v
-	}
-
-	if v := GetEnvStr("POSTGRES_SOCKET"); v != "" {
-		c.Config.PostgresSocket = v
-	}
-
-	if v := GetEnvStr("POSTGRES_EXTRA_PARAMS"); v != "" {
-		c.Config.PostgresExtraParams = v
-	}
-
 }
 
 func GetEnvStr(key string) string {
@@ -357,12 +300,6 @@ func GetEnvInt(key string) int {
 		return 0
 	}
 	return int(i)
-}
-
-var validDbTypes = []string{"sqlite", "postgres"}
-
-func validDatabaseType(v string) bool {
-	return slices.Contains(validDbTypes, v)
 }
 
 func (c *AppConfig) load(configPath string) {
