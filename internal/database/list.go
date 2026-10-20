@@ -38,7 +38,6 @@ func (r *ListRepo) List(ctx context.Context, params domain.ListQueryParams) ([]*
 		"headers",
 		"api_key",
 		"match_release",
-		"include_year",
 		"skip_clean_sanitize",
 		"last_refresh_time",
 		"last_refresh_status",
@@ -75,7 +74,7 @@ func (r *ListRepo) List(ctx context.Context, params domain.ListQueryParams) ([]*
 
 		var url, apiKey, lastRefreshStatus, lastRefreshData sql.Null[string]
 		var lastRefreshTime sql.Null[time.Time]
-		err = rows.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
+		err = rows.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +104,6 @@ func (r *ListRepo) FindByID(ctx context.Context, listID int64) (*domain.List, er
 		"headers",
 		"api_key",
 		"match_release",
-		"include_year",
 		"skip_clean_sanitize",
 		"last_refresh_time",
 		"last_refresh_status",
@@ -135,7 +133,7 @@ func (r *ListRepo) FindByID(ctx context.Context, listID int64) (*domain.List, er
 	var url, apiKey, lastRefreshStatus, lastRefreshData sql.Null[string]
 	var lastRefreshTime sql.Null[time.Time]
 
-	err = row.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.IncludeYear, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
+	err = row.Scan(&list.ID, &list.Name, &list.Enabled, &list.Type, &url, pq.Array(&list.Headers), &apiKey, &list.MatchRelease, &list.SkipCleanSanitize, &lastRefreshTime, &lastRefreshStatus, &lastRefreshData, &list.CreatedAt, &list.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +165,6 @@ func (r *ListRepo) Store(ctx context.Context, list *domain.List) error {
 			"headers",
 			"api_key",
 			"match_release",
-			"include_year",
 			"skip_clean_sanitize",
 		).
 		Values(
@@ -178,7 +175,6 @@ func (r *ListRepo) Store(ctx context.Context, list *domain.List) error {
 			pq.Array(list.Headers),
 			list.APIKey,
 			list.MatchRelease,
-			list.IncludeYear,
 			list.SkipCleanSanitize,
 		).Suffix("RETURNING id").RunWith(tx)
 
@@ -213,7 +209,6 @@ func (r *ListRepo) Update(ctx context.Context, list *domain.List) error {
 		Set("headers", pq.Array(list.Headers)).
 		Set("api_key", list.APIKey).
 		Set("match_release", list.MatchRelease).
-		Set("include_year", list.IncludeYear).
 		Set("skip_clean_sanitize", list.SkipCleanSanitize).
 		Set("updated_at", sq.Expr("CURRENT_TIMESTAMP")).
 		Where(sq.Eq{"id": list.ID})

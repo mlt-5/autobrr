@@ -543,7 +543,6 @@ CREATE TABLE list
     headers                  TEXT []   DEFAULT '{}' NOT NULL,
     api_key                  TEXT,
     match_release            BOOLEAN,
-    include_year             BOOLEAN DEFAULT FALSE,
     skip_clean_sanitize      BOOLEAN   DEFAULT FALSE,
     last_refresh_time        TIMESTAMP,
     last_refresh_status      TEXT,

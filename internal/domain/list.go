@@ -16,12 +16,9 @@ import (
 type ListType string
 
 const (
-	ListTypeMDBList    ListType = "MDBLIST"
-	ListTypeMetacritic ListType = "METACRITIC"
-	ListTypePlaintext  ListType = "PLAINTEXT"
-	ListTypeTrakt      ListType = "TRAKT"
-	ListTypeSteam      ListType = "STEAM"
-	ListTypeAniList    ListType = "ANILIST"
+	ListTypePlaintext ListType = "PLAINTEXT"
+	ListTypeTrakt     ListType = "TRAKT"
+	ListTypeAniList   ListType = "ANILIST"
 )
 
 func (l ListType) String() string {
@@ -30,7 +27,7 @@ func (l ListType) String() string {
 
 func (l ListType) Valid() bool {
 	switch l {
-	case ListTypeMDBList, ListTypeMetacritic, ListTypePlaintext, ListTypeTrakt, ListTypeSteam, ListTypeAniList:
+	case ListTypePlaintext, ListTypeTrakt, ListTypeAniList:
 		return true
 	default:
 		return false
@@ -60,7 +57,6 @@ type List struct {
 	APIKey            string            `json:"api_key"`
 	Filters           []ListFilter      `json:"filters"`
 	MatchRelease      bool              `json:"match_release"`
-	IncludeYear       bool              `json:"include_year"`
 	SkipCleanSanitize bool              `json:"skip_clean_sanitize"`
 	LastRefreshTime   time.Time         `json:"last_refresh_time"`
 	LastRefreshData   string            `json:"last_refresh_error"`

@@ -25,14 +25,8 @@ func (s *Service) getProcessor(list *domain.List) (Processor, error) {
 	switch list.Type {
 	case domain.ListTypeAniList:
 		processor = NewAnilistProcessor(s.log, list)
-	case domain.ListTypeMDBList:
-		processor = NewMDBListProcessor(s.log, list)
-	case domain.ListTypeMetacritic:
-		processor = NewMetacriticProcessor(s.log, list)
 	case domain.ListTypePlaintext:
 		processor = NewPlaintextProcessor(s.log, list)
-	case domain.ListTypeSteam:
-		processor = NewSteamProcessor(s.log, list)
 	case domain.ListTypeTrakt:
 		processor = NewTraktProcessor(s.log, list)
 	default:

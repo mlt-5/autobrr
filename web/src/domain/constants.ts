@@ -363,10 +363,6 @@ export const getPushStatusOptions = (t: TFunction): OptionBasic[] => [
 
 export const ListTypeOptions: OptionBasicTyped<ListType>[] = [
   {
-    label: "MDBList",
-    value: "MDBLIST"
-  },
-  {
     label: "Trakt",
     value: "TRAKT"
   },
@@ -375,24 +371,13 @@ export const ListTypeOptions: OptionBasicTyped<ListType>[] = [
     value: "PLAINTEXT"
   },
   {
-    label: "Steam",
-    value: "STEAM"
-  },
-  {
-    label: "Metacritic",
-    value: "METACRITIC"
-  },
-  {
     label: "AniList",
     value: "ANILIST"
   }
 ];
 
 export const ListTypeNameMap: Record<ListType, string> = {
-  "MDBLIST": "MDBList",
   "TRAKT": "Trakt",
-  "METACRITIC": "Metacritic",
-  "STEAM": "Steam",
   "PLAINTEXT": "Plaintext",
   "ANILIST": "AniList",
 };
@@ -656,24 +641,6 @@ export const ListsTraktOptions: OptionBasic[] = [
   {
     label: "Steven Lu",
     value: "https://api.autobrr.com/lists/stevenlu"
-  }
-];
-
-export const ListsMetacriticOptions: OptionBasic[] = [
-  {
-    label: "Upcoming Albums",
-    value: "https://api.autobrr.com/lists/metacritic/upcoming-albums"
-  },
-  {
-    label: "New Albums",
-    value: "https://api.autobrr.com/lists/metacritic/new-albums"
-  }
-];
-
-export const ListsMDBListOptions: OptionBasic[] = [
-  {
-    label: "Latest TV Shows",
-    value: "https://mdblist.com/lists/garycrawfordgc/latest-tv-shows/json"
   }
 ];
 
