@@ -32,6 +32,7 @@ The backend follows a layered architecture with clear separation of concerns:
 - **`cmd/`**: Application entry points
   - `autobrr/main.go`: cobra root; bare `autobrr` runs `serve`, subcommands live in `internal/cli/`
 - **`mobile/`**: gomobile entry point for the iOS app; runs the app without a network listener and serves web view requests through `Engine.Serve` (`make build/ios`)
+- **`ios/`**: SwiftUI app hosting the web UI in a `WKWebView`; `SchemeHandler` passes `autobrr://` requests to `Engine.Serve`. The Xcode project is generated with XcodeGen from `ios/project.yml` - see `ios/README.md`
 
 - **`internal/`**: Core application logic organized by domain
   - **Domain layer** (`internal/domain/`): Core business entities. It holds no repository or service interfaces - each consumer declares a small unexported interface listing only the methods it calls, and constructors return concrete `*Service` structs
