@@ -95,19 +95,6 @@ export default ({ mode }: ConfigEnv) => {
         { find: "@domain", replacement: fileURLToPath(new URL("./src/domain", import.meta.url)) }
       ]
     },
-    server: {
-      port: 3000,
-      hmr: {
-        overlay: true
-      },
-      proxy: {
-        "/api": {
-          target: "http://127.0.0.1:7474/",
-          changeOrigin: true,
-          secure: false
-        },
-      }
-    },
     build: {
       sourcemap: true,
       rollupOptions: {

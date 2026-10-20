@@ -31,8 +31,6 @@
   "application": {
     "title": "Aplicación",
     "description": "Configuración de la aplicación. Cambia en config.toml y reinicia para que surta efecto.",
-    "host": "Host",
-    "port": "Puerto",
     "version": "Versión",
     "commit": "Commit",
     "buildDate": "Fecha de compilación",

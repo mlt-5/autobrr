@@ -8,8 +8,6 @@ type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR" | "TRACE";
 interface Config {
   config_dir: string;
   application: string;
-  host: string;
-  port: number;
   log_level: LogLevel;
   log_path: string;
   log_max_size: number;
@@ -20,8 +18,6 @@ interface Config {
 }
 
 interface ConfigUpdate {
-  host?: string;
-  port?: number;
   log_level?: string;
   log_path?: string;
 }

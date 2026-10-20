@@ -31,8 +31,6 @@
   "application": {
     "title": "Applikasjon",
     "description": "Applikasjoninnstillinger. Endre i config.toml og start på nytt for at endringene skal tre i kraft.",
-    "host": "Vert",
-    "port": "Port",
     "version": "Versjon",
     "commit": "Commit",
     "buildDate": "Byggedato",

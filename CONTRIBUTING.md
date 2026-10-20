@@ -45,9 +45,7 @@ Make sure you have the following dependencies installed before setting up your d
 
 ## Development environment
 
-The backend is written in Go and the frontend is written in TypeScript using React.
-
-You need to have the Go toolchain installed and Node.js with `pnpm` as the package manager.
+The engine is written in Go and the UI in TypeScript using React. Both ship inside the iOS app: the Go engine is built into a framework with gomobile, and the UI runs in a web view that talks to it in-process. There is no standalone server.
 
 Clone the project and change dir:
 
@@ -61,86 +59,30 @@ Install all dependencies (Go and web) with:
 make deps
 ```
 
-> [!TIP]
-> `make dev` starts both the frontend dev server and the backend in a tmux session (requires tmux).
-
 ## Frontend
 
-First install the web dependencies:
+The web UI lives in `web/`. Lint, test and build it from the repository root:
 
 ```shell
-cd web && pnpm install
+pnpm --dir web lint
+pnpm --dir web test
+pnpm --dir web build
 ```
 
-Run the project:
+The build output in `web/dist` is embedded into the engine, so rebuild it before building the app.
+
+## iOS app
+
+Building the app needs macOS with Xcode, [gomobile](https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile) and [XcodeGen](https://github.com/yonaskolb/XcodeGen). See [ios/README.md](ios/README.md).
 
 ```shell
-pnpm dev
-```
-
-This should make the frontend available at [http://localhost:3000](http://localhost:3000). It's setup to communicate with the API at [http://localhost:7474](http://localhost:7474).
-
-### Build
-
-In order to build binaries of the full application you need to first build the frontend.
-
-To build the frontend, run:
-
-```shell
-pnpm --dir web run build
-```
-
-## Backend
-
-Install Go dependencies:
-
-```shell
-go mod download
-```
-
-Run the project:
-
-```shell
-go run cmd/autobrr/main.go
-```
-
-This uses the default `config.toml` and runs the API on [http://localhost:7474](http://localhost:7474).
-
-### Build
-
-To build the backend, run:
-
-```shell
-make build/app
-```
-
-This will output a binary in `./bin/autobrr`
-
-You can also build the frontend and the backend at once with:
-
-```shell
-make build
-```
-
-### Build cross-platform binaries
-
-You can optionally build it with [GoReleaser](https://goreleaser.com/) which makes it easy to build cross-platform binaries.
-
-Install it with `go install` or check the [docs for alternatives](https://goreleaser.com/install/):
-
-```shell
-go install github.com/goreleaser/goreleaser/v2@latest
-```
-
-Then to build binaries, run:
-
-```shell
-goreleaser build --snapshot --clean
+make build/ios
+cd ios && xcodegen generate && open Autobrr.xcodeproj
 ```
 
 ## Tests
 
-The test suite consists of only backend tests at this point. All tests run per commit with GitHub Actions.
+All tests run per commit with GitHub Actions.
 
 ### Run backend tests
 
@@ -160,29 +102,11 @@ The integration tests run against an in-memory SQLite database:
 go test ./... -tags=integration
 ```
 
-## Build Docker image
-
-To build a Docker image, run:
-
-```shell
-make build/docker
-```
-
-The image will be tagged as `autobrr:dev`
-
-To build a cross platform Docker image (for instance if you're running on arm64 or Apple ARM):
-
-```shell
-make build/dockerx
-```
-
-[Docker multi-platform docs](https://docs.docker.com/build/building/multi-platform/)
-
 ## Adding a new indexer
 
 Adding support for a new indexer is the most common contribution. Indexer definitions are YAML files in [internal/indexer/definitions](internal/indexer/definitions) - start from an existing definition for a similar tracker and adjust it.
 
-Definitions are embedded into the binary at build time, so restart the backend after changing one. Use the mock indexer below to test announce parsing end-to-end.
+Definitions are embedded into the engine at build time, so rebuild the app after changing one. Use the mock indexer below to test announce parsing end-to-end.
 
 ### Retiring an indexer
 
@@ -207,7 +131,7 @@ See the documentation [here](./test/mockindexer/README.md). Add the `customDefin
 go run test/mockindexer/main.go
 ```
 
-* Restart the backend API for it to load the new mock.yaml definition
+* Restart the app for it to load the new mock.yaml definition (in the iOS simulator, `localhost` reaches your Mac)
 * Then add it via Settings -> Indexers -> Add, and select Mock Indexer in the list
 * Go to Settings -> IRC and toggle the IRC network `Mock Indexer`
 * Add a new Filter or add the indexer to an existing filter

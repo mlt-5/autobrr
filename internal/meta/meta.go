@@ -25,26 +25,12 @@ const (
 	commitSHALength = 7
 )
 
+// version, commit and date are set at build time with -X, see build/ios in the Makefile.
 var (
 	version = devVersion
 	commit  = unknownValue
 	date    = unknownValue
 )
-
-// Set records the build info that packagers inject into package main with
-// -X main.version, main.commit and main.date. That ldflags contract is shared with
-// goreleaser and the distro recipes, so the targets stay in main and are forwarded here.
-func Set(v, c, d string) {
-	if v != "" {
-		version = v
-	}
-	if c != "" {
-		commit = c
-	}
-	if d != "" {
-		date = d
-	}
-}
 
 // GetVersion returns the build version, "dev" for local builds.
 func GetVersion() string {

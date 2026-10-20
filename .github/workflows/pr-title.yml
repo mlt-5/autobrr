@@ -1,7 +1,7 @@
 name: PR title
 
-# goreleaser puts a commit under "Breaking Changes" only when its subject has
-# `!:`. PRs are squash-merged, so the PR title becomes that subject.
+# Breaking commits are marked by `!:` in their subject. PRs are squash-merged,
+# so the PR title becomes that subject.
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize, labeled, unlabeled]

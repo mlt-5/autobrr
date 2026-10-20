@@ -31,8 +31,6 @@
     "application": {
       "title": "Aplikace",
       "description": "Nastavení aplikace. Změňte v config.toml a pro použití restartujte.",
-      "host": "Host",
-      "port": "Port",
       "version": "Verze",
       "commit": "Commit",
       "buildDate": "Datum vytvoření",

@@ -55,10 +55,8 @@ type App struct {
 	db         *database.DB
 	httpServer *http.Server
 
-	// embedded apps serve requests through Handler instead of a listener
-	embedded bool
-	handler  nethttp.Handler
-	ready    chan struct{}
+	handler nethttp.Handler
+	ready   chan struct{}
 
 	actionService       *action.Service
 	alertService        *alert.Service
@@ -77,9 +75,9 @@ type App struct {
 	userService         *user.Service
 }
 
-// New loads the config and builds the parts that need no database. They exist
-// before Run so a host such as the tray can subscribe to events while the rest
-// of the application starts.
+// New loads the config and builds the parts that need no database. The host,
+// such as the iOS app, passes requests to Handler itself, so no network
+// listener is opened.
 func New(configPath string) *App {
 	cfg := config.New(configPath)
 
@@ -101,33 +99,23 @@ func New(configPath string) *App {
 	}
 }
 
-// NewEmbedded is New for a host that passes requests to Handler itself, such
-// as the iOS app. It opens no network listener.
-func NewEmbedded(configPath string) *App {
-	app := New(configPath)
-	app.embedded = true
-
-	return app
-}
-
 // Ready is closed once every component has started.
 func (app *App) Ready() <-chan struct{} {
 	return app.ready
 }
 
-// Handler serves the web UI and API of an embedded App. It is nil until Ready
-// is closed.
+// Handler serves the web UI and API. It is nil until Ready is closed.
 func (app *App) Handler() nethttp.Handler {
 	return app.handler
 }
 
-// Run starts the application and blocks until ctx is cancelled or one of its
-// servers exits unexpectedly, then shuts everything down. Cancelling ctx is a
+// Run starts the application and blocks until ctx is cancelled or a component
+// fails to start, then shuts everything down. Cancelling ctx is a
 // clean shutdown and returns nil, also while still starting. An App runs once,
 // a host that restarts it builds a new one with New.
 func (app *App) Run(ctx context.Context) error {
 	// the event streams outlive a failed start, which never reaches the http
-	// shutdown that normally closes them
+	// component that normally closes them
 	defer app.sse.Close()
 
 	if ctx.Err() != nil {
@@ -151,7 +139,7 @@ func (app *App) Run(ctx context.Context) error {
 	runCtx, fail := context.WithCancelCause(ctx)
 	defer fail(nil)
 
-	started, err := app.startComponents(runCtx, app.components(fail))
+	started, err := app.startComponents(runCtx, app.components())
 	if err != nil {
 		fail(err)
 	} else {
@@ -171,43 +159,27 @@ func (app *App) Run(ctx context.Context) error {
 	return context.Cause(runCtx)
 }
 
-func (app *App) components(fail context.CancelCauseFunc) []component {
-	var components []component
-
-	if !app.embedded {
-		components = append(components,
-			// bind before anything dials out so a port conflict fails startup early,
-			// serving waits until the services behind the API have started
-			component{
-				name: "http listen",
-				start: func(context.Context) error {
-					return app.httpServer.Listen()
-				},
-				stop: app.httpServer.CloseListener,
-			},
-		)
-	}
-
-	components = append(components,
-		component{
+func (app *App) components() []component {
+	return []component{
+		{
 			name:  "scheduler",
 			start: app.scheduler.Start,
 			stop:  app.scheduler.Stop,
 		},
-		component{
+		{
 			name:     "notifications",
 			optional: true,
 			start: func(context.Context) error {
 				return app.notificationService.Start()
 			},
 		},
-		component{
+		{
 			name: "indexers",
 			start: func(context.Context) error {
 				return app.indexerService.Start()
 			},
 		},
-		component{
+		{
 			name: "irc",
 			start: func(context.Context) error {
 				app.ircService.StartHandlers()
@@ -220,21 +192,21 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 				return nil
 			},
 		},
-		component{
+		{
 			name:     "feeds",
 			optional: true,
 			start: func(context.Context) error {
 				return app.feedService.Start()
 			},
 		},
-		component{
+		{
 			name:     "release cleanup",
 			optional: true,
 			start: func(context.Context) error {
 				return app.releaseService.StartCleanupJobs()
 			},
 		},
-		component{
+		{
 			name: "lists",
 			start: func(context.Context) error {
 				go func() {
@@ -246,11 +218,8 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 				return nil
 			},
 		},
-	)
-
-	// last to start so it stops first, before the services its handlers call
-	if app.embedded {
-		components = append(components, component{
+		// last to start so it stops first, before the services its handlers call
+		{
 			name: "http",
 			start: func(context.Context) error {
 				app.handler = app.httpServer.Handler()
@@ -263,22 +232,8 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 
 				return nil
 			},
-		})
-	} else {
-		components = append(components, component{
-			name: "http",
-			start: func(context.Context) error {
-				serve(app.httpServer.Serve, func(err error) {
-					fail(errors.Wrap(err, "http server stopped unexpectedly"))
-				})
-
-				return nil
-			},
-			stop: app.httpServer.Shutdown,
-		})
+		},
 	}
-
-	return components
 }
 
 // Config returns the loaded configuration.

@@ -48,9 +48,6 @@ yarn.lock
 # If needed, package-lock.json shall be added manually using an explicit git add command
 package-lock.json
 
-# Docker
-config/
-
 # Others
 web/build
 bin/
@@ -62,8 +59,6 @@ tmp/
 web/eslint-sarif-report.sarif
 test/mockindexer/feeds/*
 test/mockindexer/files/*
-test/e2e/artifacts/
-cpu.pprof
 PR_DESCRIPTION.md
 
 # Preserve files

@@ -5,8 +5,6 @@ package domain
 
 type Config struct {
 	ConfigPath          string
-	Host                string `toml:"host"`
-	Port                int    `toml:"port"`
 	LogLevel            string `toml:"logLevel"`
 	LogPath             string `toml:"logPath"`
 	LogMaxSize          int    `toml:"logMaxSize"`
@@ -18,8 +16,6 @@ type Config struct {
 }
 
 type ConfigUpdate struct {
-	Host     *string `json:"host,omitempty"`
-	Port     *int    `json:"port,omitempty"`
 	LogLevel *string `json:"log_level,omitempty"`
 	LogPath  *string `json:"log_path,omitempty"`
 }

@@ -21,7 +21,7 @@ This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, etc
 
 ## Development Commands
 
-- Go targets are in the `Makefile` (`make build`, `make test`, `make dev`); web scripts are in `web/package.json` (`dev`, `build`, `test`, `lint`)
+- Go targets are in the `Makefile` (`make test`, `make build/ios`); web scripts are in `web/package.json` (`build`, `test`, `lint`)
 - Run web scripts from the repo root as `pnpm --dir web <script>` - `cd web && pnpm ...` aborts under corepack's pnpm 11 with a "no TTY" error
 
 ## Project Architecture
@@ -29,9 +29,7 @@ This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, etc
 ### Backend Architecture (Go)
 The backend follows a layered architecture with clear separation of concerns:
 
-- **`cmd/`**: Application entry points
-  - `autobrr/main.go`: cobra root; bare `autobrr` runs `serve`, subcommands live in `internal/cli/`
-- **`mobile/`**: gomobile entry point for the iOS app; runs the app without a network listener and serves web view requests through `Engine.Serve` (`make build/ios`)
+- **`mobile/`**: the only entry point - gomobile binds it for the iOS app. It runs the app without a network listener and serves web view requests through `Engine.Serve` (`make build/ios`)
 - **`ios/`**: SwiftUI app hosting the web UI in a `WKWebView`; `SchemeHandler` passes `autobrr://` requests to `Engine.Serve`. The Xcode project is generated with XcodeGen from `ios/project.yml` - see `ios/README.md`
 
 - **`internal/`**: Core application logic organized by domain
@@ -68,7 +66,7 @@ The backend follows a layered architecture with clear separation of concerns:
 
 ### Service Wiring
 - `internal/application` owns the lifecycle: `setup` constructs repos and services in dependency order, `components()` lists what starts (in order) and stops (in reverse) when `Run`'s context is cancelled
-- A new background service or listener is a `component` in that list, with a `stop` for anything it opens; mark it `optional` when its failure should be logged while the rest of the app keeps running
+- A new background service is a `component` in that list, with a `stop` for anything it opens; mark it `optional` when its failure should be logged while the rest of the app keeps running
 - Services talk across packages through the typed event bus in `internal/events/` when a direct dependency would create an import cycle
 
 ## Code Style
@@ -101,15 +99,14 @@ Applies to Go and TypeScript alike. Excessive low-value comments are the most co
 ## Testing
 - `make test` runs the untagged Go suite. Database and other integration tests carry `//go:build integration` next to the code they test and run with `go test -tags=integration ./...` against an in-memory SQLite database, so no Docker is needed
 - IRC integration tests in `test/irc/`, run with `go test -tags=irc_integration_test ./test/irc/...` (in-process ircd, no Docker) - see `test/irc/README.md`
-- Browser end-to-end tests in `test/e2e/`, run with `go test -tags=e2e ./test/e2e/...` (needs a built `web/dist` and a Playwright browser) - see `test/e2e/README.md`
 - Build-tagged packages are invisible to a plain `go list ./...`; pass the tag to tooling that discovers packages first
-- Frontend tests in `web/test/`, run with `pnpm --dir web test` (Vitest + Testing Library in jsdom; prefer these over Go e2e tests for frontend-only behavior)
+- Frontend tests in `web/test/`, run with `pnpm --dir web test` (Vitest + Testing Library in jsdom)
 - Mock indexer server available in `test/mockindexer/`
 
 ## Development Notes
 - The project uses **pnpm** as the package manager for the frontend
 - The Go minimum is the `go` line in `go.mod`
-- The application serves the built React frontend from the Go server
+- The Go engine embeds the built React frontend (`web/dist`) and serves it to the iOS web view in-process
 - Real-time updates via Server-Sent Events (SSE)
 
 ## Pull Requests
