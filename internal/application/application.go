@@ -14,7 +14,6 @@ import (
 	"github.com/autobrr/autobrr/internal/auth"
 	"github.com/autobrr/autobrr/internal/config"
 	"github.com/autobrr/autobrr/internal/database"
-	"github.com/autobrr/autobrr/internal/diagnostics"
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/internal/events"
 	"github.com/autobrr/autobrr/internal/feed"
@@ -56,7 +55,6 @@ type App struct {
 
 	db         *database.DB
 	httpServer *http.Server
-	profiler   *diagnostics.Profiler
 
 	actionService       *action.Service
 	alertService        *alert.Service
@@ -149,25 +147,6 @@ func (app *App) Run(ctx context.Context) error {
 
 func (app *App) components(fail context.CancelCauseFunc) []component {
 	var components []component
-
-	if app.profiler != nil {
-		components = append(components, component{
-			name:     "profiler",
-			optional: true,
-			start: func(context.Context) error {
-				if err := app.profiler.Listen(); err != nil {
-					return err
-				}
-
-				serve(app.profiler.Serve, func(err error) {
-					app.log.Error().Err(err).Str("component", "profiler").Msg("server stopped unexpectedly")
-				})
-
-				return nil
-			},
-			stop: app.profiler.Shutdown,
-		})
-	}
 
 	components = append(components,
 		// bind before anything dials out so a port conflict fails startup early,
@@ -368,10 +347,6 @@ func (app *App) setup(ctx context.Context) error {
 		ProxyService:        app.proxyService,
 		ReleaseService:      app.releaseService,
 	})
-
-	if app.cfg.Config.ProfilingEnabled {
-		app.profiler = diagnostics.NewProfiler(app.cfg)
-	}
 
 	return nil
 }
