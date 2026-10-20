@@ -8,11 +8,6 @@
     "logs": "Logs",
     "docs": "Docs"
   },
-  "userMenu": {
-    "account": "Account",
-    "settings": "Settings",
-    "logout": "Log out"
-  },
   "forms": {
     "chooseOption": "Choose an option"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Type '{{phrase}}' to enable the button"
   },
   "header": {
-    "logoutSuccess": "You have been logged out. Goodbye!",
     "openMainMenu": "Open main menu",
     "listRefreshFailed": "List refresh failed!",
     "multipleListRefreshesFailed": "Multiple list refreshes failed!",

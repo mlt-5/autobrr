@@ -25,8 +25,7 @@
       "lists": "Listy",
       "notifications": "Notifikace",
       "proxies": "Proxy",
-      "releases": "Releasy",
-      "account": "Účet"
+      "releases": "Releasy"
     },
     "application": {
       "title": "Aplikace",
@@ -40,24 +39,6 @@
       "theme": "Režim",
       "themeDescription": "Vyberte mezi světlým, tmavým nebo systémovým režimem.",
       "languageDescription": "Vyberte jazyk používaný ve WebUI."
-    },
-    "account": {
-      "title": "Účet",
-      "description": "Spravovat nastavení účtu.",
-      "required": "Povinné",
-      "passwordsDoNotMatch": "Hesla se neshodují!",
-      "updateSuccess": "Uživatel byl úspěšně aktualizován. Pro použití se přihlaste znovu!",
-      "updateError": "Chyba při aktualizaci přihlašovacích údajů. Jste si jisti, že jste zadali správné aktuální heslo?",
-      "changeCredentialsTitle": "Změnit přihlašovací údaje",
-      "changeCredentialsDescription": "Uživatelské jméno a heslo lze změnit buď samostatně nebo dohromady. Nezpomeňte, že po změně přihlašovacích údajů budete odhlášeni.",
-      "currentUsername": "Aktuální uživatelské jméno",
-      "newUsername": "Nové uživatelské jméno",
-      "optional": "Nepovinné",
-      "currentPassword": "Aktuální heslo",
-      "requiredIfUpdatingCredentials": "Povinné při aktualizaci přihlašovacích údajů",
-      "newPassword": "Nové heslo",
-      "confirmNewPassword": "Potvrdit nové heslo",
-      "save": "Uložit"
     },
     "logsPage": {
       "title": "Logy",

@@ -7,7 +7,6 @@ import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import { APIClient } from "@api/APIClient";
 import {
   AlertKeys,
-  AuthKeys,
   FeedKeys,
   FilterKeys,
   IndexerKeys,
@@ -16,25 +15,6 @@ import {
   SettingsKeys
 } from "@api/query_keys";
 import { ColumnFilter } from "@tanstack/react-table";
-
-// The endpoint answers 200 while onboarding is still possible and errors once a user exists.
-export const CanOnboardQueryOptions = () =>
-  queryOptions({
-    queryKey: AuthKeys.canOnboard(),
-    queryFn: async () => {
-      try {
-        await APIClient.auth.canOnboard();
-        return true;
-      } catch (error) {
-        // fetch rejects with a TypeError when the request never reached the server
-        if (error instanceof TypeError) {
-          throw error;
-        }
-        return false;
-      }
-    },
-    staleTime: Infinity
-  });
 
 export const FiltersGetAllQueryOptions = () =>
   queryOptions({
@@ -179,16 +159,14 @@ export const ReleasesLatestQueryOptions = () =>
 
 // Dashboard widget queries contain failures in their own card: no throw to
 // the route error boundary (the global default) and only quick retries so
-// the widget's error state appears in seconds instead of minutes. The
-// expired-cookie error must not retry so the login redirect stays prompt.
+// the widget's error state appears in seconds instead of minutes.
 const widgetQueryDefaults = {
   placeholderData: keepPreviousData,
   staleTime: 5000,
   refetchOnWindowFocus: true,
   refetchInterval: 15000,
   throwOnError: false,
-  retry: (failureCount: number, error: Error) =>
-    error.message !== "Cookie expired or invalid." && failureCount < 2
+  retry: (failureCount: number) => failureCount < 2
 };
 
 export const ReleasesStatsQueryOptions = () =>

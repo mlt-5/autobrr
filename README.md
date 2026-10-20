@@ -51,7 +51,6 @@ autobrr can drop matches (torrent files that meet your filter's criteria) into a
 - Easy to use web UI (with dark mode!) to manage everything
 - Runs entirely on your iPhone or iPad, with no server to host
 - SQLite database
-- Built-in authentication
 - Notifications (built-in inbox and webhooks)
 
 ### Available Actions

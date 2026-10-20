@@ -25,8 +25,7 @@
     "lists": "Lists",
     "notifications": "Notifications",
     "proxies": "Proxies",
-    "releases": "Releases",
-    "account": "Account"
+    "releases": "Releases"
   },
   "application": {
     "title": "Application",
@@ -40,24 +39,6 @@
     "theme": "Theme",
     "themeDescription": "Choose between light, dark, or follow system theme.",
     "languageDescription": "Choose the language used in the WebUI."
-  },
-  "account": {
-    "title": "Account",
-    "description": "Manage account settings.",
-    "required": "Required",
-    "passwordsDoNotMatch": "Passwords don't match!",
-    "updateSuccess": "User updated successfully. Please sign in again!",
-    "updateError": "Error updating credentials. Did you provide the correct current password?",
-    "changeCredentialsTitle": "Change credentials",
-    "changeCredentialsDescription": "The username and password can be changed either separately or simultaneously. Note that you will be logged out after changing credentials.",
-    "currentUsername": "Current Username",
-    "newUsername": "New Username",
-    "optional": "Optional",
-    "currentPassword": "Current Password",
-    "requiredIfUpdatingCredentials": "Required if updating credentials",
-    "newPassword": "New Password",
-    "confirmNewPassword": "Confirm New Password",
-    "save": "Save"
   },
   "logsPage": {
     "title": "Logs",

@@ -6,7 +6,6 @@ package mobile
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 	"testing"
 	"time"
 
@@ -109,18 +108,6 @@ func TestServe(t *testing.T) {
 	assert.Equal(t, "OK", res.body)
 
 	res = serve(t, e, http.MethodGet, "app://autobrr/api/config", nil, "")
-	assert.Equal(t, http.StatusForbidden, res.status)
-
-	res = serve(t, e, http.MethodPost, "app://autobrr/api/auth/onboard", nil, `{"username":"u","password":"p"}`)
-	require.Equal(t, http.StatusOK, res.status)
-
-	res = serve(t, e, http.MethodPost, "app://autobrr/api/auth/login", nil, `{"username":"u","password":"p","remember_me":true}`)
-	require.Equal(t, http.StatusNoContent, res.status)
-
-	cookie, _, _ := strings.Cut(res.headers["Set-Cookie"], ";")
-	require.NotEmpty(t, cookie)
-
-	res = serve(t, e, http.MethodGet, "app://autobrr/api/config", map[string]string{"Cookie": cookie}, "")
 	assert.Equal(t, http.StatusOK, res.status)
 	assert.Equal(t, "application/json", res.headers["Content-Type"])
 	assert.Contains(t, res.body, `"config_dir"`)
@@ -129,13 +116,8 @@ func TestServe(t *testing.T) {
 func TestServeStreamsEvents(t *testing.T) {
 	e := startEngine(t)
 
-	serve(t, e, http.MethodPost, "app://autobrr/api/auth/onboard", nil, `{"username":"u","password":"p"}`)
-	res := serve(t, e, http.MethodPost, "app://autobrr/api/auth/login", nil, `{"username":"u","password":"p"}`)
-	cookie, _, _ := strings.Cut(res.headers["Set-Cookie"], ";")
-
-	h, _ := json.Marshal(map[string]string{"Cookie": cookie})
 	rec := newRecorder()
-	req := e.Serve(http.MethodGet, "app://autobrr/api/events?stream=logs", string(h), nil, rec)
+	req := e.Serve(http.MethodGet, "app://autobrr/api/events?stream=logs", "", nil, rec)
 
 	select {
 	case status := <-rec.status:

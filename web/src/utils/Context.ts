@@ -46,17 +46,7 @@ export interface DashboardConfigType {
   widgets: DashboardWidgetConfig[];
 }
 
-export interface AuthInfo {
-  username: string;
-  isLoggedIn: boolean;
-}
-
 // Default values
-const AuthContextDefaults: AuthInfo = {
-  username: "",
-  isLoggedIn: false
-};
-
 const SettingsContextDefaults: SettingsType = {
   debug: false,
   theme: "system",
@@ -110,7 +100,6 @@ function ContextMerger<T extends {}>(
   ctxState.set({ ...structuredClone(defaults), ...stored });
 }
 
-const AuthKey = "autobrr_user_auth";
 const SettingsKey = "autobrr_settings";
 const FilterListKey = "autobrr_filter_list";
 const DashboardKey = "autobrr_dashboard";
@@ -128,7 +117,6 @@ export const InitializeGlobalContext = () => {
     }
   }
 
-  ContextMerger<AuthInfo>(AuthKey, AuthContextDefaults, AuthContext);
   ContextMerger<SettingsType>(
     SettingsKey,
     SettingsContextDefaults,
@@ -158,13 +146,6 @@ function DefaultSetter<T>(name: string, newState: T, prevState: T) {
     console.warn(`  --> newState: ${newState}`);
   }
 }
-
-export const AuthContext = newRidgeState<AuthInfo>(
-  AuthContextDefaults,
-  {
-    onSet: (newState, prevState) => DefaultSetter(AuthKey, newState, prevState)
-  }
-);
 
 export const DashboardConfigContext = newRidgeState<DashboardConfigType>(
   DashboardConfigDefaults,

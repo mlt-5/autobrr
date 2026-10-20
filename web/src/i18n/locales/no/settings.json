@@ -25,8 +25,7 @@
     "lists": "Lister",
     "notifications": "Varsler",
     "proxies": "Proxyer",
-    "releases": "Utgivelser",
-    "account": "Konto"
+    "releases": "Utgivelser"
   },
   "application": {
     "title": "Applikasjon",
@@ -40,24 +39,6 @@
     "theme": "Tema",
     "themeDescription": "Velg mellom lyst, mørkt eller følg systemtemaet.",
     "languageDescription": "Velg språket som brukes i WebUI."
-  },
-  "account": {
-    "title": "Konto",
-    "description": "Administrer kontoinnstillinger.",
-    "required": "Påkrevd",
-    "passwordsDoNotMatch": "Passordene stemmer ikke overens!",
-    "updateSuccess": "Brukeren ble oppdatert. Logg inn på nytt!",
-    "updateError": "Feil ved oppdatering av påloggingsopplysninger. Oppga du riktig nåværende passord?",
-    "changeCredentialsTitle": "Endre påloggingsopplysninger",
-    "changeCredentialsDescription": "Brukernavn og passord kan endres enten separat eller samtidig. Merk at du blir logget ut etter at påloggingsopplysningene er endret.",
-    "currentUsername": "Nåværende brukernavn",
-    "newUsername": "Nytt brukernavn",
-    "optional": "Valgfritt",
-    "currentPassword": "Nåværende passord",
-    "requiredIfUpdatingCredentials": "Påkrevd ved oppdatering av påloggingsopplysninger",
-    "newPassword": "Nytt passord",
-    "confirmNewPassword": "Bekreft nytt passord",
-    "save": "Lagre"
   },
   "logsPage": {
     "title": "Logger",

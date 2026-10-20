@@ -9,10 +9,6 @@ interface NavItem {
   exact?: boolean;
 }
 
-export interface RightNavProps {
-  logoutMutation: () => void;
-}
-
 export const NAV_ROUTES: Array<NavItem> = [
   { labelKey: "nav.dashboard", path: "/", exact: true },
   { labelKey: "nav.filters", path: "/filters" },

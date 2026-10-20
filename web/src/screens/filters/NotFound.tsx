@@ -11,7 +11,7 @@ import Logo from "@app/logo.svg?react";
 
 export const FilterNotFound = () => {
   const { t } = useTranslation("common");
-  const filterGetByIdRoute = getRouteApi("/auth/authenticated-routes/filters/$filterId");
+  const filterGetByIdRoute = getRouteApi("/layout/filters/$filterId");
   const { filterId } = filterGetByIdRoute.useParams()
 
   return (

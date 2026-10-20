@@ -10,9 +10,8 @@ import { useTranslation } from "react-i18next";
 import { classNames } from "@utils";
 
 import { NAV_ROUTES } from "./_shared";
-import type { RightNavProps } from "./_shared";
 
-export const MobileNav = (props: RightNavProps) => {
+export const MobileNav = () => {
   const { t } = useTranslation("common");
 
   return (
@@ -42,15 +41,6 @@ export const MobileNav = (props: RightNavProps) => {
             }}
           </Link>
         ))}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            props.logoutMutation();
-          }}
-          className="w-full shadow-xs border bg-gray-100 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white block px-3 py-2 rounded-md text-base font-medium text-left cursor-pointer"
-        >
-          {t("userMenu.logout")}
-        </button>
       </div>
     </DisclosurePanel>
   );

@@ -25,8 +25,7 @@
     "lists": "列表",
     "notifications": "通知",
     "proxies": "代理",
-    "releases": "发布",
-    "account": "账户"
+    "releases": "发布"
   },
   "application": {
     "title": "应用",
@@ -40,24 +39,6 @@
     "theme": "主题",
     "themeDescription": "可选择浅色、深色或跟随系统主题。",
     "languageDescription": "选择 WebUI 使用的语言。"
-  },
-  "account": {
-    "title": "账户",
-    "description": "管理账户设置。",
-    "required": "必填",
-    "passwordsDoNotMatch": "两次输入的密码不一致",
-    "updateSuccess": "用户更新成功，请重新登录！",
-    "updateError": "更新凭据失败。请确认你填写了正确的当前密码。",
-    "changeCredentialsTitle": "修改凭据",
-    "changeCredentialsDescription": "用户名和密码可以分别修改，也可以同时修改。注意，修改凭据后你将被退出登录。",
-    "currentUsername": "当前用户名",
-    "newUsername": "新用户名",
-    "optional": "可选",
-    "currentPassword": "当前密码",
-    "requiredIfUpdatingCredentials": "修改凭据时必填",
-    "newPassword": "新密码",
-    "confirmNewPassword": "确认新密码",
-    "save": "保存"
   },
   "logsPage": {
     "title": "日志",

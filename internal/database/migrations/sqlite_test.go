@@ -724,6 +724,19 @@ func TestRunMigrationTest_SQLite(t *testing.T) {
 			},
 			want: "",
 		},
+		{
+			name:   "login removal drops the users and sessions tables",
+			fields: fields{},
+			args: MigrationTestCase{
+				Name:                "login removal drops the users and sessions tables",
+				MigrationIndex:      109,
+				MigrationsUntilName: "109_remove_api_keys",
+				MigrationToRun:      "110_remove_login",
+				SetupData:           setupLoginData,
+				ValidateResult:      validateLoginRemoved,
+			},
+			want: "",
+		},
 	}
 
 	for _, tt := range tests {

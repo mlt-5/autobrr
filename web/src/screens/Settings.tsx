@@ -12,8 +12,7 @@ import {
   KeyIcon,
   RectangleStackIcon,
   RssIcon,
-  Square3Stack3DIcon,
-  UserCircleIcon
+  Square3Stack3DIcon
 } from "@heroicons/react/24/outline";
 import { Link, Outlet } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -37,7 +36,6 @@ const subNavigation: NavTabType[] = [
   { labelKey: "nav.notifications", href: "/settings/notifications", icon: BellIcon },
   { labelKey: "nav.proxies", href: "/settings/proxies", icon: GlobeAltIcon },
   { labelKey: "nav.releases", href: "/settings/releases", icon: RectangleStackIcon },
-  { labelKey: "nav.account", href: "/settings/account", icon: UserCircleIcon }
   // {name: 'Regex Playground', href: 'regex-playground', icon: CogIcon, current: false}
   // {name: 'Rules', href: 'rules', icon: ClipboardCheckIcon, current: false},
 ];

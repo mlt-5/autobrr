@@ -8,11 +8,6 @@
     "logs": "Journaux",
     "docs": "Documentation"
   },
-  "userMenu": {
-    "account": "Compte",
-    "settings": "Paramètres",
-    "logout": "Se déconnecter"
-  },
   "forms": {
     "chooseOption": "Choisir une option"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Tape '{{phrase}}' pour activer le bouton"
   },
   "header": {
-    "logoutSuccess": "Tu as été déconnecté. Au revoir!",
     "openMainMenu": "Ouvrir le menu principal",
     "listRefreshFailed": "Échec de l'actualisation de la liste!",
     "multipleListRefreshesFailed": "Plusieurs actualisations de listes ont échoué!",

@@ -8,11 +8,6 @@
     "logs": "Logger",
     "docs": "Dokumentasjon"
   },
-  "userMenu": {
-    "account": "Konto",
-    "settings": "Innstillinger",
-    "logout": "Logg ut"
-  },
   "forms": {
     "chooseOption": "Velg et alternativ"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Skriv '{{phrase}}' for å aktivere knappen"
   },
   "header": {
-    "logoutSuccess": "Du har blitt logget ut. På gjensyn!",
     "openMainMenu": "Åpne hovedmeny",
     "listRefreshFailed": "Klarte ikke å oppdatere listen!",
     "multipleListRefreshesFailed": "Klarte ikke å oppdatere flere lister!",
