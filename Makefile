@@ -1,4 +1,4 @@
-.PHONY: all deps test build build/app build/web build/docker clean install install-man dev
+.PHONY: all deps test build build/app build/web build/ios build/docker clean install install-man dev
 .POSIX:
 .SUFFIXES:
 
@@ -30,6 +30,9 @@ build/app:
 
 build/web:
 	pnpm --dir web run build
+
+build/ios: deps build/web
+	gomobile bind -target=ios,iossimulator -ldflags "-X github.com/autobrr/autobrr/internal/meta.commit=$(GIT_COMMIT) -X github.com/autobrr/autobrr/internal/meta.version=$(GIT_TAG)" -o bin/Autobrr.xcframework ./mobile
 
 build/docker:
 	docker build -t autobrr:dev -f Dockerfile . --build-arg GIT_TAG=$(GIT_TAG) --build-arg GIT_COMMIT=$(GIT_COMMIT)
