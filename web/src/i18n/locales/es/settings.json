@@ -33,7 +33,6 @@
     "description": "Configuración de la aplicación. Cambia en config.toml y reinicia para que surta efecto.",
     "host": "Host",
     "port": "Puerto",
-    "baseUrl": "URL base",
     "version": "Versión",
     "commit": "Commit",
     "buildDate": "Fecha de compilación",

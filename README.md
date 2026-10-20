@@ -288,8 +288,6 @@ The following environment variables can be used:
 |----------------------------------------|----------------------------------------------------------|-------------|
 | `AUTOBRR__HOST`                        | Listen address                                           | `127.0.0.1` |
 | `AUTOBRR__PORT`                        | Listen port                                              | `7474`      |
-| `AUTOBRR__BASE_URL`                    | Base URL for reverse proxy                               | `/`         |
-| `AUTOBRR__BASE_URL_MODE_LEGACY`        | Base URL Mode Legacy for old proxy setups                | `true`      |
 | `AUTOBRR__LOG_LEVEL`                   | Log level (DEBUG, INFO, WARN, ERROR)                     | `INFO`      |
 | `AUTOBRR__LOG_PATH`                    | Log file location                                        | -           |
 | `AUTOBRR__LOG_MAX_SIZE`                | Max size in MB before rotation                           | `10`        |

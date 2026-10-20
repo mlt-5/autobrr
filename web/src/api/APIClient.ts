@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { baseUrl, sseBaseUrl } from "@utils";
 import { AuthContext, AuthInfo } from "@utils/Context";
 import { ColumnFilter } from "@tanstack/react-table";
 import { IrcEvent } from "@hooks/useIrcEvents";
@@ -154,7 +153,7 @@ export async function HttpClient<T = unknown>(
     }
   }
 
-  const response = await window.fetch(`${baseUrl()}${endpoint}`, init);
+  const response = await window.fetch(`/${endpoint}`, init);
 
   const isJson = response.headers.get("Content-Type")?.includes("application/json");
 
@@ -184,7 +183,7 @@ export async function HttpClient<T = unknown>(
       break;
     }
     case 500: {
-      const health = await window.fetch(`${baseUrl()}api/healthz/liveness`);
+      const health = await window.fetch("/api/healthz/liveness");
       if (!health.ok) {
         return Promise.reject(
           new Error(`[500] Offline (Internal server error): "${endpoint}"`)
@@ -378,7 +377,7 @@ export const APIClient = {
         queryString: { limit }
       }),
     allEvents: () => new EventSource(
-      `${sseBaseUrl()}api/irc/events?stream=irc`,
+      "/api/irc/events?stream=irc",
       { withCredentials: true }
     )
   },
@@ -390,8 +389,8 @@ export const APIClient = {
     list: () => appClient.Get<Alert[]>("api/alerts")
   },
   events: {
-    logs: () => new EventSource(`${sseBaseUrl()}api/events?stream=logs`, { withCredentials: true }),
-    notifications: () => new EventSource(`${sseBaseUrl()}api/events?stream=notifications`, { withCredentials: true })
+    logs: () => new EventSource("/api/events?stream=logs", { withCredentials: true }),
+    notifications: () => new EventSource("/api/events?stream=notifications", { withCredentials: true })
   },
   notifications: {
     getAll: () => appClient.Get<ServiceNotification[]>("api/notification"),

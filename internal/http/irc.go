@@ -65,8 +65,6 @@ func (h ircHandler) Routes(r chi.Router) {
 	})
 
 	r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
-
-		// inject CORS headers to bypass checks
 		h.sse.Headers = map[string]string{
 			"Content-Type":      "text/event-stream",
 			"Cache-Control":     "no-cache",

@@ -18,7 +18,7 @@ import (
 )
 
 func newLifecycleTestServer(port int) *Server {
-	cfg := &domain.Config{Host: "127.0.0.1", Port: port, BaseURL: "/", BaseURLModeLegacy: true}
+	cfg := &domain.Config{Host: "127.0.0.1", Port: port}
 
 	return NewServer(Deps{
 		Log:            zerolog.Nop(),

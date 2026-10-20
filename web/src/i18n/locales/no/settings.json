@@ -33,7 +33,6 @@
     "description": "Applikasjoninnstillinger. Endre i config.toml og start på nytt for at endringene skal tre i kraft.",
     "host": "Vert",
     "port": "Port",
-    "baseUrl": "Basis-URL",
     "version": "Versjon",
     "commit": "Commit",
     "buildDate": "Byggedato",

@@ -12,14 +12,6 @@ import "./i18n";
 import { App } from "./App";
 import { InitializeGlobalContext } from "./utils/Context";
 
-declare global {
-    interface Window {
-      APP: APP;
-    }
-}
-
-window.APP = window.APP || {};
-
 // Initializes auth and theme contexts
 InitializeGlobalContext();
 

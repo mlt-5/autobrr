@@ -114,7 +114,7 @@ func setupAuthHandler() {
 func TestAuthHandlerLoginMixedSchemes(t *testing.T) {
 	srv := NewServer(Deps{
 		Log:            zerolog.Nop(),
-		Config:         &config.AppConfig{Config: &domain.Config{BaseURL: "/autobrr/"}},
+		Config:         &config.AppConfig{Config: &domain.Config{}},
 		SessionManager: scs.New(),
 	})
 	service := authServiceMock{users: map[string]*domain.User{
@@ -122,12 +122,12 @@ func TestAuthHandlerLoginMixedSchemes(t *testing.T) {
 	}}
 	handler := newAuthHandler(encoder{}, zerolog.Nop(), srv, srv.config.Config, srv.sessionManager, service)
 	router := setupServer(srv)
-	router.Route("/autobrr/auth", handler.Routes)
+	router.Route("/auth", handler.Routes)
 
 	login := func(secure bool, previous *http.Cookie) *http.Cookie {
 		t.Helper()
 
-		req := httptest.NewRequest(http.MethodPost, "/autobrr/auth/login", strings.NewReader(`{"username":"test","password":"pass","remember_me":true}`))
+		req := httptest.NewRequest(http.MethodPost, "/auth/login", strings.NewReader(`{"username":"test","password":"pass","remember_me":true}`))
 		if secure {
 			req.Header.Set("X-Forwarded-Proto", "https")
 		}
@@ -145,13 +145,13 @@ func TestAuthHandlerLoginMixedSchemes(t *testing.T) {
 		assert.Equal(t, secure, cookie.Secure)
 		assert.True(t, cookie.HttpOnly)
 		assert.Equal(t, http.SameSiteLaxMode, cookie.SameSite)
-		assert.Equal(t, "/autobrr/", cookie.Path)
+		assert.Equal(t, "/", cookie.Path)
 		return cookie
 	}
 	validate := func(cookie *http.Cookie, status int) {
 		t.Helper()
 
-		req := httptest.NewRequest(http.MethodGet, "/autobrr/auth/validate", nil)
+		req := httptest.NewRequest(http.MethodGet, "/auth/validate", nil)
 		if cookie != nil && !cookie.Secure {
 			req.AddCookie(cookie)
 		}
@@ -173,7 +173,7 @@ func TestAuthHandlerLoginMixedSchemes(t *testing.T) {
 		if cookie == nil {
 			continue
 		}
-		req := httptest.NewRequest(http.MethodPost, "/autobrr/auth/logout", nil)
+		req := httptest.NewRequest(http.MethodPost, "/auth/logout", nil)
 		req.AddCookie(cookie)
 		if secure {
 			req.Header.Set("X-Forwarded-Proto", "https")
@@ -185,7 +185,7 @@ func TestAuthHandlerLoginMixedSchemes(t *testing.T) {
 		if assert.Len(t, cookies, 1) {
 			assert.Equal(t, secure, cookies[0].Secure)
 			assert.Equal(t, -1, cookies[0].MaxAge)
-			assert.Equal(t, "/autobrr/", cookies[0].Path)
+			assert.Equal(t, "/", cookies[0].Path)
 		}
 	}
 
@@ -206,7 +206,7 @@ func TestServer_sessionMiddleware(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				srv := NewServer(Deps{
 					Log:            zerolog.Nop(),
-					Config:         &config.AppConfig{Config: &domain.Config{BaseURL: "/"}},
+					Config:         &config.AppConfig{Config: &domain.Config{}},
 					SessionManager: scs.New(),
 				})
 				handler := srv.sessionMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
