@@ -24,7 +24,6 @@
     "feeds": "Feeds",
     "lists": "Lists",
     "notifications": "Notifications",
-    "apiKeys": "API keys",
     "proxies": "Proxies",
     "releases": "Releases",
     "account": "Account"
@@ -82,26 +81,6 @@
     "regexFilter": "RegExp filter",
     "linesToMatch": "Lines to match",
     "matches": "Matches"
-  },
-  "apiKey": {
-    "createTitle": "Create API key",
-    "description": "Add new API key.",
-    "created": "API key {{name}} was added",
-    "deleted": "API key {{name}} was deleted",
-    "name": "Name",
-    "key": "Key",
-    "required": "Required",
-    "closePanel": "Close panel",
-    "cancel": "Cancel",
-    "create": "Create",
-    "listTitle": "API keys",
-    "listDescription": "Manage your autobrr API keys here.",
-    "addNew": "Add new",
-    "noItems": "No API keys",
-    "createCta": "Create API key",
-    "removeTitle": "Remove API key: {{name}}",
-    "removeText": "Are you sure you want to remove this API key? This action cannot be undone.",
-    "deleteKey": "Delete key"
   },
   "irc": {
     "listTitle": "IRC",
@@ -388,26 +367,6 @@
       "usageFeeds": "Feeds",
       "usageDisableText": "Disabling it will disable the following IRC networks, while indexers and feeds will connect without a proxy:"
     },
-  "apiKey": {
-    "createTitle": "Create API key",
-    "description": "Add new API key.",
-    "created": "API key {{name}} was added",
-    "deleted": "API key {{name}} was deleted",
-    "name": "Name",
-    "key": "Key",
-    "required": "Required",
-    "closePanel": "Close panel",
-    "cancel": "Cancel",
-    "create": "Create",
-    "listTitle": "API keys",
-    "listDescription": "Manage your autobrr API keys here.",
-    "addNew": "Add new",
-    "noItems": "No API keys",
-    "createCta": "Create API key",
-    "removeTitle": "Remove API key: {{name}}",
-    "removeText": "Are you sure you want to remove this API key? This action cannot be undone.",
-    "deleteKey": "Delete key"
-  },
     "notification": {
       "settings": "Settings",
       "settingsDescBuiltin": "Notifications are stored in autobrr and shown under the bell icon in the header. The latest 1000 are kept for up to 30 days.",

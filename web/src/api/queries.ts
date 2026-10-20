@@ -7,7 +7,6 @@ import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import { APIClient } from "@api/APIClient";
 import {
   AlertKeys,
-  ApiKeys,
   AuthKeys,
   FeedKeys,
   FilterKeys,
@@ -158,13 +157,6 @@ export const IrcChannelHistoryQueryOptions = (networkId: number, channel: string
     queryKey: IrcKeys.channelHistory(networkId, channel),
     queryFn: () => APIClient.irc.getChannelHistory(networkId, channel.startsWith("#") ? channel.substring(1) : channel),
     staleTime: Infinity
-  });
-
-export const ApikeysQueryOptions = () =>
-  queryOptions({
-    queryKey: ApiKeys.lists(),
-    queryFn: () => APIClient.apikeys.getAll(),
-    refetchOnWindowFocus: false,
   });
 
 export const ReleasesListQueryOptions = (offset: number, limit: number, filters: ColumnFilter[]) =>

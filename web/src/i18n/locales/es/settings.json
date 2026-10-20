@@ -24,7 +24,6 @@
     "feeds": "Feeds",
     "lists": "Listas",
     "notifications": "Notificaciones",
-    "apiKeys": "Claves API",
     "proxies": "Proxies",
     "releases": "Lanzamientos",
     "account": "Cuenta"
@@ -82,26 +81,6 @@
     "regexFilter": "Filtro RegExp",
     "linesToMatch": "Líneas a coincidir",
     "matches": "Coincidencias"
-  },
-  "apiKey": {
-    "createTitle": "Crear clave API",
-    "description": "Agregar nueva clave API.",
-    "created": "Se agregó la clave API {{name}}",
-    "deleted": "Se eliminó la clave API {{name}}",
-    "name": "Nombre",
-    "key": "Clave",
-    "required": "Obligatorio",
-    "closePanel": "Cerrar panel",
-    "cancel": "Cancelar",
-    "create": "Crear",
-    "listTitle": "Claves API",
-    "listDescription": "Administra tus claves API de autobrr aquí.",
-    "addNew": "Agregar nueva",
-    "noItems": "No hay claves API",
-    "createCta": "Crear clave API",
-    "removeTitle": "Eliminar clave API: {{name}}",
-    "removeText": "¿Estás seguro de que quieres eliminar esta clave API? Esta acción no se puede deshacer.",
-    "deleteKey": "Eliminar clave"
   },
   "irc": {
     "listTitle": "IRC",
@@ -386,26 +365,6 @@
       "usageIrcNetworks": "Redes IRC",
       "usageFeeds": "Feeds",
       "usageDisableText": "Al deshabilitarlo se deshabilitarán las siguientes redes IRC, mientras que los indexadores y feeds se conectarán sin proxy:"
-    },
-    "apiKey": {
-      "createTitle": "Crear clave API",
-      "description": "Agregar nueva clave API.",
-      "created": "Se agregó la clave API {{name}}",
-      "deleted": "Se eliminó la clave API {{name}}",
-      "name": "Nombre",
-      "key": "Clave",
-      "required": "Obligatorio",
-      "closePanel": "Cerrar panel",
-      "cancel": "Cancelar",
-      "create": "Crear",
-      "listTitle": "Claves API",
-      "listDescription": "Administra tus claves API de autobrr aquí.",
-      "addNew": "Agregar nueva",
-      "noItems": "No hay claves API",
-      "createCta": "Crear clave API",
-      "removeTitle": "Eliminar clave API: {{name}}",
-      "removeText": "¿Estás seguro de que quieres eliminar esta clave API? Esta acción no se puede deshacer.",
-      "deleteKey": "Eliminar clave"
     },
     "notification": {
       "settings": "Configuración",

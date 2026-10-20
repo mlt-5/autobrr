@@ -320,3 +320,15 @@ func validateExecRemoved(db *sql.DB, t *testing.T) {
 	_, err = db.Exec(`SELECT exec_expect_status FROM filter_external`)
 	assert.Error(t, err, "filter_external.exec_expect_status must be dropped")
 }
+
+func setupAPIKeyData(db *sql.DB) error {
+	_, err := db.Exec(`INSERT INTO api_key (name, key) VALUES ('script', 'abc123')`)
+
+	return err
+}
+
+func validateAPIKeysRemoved(db *sql.DB, t *testing.T) {
+	var count int
+	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'api_key'`).Scan(&count))
+	assert.Equal(t, 0, count, "api_key table must be dropped")
+}

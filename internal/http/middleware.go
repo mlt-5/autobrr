@@ -68,40 +68,24 @@ func (s *secureSessionResponseWriter) Unwrap() http.ResponseWriter {
 
 func (s *Server) IsAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if token := r.Header.Get("X-API-Token"); token != "" {
-			// check header
-			if !s.apiService.ValidateAPIKey(r.Context(), token) {
-				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-				return
+		authenticated := s.sessionManager.GetBool(r.Context(), "authenticated")
+		if !authenticated {
+			s.log.Debug().Msg("session not authenticated")
+			if err := s.sessionManager.Destroy(r.Context()); err != nil {
+				s.log.Error().Err(err).Msg("failed to destroy session")
 			}
+			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+			return
+		}
 
-		} else if key := r.URL.Query().Get("apikey"); key != "" {
-			// check query param like ?apikey=TOKEN
-			if !s.apiService.ValidateAPIKey(r.Context(), key) {
-				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		deadline := s.sessionManager.Deadline(r.Context())
+		if time.Until(deadline) <= 7*24*time.Hour {
+			s.log.Trace().Time("deadline", deadline).Msg("session expiring in less than 7 days, extending")
+
+			if err := s.sessionManager.RenewToken(r.Context()); err != nil {
+				s.log.Error().Err(err).Str("username", s.sessionManager.GetString(r.Context(), "username")).Str("remote_addr", r.RemoteAddr).Msg("failed to renew session token")
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				return
-			}
-		} else {
-			// check session
-			authenticated := s.sessionManager.GetBool(r.Context(), "authenticated")
-			if !authenticated {
-				s.log.Debug().Msg("session not authenticated")
-				if err := s.sessionManager.Destroy(r.Context()); err != nil {
-					s.log.Error().Err(err).Msg("failed to destroy session")
-				}
-				http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
-				return
-			}
-
-			deadline := s.sessionManager.Deadline(r.Context())
-			if time.Until(deadline) <= 7*24*time.Hour {
-				s.log.Trace().Time("deadline", deadline).Msg("session expiring in less than 7 days, extending")
-
-				if err := s.sessionManager.RenewToken(r.Context()); err != nil {
-					s.log.Error().Err(err).Str("username", s.sessionManager.GetString(r.Context(), "username")).Str("remote_addr", r.RemoteAddr).Msg("failed to renew session token")
-					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-					return
-				}
 			}
 		}
 

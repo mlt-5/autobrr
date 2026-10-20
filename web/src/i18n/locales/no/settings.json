@@ -24,7 +24,6 @@
     "feeds": "Feeder",
     "lists": "Lister",
     "notifications": "Varsler",
-    "apiKeys": "API-nøkler",
     "proxies": "Proxyer",
     "releases": "Utgivelser",
     "account": "Konto"
@@ -82,26 +81,6 @@
     "regexFilter": "RegExp-filter",
     "linesToMatch": "Linjer som skal samsvare",
     "matches": "Treff"
-  },
-  "apiKey": {
-    "createTitle": "Opprett API-nøkkel",
-    "description": "Legg til ny API-nøkkel.",
-    "created": "API-nøkkelen {{name}} ble lagt til",
-    "deleted": "API-nøkkelen {{name}} ble slettet",
-    "name": "Navn",
-    "key": "Nøkkel",
-    "required": "Påkrevd",
-    "closePanel": "Lukk panel",
-    "cancel": "Avbryt",
-    "create": "Opprett",
-    "listTitle": "API-nøkler",
-    "listDescription": "Administrer autobrr API-nøklene dine her.",
-    "addNew": "Legg til ny",
-    "noItems": "Ingen API-nøkler",
-    "createCta": "Opprett API-nøkkel",
-    "removeTitle": "Fjern API-nøkkel: {{name}}",
-    "removeText": "Er du sikker på at du vil fjerne denne API-nøkkelen? Denne handlingen kan ikke angres.",
-    "deleteKey": "Slett nøkkel"
   },
   "irc": {
     "listTitle": "IRC",
@@ -387,26 +366,6 @@
       "usageFeeds": "Feeder",
       "usageDisableText": "Deaktivering deaktiverer følgende IRC-nettverk, mens indekserere og feeder kobler til uten proxy:"
     },
-  "apiKey": {
-    "createTitle": "Opprett API-nøkkel",
-    "description": "Legg til ny API-nøkkel.",
-    "created": "API-nøkkelen {{name}} ble lagt til",
-    "deleted": "API-nøkkelen {{name}} ble slettet",
-    "name": "Navn",
-    "key": "Nøkkel",
-    "required": "Påkrevd",
-    "closePanel": "Lukk panel",
-    "cancel": "Avbryt",
-    "create": "Opprett",
-    "listTitle": "API-nøkler",
-    "listDescription": "Administrer autobrr API-nøklene dine her.",
-    "addNew": "Legg til ny",
-    "noItems": "Ingen API-nøkler",
-    "createCta": "Opprett API-nøkkel",
-    "removeTitle": "Fjern API-nøkkel: {{name}}",
-    "removeText": "Er du sikker på at du vil fjerne denne API-nøkkelen? Denne handlingen kan ikke angres.",
-    "deleteKey": "Slett nøkkel"
-  },
     "notification": {
       "settings": "Innstillinger",
       "settingsDescBuiltin": "Varsler lagres i autobrr og vises under bjelleikonet i toppfeltet. De siste 1000 beholdes i opptil 30 dager.",

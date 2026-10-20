@@ -24,7 +24,6 @@
     "feeds": "Фиды",
     "lists": "Списки",
     "notifications": "Уведомления",
-    "apiKeys": "API-ключи",
     "proxies": "Прокси",
     "releases": "Релизы",
     "account": "Аккаунт"
@@ -82,26 +81,6 @@
     "regexFilter": "Фильтр RegExp",
     "linesToMatch": "Строки для проверки",
     "matches": "Совпадения"
-  },
-  "apiKey": {
-    "createTitle": "Создать API-ключ",
-    "description": "Добавить новый API-ключ.",
-    "created": "API-ключ {{name}} добавлен",
-    "deleted": "API-ключ {{name}} удалён",
-    "name": "Имя",
-    "key": "Ключ",
-    "required": "Обязательно",
-    "closePanel": "Закрыть панель",
-    "cancel": "Отмена",
-    "create": "Создать",
-    "listTitle": "API-ключи",
-    "listDescription": "Управляйте вашими API-ключами autobrr здесь.",
-    "addNew": "Добавить",
-    "noItems": "Нет API-ключей",
-    "createCta": "Создать API-ключ",
-    "removeTitle": "Удалить API-ключ: {{name}}",
-    "removeText": "Вы уверены, что хотите удалить этот API-ключ? Это действие нельзя отменить.",
-    "deleteKey": "Удалить ключ"
   },
   "irc": {
     "listTitle": "IRC",
@@ -386,26 +365,6 @@
       "usageIrcNetworks": "IRC-сети",
       "usageFeeds": "Фиды",
       "usageDisableText": "При отключении будут отключены следующие IRC-сети, а индексаторы и фиды будут подключаться без прокси:"
-    },
-    "apiKey": {
-      "createTitle": "Создать API-ключ",
-      "description": "Добавить новый API-ключ.",
-      "created": "API-ключ {{name}} добавлен",
-      "deleted": "API-ключ {{name}} удалён",
-      "name": "Имя",
-      "key": "Ключ",
-      "required": "Обязательно",
-      "closePanel": "Закрыть панель",
-      "cancel": "Отмена",
-      "create": "Создать",
-      "listTitle": "API-ключи",
-      "listDescription": "Управляйте своими API-ключами autobrr здесь.",
-      "addNew": "Добавить",
-      "noItems": "Нет API-ключей",
-      "createCta": "Создать API-ключ",
-      "removeTitle": "Удалить API-ключ: {{name}}",
-      "removeText": "Вы уверены, что хотите удалить этот API-ключ? Это действие нельзя отменить.",
-      "deleteKey": "Удалить ключ"
     },
     "notification": {
       "settings": "Настройки",
