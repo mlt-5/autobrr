@@ -25,8 +25,7 @@
     "lists": "Listas",
     "notifications": "Notificaciones",
     "proxies": "Proxies",
-    "releases": "Lanzamientos",
-    "account": "Cuenta"
+    "releases": "Lanzamientos"
   },
   "application": {
     "title": "Aplicación",
@@ -40,24 +39,6 @@
     "theme": "Tema",
     "themeDescription": "Elige entre tema claro, oscuro o seguir el sistema.",
     "languageDescription": "Elige el idioma usado en la WebUI."
-  },
-  "account": {
-    "title": "Cuenta",
-    "description": "Administrar configuración de la cuenta.",
-    "required": "Obligatorio",
-    "passwordsDoNotMatch": "¡Las contraseñas no coinciden!",
-    "updateSuccess": "Usuario actualizado exitosamente. ¡Por favor inicia sesión de nuevo!",
-    "updateError": "Error al actualizar credenciales. ¿Proporcionaste la contraseña actual correcta?",
-    "changeCredentialsTitle": "Cambiar credenciales",
-    "changeCredentialsDescription": "El usuario y la contraseña pueden cambiarse por separado o simultáneamente. Ten en cuenta que se cerrará tu sesión después de cambiar las credenciales.",
-    "currentUsername": "Usuario actual",
-    "newUsername": "Nuevo usuario",
-    "optional": "Opcional",
-    "currentPassword": "Contraseña actual",
-    "requiredIfUpdatingCredentials": "Obligatorio si actualizas credenciales",
-    "newPassword": "Nueva contraseña",
-    "confirmNewPassword": "Confirmar nueva contraseña",
-    "save": "Guardar"
   },
   "logsPage": {
     "title": "Registros",

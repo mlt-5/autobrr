@@ -8,11 +8,6 @@
     "logs": "Логи",
     "docs": "Документация"
   },
-  "userMenu": {
-    "account": "Аккаунт",
-    "settings": "Настройки",
-    "logout": "Выйти"
-  },
   "forms": {
     "chooseOption": "Выберите опцию"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Введите '{{phrase}}' для активации кнопки"
   },
   "header": {
-    "logoutSuccess": "Вы вышли из системы. До свидания!",
     "openMainMenu": "Открыть главное меню",
     "listRefreshFailed": "Ошибка обновления списка!",
     "multipleListRefreshesFailed": "Ошибка обновления нескольких списков!",

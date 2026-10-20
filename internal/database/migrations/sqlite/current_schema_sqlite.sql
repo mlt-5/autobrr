@@ -1,13 +1,3 @@
-CREATE TABLE users
-(
-    id         INTEGER PRIMARY KEY,
-    username   TEXT NOT NULL,
-    password   TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (username)
-);
-
 CREATE TABLE proxy
 (
     id         INTEGER PRIMARY KEY,
@@ -546,15 +536,6 @@ CREATE TABLE list_filter
     FOREIGN KEY (filter_id) REFERENCES filter (id) ON DELETE CASCADE,
     PRIMARY KEY (list_id, filter_id)
 );
-
-CREATE TABLE sessions
-(
-    token  TEXT PRIMARY KEY,
-    data   BLOB NOT NULL,
-    expiry REAL NOT NULL
-);
-
-CREATE INDEX sessions_expiry_idx ON sessions (expiry);
 
 CREATE TABLE release_cleanup_job
 (

@@ -1,7 +1,6 @@
 import i18n, { type BackendModule, type ResourceKey } from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import authEn from "./locales/en/auth.json";
 import commonEn from "./locales/en/common.json";
 import optionsEn from "./locales/en/options.json";
 import settingsEn from "./locales/en/settings.json";
@@ -84,7 +83,6 @@ void i18n.use(initReactI18next).use(lazyLocaleBackend).init({
   resources: {
     en: {
       common: commonEn,
-      auth: authEn,
       options: optionsEn,
       settings: settingsEn,
       filters: filtersEn
@@ -95,7 +93,7 @@ void i18n.use(initReactI18next).use(lazyLocaleBackend).init({
   fallbackLng: "en",
   supportedLngs: supportedLanguages,
   defaultNS: "common",
-  ns: ["common", "auth", "settings", "options", "filters"],
+  ns: ["common", "settings", "options", "filters"],
   interpolation: {
     escapeValue: false
   },

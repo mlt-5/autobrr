@@ -29,9 +29,8 @@ function renderFilters() {
     defaultOptions: { queries: { ...appQueryClient.getDefaultOptions().queries, retry: false } }
   });
   const root = createRootRouteWithContext<{ queryClient: QueryClient }>()();
-  const auth = createRoute({ getParentRoute: () => root, id: "auth" });
-  const authenticated = createRoute({ getParentRoute: () => auth, id: "authenticated-routes" });
-  const filters = createRoute({ getParentRoute: () => authenticated, path: "filters" });
+  const layout = createRoute({ getParentRoute: () => root, id: "layout" });
+  const filters = createRoute({ getParentRoute: () => layout, path: "filters" });
   const list = createRoute({ getParentRoute: () => filters, path: "/", component: Filters });
   const details = createRoute({
     getParentRoute: () => filters,
@@ -42,9 +41,9 @@ function renderFilters() {
   const actions = createRoute({ getParentRoute: () => details, path: "actions", component: Actions });
   const external = createRoute({ getParentRoute: () => details, path: "external", component: External });
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([authenticated.addChildren([
+    routeTree: root.addChildren([layout.addChildren([
       filters.addChildren([list, details.addChildren([actions, external])])
-    ])])]),
+    ])]),
     history: createMemoryHistory({ initialEntries: ["/filters"] }),
     context: { queryClient }
   });

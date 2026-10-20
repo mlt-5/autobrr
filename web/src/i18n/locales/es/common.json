@@ -8,11 +8,6 @@
     "logs": "Registros",
     "docs": "Documentación"
   },
-  "userMenu": {
-    "account": "Cuenta",
-    "settings": "Configuración",
-    "logout": "Cerrar sesión"
-  },
   "forms": {
     "chooseOption": "Elige una opción"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Escribe '{{phrase}}' para habilitar el botón"
   },
   "header": {
-    "logoutSuccess": "Has cerrado sesión. ¡Adiós!",
     "openMainMenu": "Abrir menú principal",
     "listRefreshFailed": "¡Error al actualizar la lista!",
     "multipleListRefreshesFailed": "¡Múltiples actualizaciones de lista fallaron!",

@@ -8,11 +8,6 @@
     "logs": "日志",
     "docs": "文档"
   },
-  "userMenu": {
-    "account": "账户",
-    "settings": "设置",
-    "logout": "退出登录"
-  },
   "forms": {
     "chooseOption": "请选择一个选项"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "输入“{{phrase}}”以启用按钮"
   },
   "header": {
-    "logoutSuccess": "你已退出登录。再见！",
     "openMainMenu": "打开主菜单",
     "listRefreshFailed": "列表刷新失败！",
     "multipleListRefreshesFailed": "多个列表刷新失败！",

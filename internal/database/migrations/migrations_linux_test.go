@@ -121,11 +121,10 @@ type = "sqlite"
 		err = db.Handler.QueryRow("PRAGMA user_version").Scan(&ver)
 		assert.Equal(t, 0, ver, "should have reset user_version to 0")
 
-		// Verify we can query basic tables
 		var count int
-		err = db.Handler.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
-		require.NoError(t, err, "Should be able to query users table")
-		assert.Equal(t, 1, count, "Should be one user in users table")
+		err = db.Handler.QueryRow("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'users'").Scan(&count)
+		require.NoError(t, err, "Should be able to query the schema")
+		assert.Equal(t, 0, count, "users table should be dropped")
 
 		t.Logf("Successfully migrated from v%s to latest version", version)
 	})

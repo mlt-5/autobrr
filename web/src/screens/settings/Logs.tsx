@@ -50,7 +50,7 @@ const SelectWrapper = ({ id, value, onChange, options }: SelectWrapperProps) => 
 
 function LogSettings() {
   const { t } = useTranslation("settings");
-  const settingsLogRoute = getRouteApi("/auth/authenticated-routes/settings/logs");
+  const settingsLogRoute = getRouteApi("/layout/settings/logs");
   const { queryClient} =  settingsLogRoute.useRouteContext();
 
   const configQuery = useSuspenseQuery(ConfigQueryOptions())

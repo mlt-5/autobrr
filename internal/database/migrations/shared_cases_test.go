@@ -332,3 +332,19 @@ func validateAPIKeysRemoved(db *sql.DB, t *testing.T) {
 	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'api_key'`).Scan(&count))
 	assert.Equal(t, 0, count, "api_key table must be dropped")
 }
+
+func setupLoginData(db *sql.DB) error {
+	if _, err := db.Exec(`INSERT INTO users (username, password) VALUES ('admin', 'hash')`); err != nil {
+		return err
+	}
+
+	_, err := db.Exec(`INSERT INTO sessions (token, data, expiry) VALUES ('token', x'00', 0)`)
+
+	return err
+}
+
+func validateLoginRemoved(db *sql.DB, t *testing.T) {
+	var count int
+	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM sqlite_master WHERE name IN ('users', 'sessions', 'sessions_expiry_idx')`).Scan(&count))
+	assert.Equal(t, 0, count, "users, sessions and the sessions index must be dropped")
+}

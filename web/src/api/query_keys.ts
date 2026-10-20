@@ -10,11 +10,6 @@ export const LogKeys = {
   files: () => [...LogKeys.all, "files"] as const
 };
 
-export const AuthKeys = {
-  all: ["auth"] as const,
-  canOnboard: () => [...AuthKeys.all, "can-onboard"] as const
-};
-
 export const SettingsKeys = {
   all: ["settings"] as const,
   config: () => [...SettingsKeys.all, "config"] as const,

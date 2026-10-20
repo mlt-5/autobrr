@@ -10,16 +10,13 @@ import {
   createRouter,
   lazyRouteComponent,
   notFound,
-  redirect,
 } from "@tanstack/react-router";
 import { QueryClient } from "@tanstack/react-query";
 
-import { APIClient } from "@api/APIClient";
 import { NotFound } from "@components/alerts/NotFound";
 import { FilterNotFound } from "@screens/filters/NotFound";
 import { Settings } from "@screens/Settings";
 import {
-  CanOnboardQueryOptions,
   ConfigQueryOptions,
   FeedsQueryOptions,
   FilterByIdQueryOptions,
@@ -29,14 +26,13 @@ import {
   ProxiesQueryOptions
 } from "@api/queries";
 import { RingResizeSpinner } from "@components/Icons";
-import { AuthContext } from "@utils/Context";
 import { queryClient } from "@api/QueryClient";
 
 import { ErrorPage } from "@components/alerts";
-import { AuthenticatedLayout, RootComponent } from "@components/layouts";
+import { AppLayout, RootComponent } from "@components/layouts";
 
 const DashboardRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: '/',
   loader: () => {
     // https://tanstack.com/router/v1/docs/guide/deferred-data-loading#deferred-data-loading-with-defer-and-await
@@ -50,7 +46,7 @@ const DashboardRoute = createRoute({
 });
 
 const FiltersRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: 'filters'
 });
 
@@ -139,7 +135,7 @@ export const FilterNotificationsRoute = createRoute({
 });
 
 export const ReleasesRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: 'releases',
   component: lazyRouteComponent(() => import("@screens/Releases"), "Releases"),
   validateSearch: (search) => z.object({
@@ -152,7 +148,7 @@ export const ReleasesRoute = createRoute({
 });
 
 export const SettingsRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: 'settings',
   pendingMs: 3000,
   component: Settings
@@ -219,20 +215,14 @@ export const SettingsReleasesRoute = createRoute({
   component: lazyRouteComponent(() => import("@screens/settings/Releases"))
 });
 
-export const SettingsAccountRoute = createRoute({
-  getParentRoute: () => SettingsRoute,
-  path: 'account',
-  component: lazyRouteComponent(() => import("@screens/settings/Account"))
-});
-
 export const LogsRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: 'logs',
   component: lazyRouteComponent(() => import("@screens/Logs"), "Logs")
 });
 
 export const NotificationInboxRoute = createRoute({
-  getParentRoute: () => AuthIndexRoute,
+  getParentRoute: () => LayoutRoute,
   path: 'notifications',
   component: lazyRouteComponent(() => import("@screens/NotificationInbox"), "NotificationInbox"),
   validateSearch: (search) => z.object({
@@ -243,73 +233,10 @@ export const NotificationInboxRoute = createRoute({
   }).parse(search),
 });
 
-export const OnboardRoute = createRoute({
+export const LayoutRoute = createRoute({
   getParentRoute: () => RootRoute,
-  path: 'onboard',
-  beforeLoad: async ({ context }) => {
-    const canOnboard = await context.queryClient.query({ ...CanOnboardQueryOptions(), staleTime: "static" });
-    if (!canOnboard) {
-      console.error("onboarding not available, redirect to login")
-
-      throw redirect({
-        to: LoginRoute.to,
-      })
-    }
-  },
-  component: lazyRouteComponent(() => import("@screens/auth/Onboarding"), "Onboarding")
-});
-
-export const LoginRoute = createRoute({
-  getParentRoute: () => RootRoute,
-  path: 'login',
-  validateSearch: z.object({
-    redirect: z.optional(z.string()),
-  }),
-  beforeLoad: async ({ context, navigate }) => {
-    const canOnboard = await context.queryClient.query({ ...CanOnboardQueryOptions(), staleTime: "static" });
-    if (canOnboard) {
-      console.info("onboarding available, redirecting");
-      navigate({ to: OnboardRoute.to });
-    } else {
-      console.info("onboarding not available, please login");
-    }
-  },
-}).update({ component: lazyRouteComponent(() => import("@screens/auth/Login"), "Login") });
-
-export const AuthRoute = createRoute({
-  getParentRoute: () => RootRoute,
-  id: 'auth',
-  // Before loading, authenticate the user via our auth context
-  // This will also happen during prefetching (e.g. hovering over links, etc.)
-  beforeLoad: async ({ context, location }) => {
-    // If the user is not logged in, check for item in localStorage
-    if (!AuthContext.get().isLoggedIn) {
-      try {
-        const response = await APIClient.auth.validate();
-
-        AuthContext.set({
-          isLoggedIn: true,
-          username: response.username || 'unknown'
-        });
-      } catch (error) {
-        console.debug("Authentication validation failed:", error);
-        throw redirect({
-          to: LoginRoute.to,
-          search: {
-            redirect: location.href,
-          },
-        });
-      }
-    }
-
-    return context;
-  },
-})
-
-export const AuthIndexRoute = createRoute({
-  getParentRoute: () => AuthRoute,
-  component: AuthenticatedLayout,
-  id: 'authenticated-routes',
+  component: AppLayout,
+  id: 'layout',
 });
 
 export const RootRoute = createRootRouteWithContext<{
@@ -320,12 +247,9 @@ export const RootRoute = createRootRouteWithContext<{
 });
 
 const filterRouteTree = FiltersRoute.addChildren([FilterIndexRoute, FilterGetByIdRoute.addChildren([FilterGeneralRoute, FilterMoviesTvRoute, FilterMusicRoute, FilterBooksRoute, FilterAdvancedRoute, FilterExternalRoute, FilterActionsRoute, FilterNotificationsRoute])])
-const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsNotificationsRoute, SettingsProxiesRoute, SettingsReleasesRoute, SettingsAccountRoute])
-const authenticatedTree = AuthRoute.addChildren([AuthIndexRoute.addChildren([DashboardRoute, filterRouteTree, ReleasesRoute, settingsRouteTree, LogsRoute, NotificationInboxRoute])])
+const settingsRouteTree = SettingsRoute.addChildren([SettingsIndexRoute, SettingsLogRoute, SettingsIndexersRoute, SettingsIrcRoute, SettingsListsRoute, SettingsFeedsRoute, SettingsNotificationsRoute, SettingsProxiesRoute, SettingsReleasesRoute])
 const routeTree = RootRoute.addChildren([
-  authenticatedTree,
-  LoginRoute,
-  OnboardRoute
+  LayoutRoute.addChildren([DashboardRoute, filterRouteTree, ReleasesRoute, settingsRouteTree, LogsRoute, NotificationInboxRoute])
 ]);
 
 export const Router = createRouter({

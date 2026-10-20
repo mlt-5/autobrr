@@ -25,8 +25,7 @@
     "lists": "Listes",
     "notifications": "Notifications",
     "proxies": "Proxys",
-    "releases": "Releases",
-    "account": "Compte"
+    "releases": "Releases"
   },
   "application": {
     "title": "Application",
@@ -40,24 +39,6 @@
     "theme": "Thème",
     "themeDescription": "Choisir entre le thème clair, sombre ou celui du système.",
     "languageDescription": "Choisir la langue utilisée dans le WebUI."
-  },
-  "account": {
-    "title": "Compte",
-    "description": "Gérer les paramètres du compte.",
-    "required": "Requis",
-    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas !",
-    "updateSuccess": "Utilisateur mis à jour avec succès. Veuillez te reconnecter !",
-    "updateError": "Erreur lors de la mise à jour des identifiants. As-tu fourni le bon mot de passe actuel ?",
-    "changeCredentialsTitle": "Modifier les identifiants",
-    "changeCredentialsDescription": "Le nom d'utilisateur et le mot de passe peuvent être modifiés séparément ou simultanément. Note que tu seras déconnecté après la modification des identifiants.",
-    "currentUsername": "Nom d'utilisateur actuel",
-    "newUsername": "Nouveau nom d'utilisateur",
-    "optional": "Facultatif",
-    "currentPassword": "Mot de passe actuel",
-    "requiredIfUpdatingCredentials": "Requis lors de la mise à jour des identifiants",
-    "newPassword": "Nouveau mot de passe",
-    "confirmNewPassword": "Confirmer le nouveau mot de passe",
-    "save": "Enregistrer"
   },
   "logsPage": {
     "title": "Journaux",

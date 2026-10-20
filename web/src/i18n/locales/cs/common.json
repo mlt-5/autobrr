@@ -8,11 +8,6 @@
       "logs": "Logy",
       "docs": "Dokumentace"
     },
-    "userMenu": {
-      "account": "Účet",
-      "settings": "Nastavení",
-      "logout": "Odhlásit se"
-    },
     "forms": {
       "chooseOption": "Vyberte možnost"
     },
@@ -33,7 +28,6 @@
       "forceRunPlaceholder": "Zadejte '{{phrase}}' pro aktivaci tlačítka"
     },
     "header": {
-      "logoutSuccess": "Byli jste odhlášeni. Nashledanou!",
       "openMainMenu": "Otevřít hlavní menu",
       "listRefreshFailed": "Selhalo obnovení seznamu!",
       "multipleListRefreshesFailed": "Selhalo obnovení několika seznamů!",

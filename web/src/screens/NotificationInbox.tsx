@@ -74,7 +74,7 @@ export const NotificationInbox = () => {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const selectionAnchor = useRef<number | null>(null);
 
-  const search = useSearch({ from: "/auth/authenticated-routes/notifications" as const });
+  const search = useSearch({ from: "/layout/notifications" as const });
   const navigate = useNavigate({ from: "/notifications" });
   const page = search.page ?? 0;
   const pageSize = search.pageSize ?? DEFAULT_PAGE_SIZE;

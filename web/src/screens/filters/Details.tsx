@@ -335,7 +335,7 @@ export const FilterDetails = () => {
   const { t } = useTranslation("filters");
   const navigate = useNavigate();
 
-  const filterGetByIdRoute = getRouteApi("/auth/authenticated-routes/filters/$filterId");
+  const filterGetByIdRoute = getRouteApi("/layout/filters/$filterId");
   const { queryClient } =  filterGetByIdRoute.useRouteContext();
 
   const params = filterGetByIdRoute.useParams()

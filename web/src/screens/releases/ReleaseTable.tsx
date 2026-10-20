@@ -73,7 +73,7 @@ function Filter({ column }: { column: Column<DataTableFeatures, Release, unknown
 export const ReleaseTable = () => {
   const { t } = useTranslation("common");
   const search = useSearch({
-    from: "/auth/authenticated-routes/releases" as const,
+    from: "/layout/releases" as const,
   });
   const navigate = useNavigate({ from: "/releases" });
 

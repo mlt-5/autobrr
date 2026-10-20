@@ -6,8 +6,6 @@
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "@components/hot-toast";
 import Toast from "@components/notifications/Toast";
-import { APIClient } from "@api/APIClient";
-import { AuthContext } from "@utils/Context";
 
 const MAX_RETRIES = 6;
 
@@ -16,23 +14,7 @@ export const queryClient = new QueryClient({
     onError: (error, query) => {
       console.error(`Caught error for query '${query.queryKey}': `, error);
 
-      if (error.message === "Cookie expired or invalid.") {
-        // several queries can fail at once; only the first one acts
-        if (AuthContext.get().isLoggedIn) {
-          // best effort: destroys the server-side session and clears the
-          // cookie in case the session is still alive on the server
-          APIClient.auth.logout().catch(() => {
-            // the session was already dead server-side
-          });
-          // navigation to /login happens in AuthenticatedLayout, which
-          // reacts to the reset while the location still points at the
-          // page to return to; navigating from here too would race it
-          AuthContext.reset();
-        }
-        return;
-      } else {
-        toast.custom((t) => <Toast type="error" body={ error?.message } t={ t }/>);
-      }
+      toast.custom((t) => <Toast type="error" body={ error?.message } t={ t }/>);
     }
   }),
   defaultOptions: {
@@ -44,10 +26,7 @@ export const queryClient = new QueryClient({
       // See https://tanstack.com/query/v4/docs/guides/query-retries#retry-delay
       // delay = Math.min(1000 * 2 ** attemptIndex, 30000)
       // retry: false,
-      throwOnError: (error) => {
-        return error.message !== "Cookie expired or invalid.";
-
-      },
+      throwOnError: true,
       retry: (failureCount, error) => {
         /*
         console.debug("retry count:", failureCount)
@@ -60,10 +39,6 @@ export const queryClient = new QueryClient({
           return false;
         }
         */
-        if (error.message === "Cookie expired or invalid.") {
-          return false;
-        }
-
         console.error(`Retrying query (N=${failureCount}): `, error);
         return failureCount <= MAX_RETRIES;
       },

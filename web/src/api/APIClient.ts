@@ -3,15 +3,11 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { AuthContext, AuthInfo } from "@utils/Context";
 import { ColumnFilter } from "@tanstack/react-table";
 import { IrcEvent } from "@hooks/useIrcEvents";
 
 type RequestBody = BodyInit | object | Record<string, unknown> | null;
 type Primitive = string | number | boolean | symbol | undefined;
-type ValidateResponse = {
-  username?: AuthInfo['username'];
-}
 
 interface HttpConfig {
   /**
@@ -90,12 +86,8 @@ function encodeRFC3986URIComponent(str: string): string {
  *    - In all other scenarios, the raw Response object from window.fetch() is returned,
  *      which must be handled manually by awaiting on one of its methods.
  *
- * The following is done if the status code that the server returns is NOT successful,
- * that is, if it falls outside of the [200, 300] range:
- *  - A unique Error object is returned if the user is logged in and the status code is 403 Forbidden.
- *    This Error object *should* be consumed by the @tanstack/query code, which indirectly calls HttpClient.
- *    The current user is then prompted to log in again after being logged out.
- *  - The `ErrorPage` screen appears in all other scenarios.
+ * If the status code that the server returns is NOT successful, that is, if it falls
+ * outside of the [200, 300] range, the `ErrorPage` screen appears.
  */
 export async function HttpClient<T = unknown>(
   endpoint: string,
@@ -104,7 +96,6 @@ export async function HttpClient<T = unknown>(
   const init: RequestInit = {
     method: config.method,
     headers: { "Accept": "*/*", 'x-requested-with': 'XMLHttpRequest' },
-    credentials: "include",
   };
 
   if (config.body) {
@@ -176,12 +167,6 @@ export async function HttpClient<T = unknown>(
     // This is not a successful response.
     // It is most likely an error.
     switch (response.status) {
-    case 403: {
-      if (AuthContext.get().isLoggedIn) {
-        return Promise.reject(new Error("Cookie expired or invalid."));
-      }
-      break;
-    }
     case 500: {
       const health = await window.fetch("/api/healthz/liveness");
       if (!health.ok) {
@@ -243,21 +228,6 @@ const appClient = {
 
 
 export const APIClient = {
-  auth: {
-    login: (username: string, password: string, remember_me: boolean) => appClient.Post("api/auth/login", {
-      body: { username, password, remember_me }
-    }),
-    logout: () => appClient.Post("api/auth/logout"),
-    validate: async (): Promise<ValidateResponse> => {
-        return await appClient.Get<ValidateResponse>("api/auth/validate");
-    },
-    onboard: (username: string, password: string) => appClient.Post("api/auth/onboard", {
-      body: { username, password }
-    }),
-    canOnboard: () => appClient.Get("api/auth/onboard"),
-    updateUser: (req: UserUpdate) => appClient.Patch(`api/auth/user/${req.username_current}`,
-      { body: req }),
-  },
   actions: {
     create: (action: Action) => appClient.Post("api/actions", {
       body: action
@@ -376,10 +346,7 @@ export const APIClient = {
       appClient.Get<IrcEvent[]>(`api/irc/network/${networkId}/channel/${channel}/history`, {
         queryString: { limit }
       }),
-    allEvents: () => new EventSource(
-      "/api/irc/events?stream=irc",
-      { withCredentials: true }
-    )
+    allEvents: () => new EventSource("/api/irc/events?stream=irc")
   },
   logs: {
     files: () => appClient.Get<LogFileResponse>("api/logs/files"),
@@ -389,8 +356,8 @@ export const APIClient = {
     list: () => appClient.Get<Alert[]>("api/alerts")
   },
   events: {
-    logs: () => new EventSource("/api/events?stream=logs", { withCredentials: true }),
-    notifications: () => new EventSource("/api/events?stream=notifications", { withCredentials: true })
+    logs: () => new EventSource("/api/events?stream=logs"),
+    notifications: () => new EventSource("/api/events?stream=notifications")
   },
   notifications: {
     getAll: () => appClient.Get<ServiceNotification[]>("api/notification"),

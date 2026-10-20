@@ -8,11 +8,6 @@
     "logs": "Protokolle",
     "docs": "Dokumentation"
   },
-  "userMenu": {
-    "account": "Konto",
-    "settings": "Einstellungen",
-    "logout": "Abmelden"
-  },
   "forms": {
     "chooseOption": "Option wählen"
   },
@@ -33,7 +28,6 @@
     "forceRunPlaceholder": "Tippe '{{phrase}}' um den Button zu aktivieren"
   },
   "header": {
-    "logoutSuccess": "Du wurdest abgemeldet. Auf Wiedersehen!",
     "openMainMenu": "Hauptmenü öffnen",
     "listRefreshFailed": "Listenaktualisierung fehlgeschlagen!",
     "multipleListRefreshesFailed": "Mehrere Listenaktualisierungen fehlgeschlagen!",

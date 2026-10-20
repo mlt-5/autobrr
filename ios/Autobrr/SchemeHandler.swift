@@ -11,7 +11,6 @@ final class SchemeHandler: NSObject, WKURLSchemeHandler {
     static let startURL = URL(string: "\(scheme)://app/")!
 
     private let engine: MobileEngine
-    private let cookies = CookieJar()
     private var active: [ObjectIdentifier: (writer: TaskWriter, request: MobileRequest?)] = [:]
 
     init(engine: MobileEngine) {
@@ -26,16 +25,12 @@ final class SchemeHandler: NSObject, WKURLSchemeHandler {
             return
         }
 
-        var headers = request.allHTTPHeaderFields ?? [:]
-        if let cookie = cookies.header() {
-            headers["Cookie"] = cookie
-        }
-
+        let headers = request.allHTTPHeaderFields ?? [:]
         let headersJSON = (try? JSONSerialization.data(withJSONObject: headers))
             .flatMap { String(data: $0, encoding: .utf8) } ?? ""
 
         let id = ObjectIdentifier(task)
-        let writer = TaskWriter(task: task, url: url, cookies: cookies) { [weak self] in
+        let writer = TaskWriter(task: task, url: url) { [weak self] in
             self?.active[id] = nil
         }
 
@@ -86,14 +81,12 @@ final class SchemeHandler: NSObject, WKURLSchemeHandler {
 private final class TaskWriter: NSObject, MobileResponseWriterProtocol {
     private let task: WKURLSchemeTask
     private let url: URL
-    private let cookies: CookieJar
     private let onDone: () -> Void
     private var stopped = false
 
-    init(task: WKURLSchemeTask, url: URL, cookies: CookieJar, onDone: @escaping () -> Void) {
+    init(task: WKURLSchemeTask, url: URL, onDone: @escaping () -> Void) {
         self.task = task
         self.url = url
-        self.cookies = cookies
         self.onDone = onDone
     }
 
@@ -108,10 +101,6 @@ private final class TaskWriter: NSObject, MobileResponseWriterProtocol {
 
         DispatchQueue.main.async { [self] in
             guard !stopped else { return }
-
-            if let setCookie = headers.first(where: { $0.key.caseInsensitiveCompare("Set-Cookie") == .orderedSame })?.value {
-                cookies.store(setCookie)
-            }
 
             let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: "HTTP/1.1", headerFields: headers)!
             task.didReceive(response)
@@ -135,33 +124,6 @@ private final class TaskWriter: NSObject, MobileResponseWriterProtocol {
             stopped = true
             task.didFinish()
             onDone()
-        }
-    }
-}
-
-/// CookieJar keeps the session cookie, because WebKit does not store cookies for custom URL schemes.
-private final class CookieJar {
-    private var values: [String: String] = [:]
-
-    func header() -> String? {
-        guard !values.isEmpty else { return nil }
-
-        return values.map { "\($0.key)=\($0.value)" }.joined(separator: "; ")
-    }
-
-    func store(_ setCookie: String) {
-        let attributes = setCookie.split(separator: ";").map { $0.trimmingCharacters(in: .whitespaces) }
-
-        guard let pair = attributes.first, let eq = pair.firstIndex(of: "=") else { return }
-
-        let name = String(pair[..<eq])
-        let value = String(pair[pair.index(after: eq)...])
-        let expired = attributes.contains { $0.lowercased() == "max-age=0" || $0.lowercased().hasPrefix("max-age=-") }
-
-        if value.isEmpty || expired {
-            values[name] = nil
-        } else {
-            values[name] = value
         }
     }
 }

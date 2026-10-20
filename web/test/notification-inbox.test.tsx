@@ -68,16 +68,15 @@ const messages: InboxMessage[] = [
 const renderInbox = (path = "/notifications", component: () => ReactNode = NotificationInbox) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const root = createRootRouteWithContext<{ queryClient: QueryClient }>()();
-  const auth = createRoute({ getParentRoute: () => root, id: "auth" });
-  const authenticated = createRoute({ getParentRoute: () => auth, id: "authenticated-routes" });
+  const layout = createRoute({ getParentRoute: () => root, id: "layout" });
   const inbox = createRoute({
-    getParentRoute: () => authenticated,
+    getParentRoute: () => layout,
     path: "notifications",
     component,
     validateSearch: NotificationInboxRoute.options.validateSearch
   });
   const router = createRouter({
-    routeTree: root.addChildren([auth.addChildren([authenticated.addChildren([inbox])])]),
+    routeTree: root.addChildren([layout.addChildren([inbox])]),
     history: createMemoryHistory({ initialEntries: [path] }),
     context: { queryClient }
   });

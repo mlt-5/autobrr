@@ -3,43 +3,20 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { useMutation } from "@tanstack/react-query";
-import { getRouteApi, redirect } from "@tanstack/react-router";
 import { Disclosure, DisclosureButton } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon  } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
-
-import { APIClient } from "@api/APIClient";
-import toast from "@components/hot-toast";
-import Toast from "@components/notifications/Toast";
 
 import { LeftNav } from "./LeftNav";
 import { RightNav } from "./RightNav";
 import { MobileNav } from "./MobileNav";
 import { useInboxEvents } from "@hooks/useInbox";
-import { AuthContext } from "@utils/Context";
 import { InboxMenu } from "./InboxMenu";
 import { AlertBanner } from "./AlertBanner";
 
 export const Header = () => {
   const { t } = useTranslation("common");
-  const loginRoute = getRouteApi("/login");
-
   useInboxEvents();
-
-  const logoutMutation = useMutation({
-    mutationFn: APIClient.auth.logout,
-    onSuccess: () => {
-      toast.custom((toastInstance) => (
-        <Toast type="success" body={t("header.logoutSuccess")} t={toastInstance} />
-      ));
-      AuthContext.reset();
-      redirect({
-        to: loginRoute.id,
-      })
-    },
-    onError: () => {}
-  });
 
   return (
     <Disclosure
@@ -52,7 +29,7 @@ export const Header = () => {
             <div className="border-b border-gray-300 dark:border-gray-775">
               <div className="flex items-center justify-between h-16 px-4 sm:px-0">
                 <LeftNav />
-                <RightNav logoutMutation={logoutMutation.mutate} />
+                <RightNav />
                 <div className="-mr-2 flex items-center gap-2 sm:hidden">
                   <InboxMenu />
                   {/* Mobile menu button */}
@@ -77,7 +54,7 @@ export const Header = () => {
             <AlertBanner />
           </div>
 
-          <MobileNav logoutMutation={logoutMutation.mutate} />
+          <MobileNav />
         </>
       )}
     </Disclosure>

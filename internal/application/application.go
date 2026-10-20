@@ -11,7 +11,6 @@ import (
 
 	"github.com/autobrr/autobrr/internal/action"
 	"github.com/autobrr/autobrr/internal/alert"
-	"github.com/autobrr/autobrr/internal/auth"
 	"github.com/autobrr/autobrr/internal/config"
 	"github.com/autobrr/autobrr/internal/database"
 	"github.com/autobrr/autobrr/internal/domain"
@@ -28,13 +27,10 @@ import (
 	"github.com/autobrr/autobrr/internal/proxy"
 	"github.com/autobrr/autobrr/internal/release"
 	"github.com/autobrr/autobrr/internal/scheduler"
-	"github.com/autobrr/autobrr/internal/user"
 	"github.com/autobrr/autobrr/pkg/errors"
 	"github.com/autobrr/autobrr/pkg/featureflags"
-	"github.com/autobrr/autobrr/pkg/sqlite3store"
 
 	"github.com/KimMachineGun/automemlimit/memlimit"
-	"github.com/alexedwards/scs/v2"
 	"github.com/dcarbone/zadapters/zstdlog"
 	"github.com/r3labs/sse/v2"
 	"github.com/rs/zerolog"
@@ -60,7 +56,6 @@ type App struct {
 
 	actionService       *action.Service
 	alertService        *alert.Service
-	authService         *auth.Service
 	indexerService      *indexer.Service
 	indexerAPIService   *indexer.APIService
 	ircService          *irc.Service
@@ -72,7 +67,6 @@ type App struct {
 	scheduler           *scheduler.Service
 	listService         *list.Service
 	proxyService        *proxy.Service
-	userService         *user.Service
 }
 
 // New loads the config and builds the parts that need no database. The host,
@@ -281,9 +275,6 @@ func (app *App) setup(ctx context.Context) error {
 		Str("log_level", app.cfg.Config.LogLevel).
 		Msg("starting autobrr")
 
-	sessionManager := scs.New()
-	sessionManager.Store = sqlite3store.New(db, sqlite3store.WithLogger(app.log.With().Str("module", "session-store").Logger()))
-
 	var (
 		actionRepo       = database.NewActionRepo(app.log, db)
 		filterRepo       = database.NewFilterRepo(app.log, db)
@@ -295,14 +286,11 @@ func (app *App) setup(ctx context.Context) error {
 		notificationRepo = database.NewNotificationRepo(app.log, db)
 		inboxRepo        = database.NewNotificationInboxRepo(app.log, db)
 		releaseRepo      = database.NewReleaseRepo(app.log, db)
-		userRepo         = database.NewUserRepo(app.log, db)
 		proxyRepo        = database.NewProxyRepo(app.log, db)
 	)
 
 	app.scheduler = scheduler.NewService(app.log)
 	app.notificationService = notification.NewService(app.log, app.eventBus, app.sse, notificationRepo, inboxRepo, app.scheduler)
-	app.userService = user.NewService(userRepo)
-	app.authService = auth.NewService(app.log, app.userService)
 	app.proxyService = proxy.NewService(app.log, app.eventBus, proxyRepo)
 	app.indexerAPIService = indexer.NewAPIService(app.log, app.proxyService)
 	app.rlsDownloadService = release.NewDownloadService(app.log, indexerRepo, app.proxyService)
@@ -320,13 +308,11 @@ func (app *App) setup(ctx context.Context) error {
 		SSE:                 app.sse,
 		DB:                  db,
 		Config:              app.cfg,
-		SessionManager:      sessionManager,
 		Version:             meta.GetVersion(),
 		Commit:              meta.GetCommit(),
 		Date:                meta.GetDate(),
 		ActionService:       app.actionService,
 		AlertService:        app.alertService,
-		AuthService:         app.authService,
 		FilterService:       app.filterService,
 		FeedService:         app.feedService,
 		IndexerService:      app.indexerService,
