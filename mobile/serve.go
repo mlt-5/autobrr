@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"runtime/debug"
 	"strings"
 	"sync"
 )
@@ -46,6 +47,19 @@ func (e *Engine) Serve(method, rawURL, headersJSON string, body []byte, w Respon
 
 		rw := newBridgeWriter(w)
 		defer rw.finish()
+
+		defer func() {
+			p := recover()
+			if p == nil {
+				return
+			}
+
+			if p != http.ErrAbortHandler {
+				e.app.Log().Error().Interface("panic", p).Bytes("stack", debug.Stack()).Str("url", rawURL).Msg("request panicked")
+			}
+
+			rw.abort()
+		}()
 
 		r, err := newHTTPRequest(ctx, method, rawURL, headersJSON, body)
 		if err != nil {
@@ -161,6 +175,20 @@ func (w *bridgeWriter) flush() {
 
 	w.host.Write(bytes.Clone(w.buf.Bytes()))
 	w.buf.Reset()
+}
+
+// abort drops output not yet handed to the host and answers 500 when the
+// status has not been sent.
+func (w *bridgeWriter) abort() {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+
+	w.buf.Reset()
+
+	if !w.wroteHeader {
+		w.header = make(http.Header)
+		w.writeHeader(http.StatusInternalServerError)
+	}
 }
 
 func (w *bridgeWriter) finish() {

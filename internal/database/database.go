@@ -92,17 +92,20 @@ func (db *DB) Migrate() error {
 func (db *DB) Close() error {
 	db.log.Debug().Msg("closing database..")
 
-	if err := db.closingSQLite(); err != nil {
-		return errors.Wrap(err, "could not run sqlite shutdown tasks")
-	}
+	shutdownErr := db.closingSQLite()
 
-	// cancel background context
 	db.cancel()
 
-	// close database
 	if db.Handler != nil {
-		return db.Handler.Close()
+		if err := db.Handler.Close(); err != nil {
+			return errors.Wrap(err, "could not close database")
+		}
 	}
+
+	if shutdownErr != nil {
+		return errors.Wrap(shutdownErr, "could not run sqlite shutdown tasks")
+	}
+
 	return nil
 }
 

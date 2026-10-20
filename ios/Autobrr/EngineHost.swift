@@ -17,17 +17,21 @@ final class EngineHost: ObservableObject {
     @Published private(set) var state: State = .starting
 
     private var engine: MobileEngine?
+    private var isStarting = false
     private var terminateObserver: NSObjectProtocol?
 
     func start() {
-        guard engine == nil else { return }
+        guard engine == nil, !isStarting else { return }
 
+        isStarting = true
         state = .starting
 
         Task.detached(priority: .userInitiated) {
             let result = Self.startEngine()
 
             await MainActor.run {
+                self.isStarting = false
+
                 switch result {
                 case .success(let engine):
                     self.engine = engine
