@@ -27,7 +27,6 @@ import {
   IndexersQueryOptions,
   IrcQueryOptions, ListsQueryOptions,
   NotificationsQueryOptions,
-  OIDCConfigQueryOptions,
   ProxiesQueryOptions
 } from "@api/queries";
 import { RingResizeSpinner } from "@components/Icons";
@@ -275,17 +274,6 @@ export const LoginRoute = createRoute({
     redirect: z.optional(z.string()),
   }),
   beforeLoad: async ({ context, navigate }) => {
-    // First check if OIDC is enabled
-    try {
-      const oidcConfig = await context.queryClient.query({ ...OIDCConfigQueryOptions(), staleTime: "static" });
-      if (oidcConfig.enabled) {
-        return;
-      }
-    } catch (error) {
-      console.debug("Failed to get OIDC config, proceeding with onboarding check:", error);
-    }
-
-    // Only check onboarding if OIDC is not enabled
     const canOnboard = await context.queryClient.query({ ...CanOnboardQueryOptions(), staleTime: "static" });
     if (canOnboard) {
       console.info("onboarding available, redirecting");
@@ -306,19 +294,10 @@ export const AuthRoute = createRoute({
     if (!AuthContext.get().isLoggedIn) {
       try {
         const response = await APIClient.auth.validate();
-        // Also get OIDC config if needed
-        let issuerUrl;
-        if (response.auth_method === 'oidc') {
-          const oidcConfig = await context.queryClient.query({ ...OIDCConfigQueryOptions(), staleTime: "static" });
-          issuerUrl = oidcConfig.issuerUrl;
-        }
-        
+
         AuthContext.set({
           isLoggedIn: true,
-          username: response.username || 'unknown',
-          authMethod: response.auth_method,
-          profilePicture: response.profile_picture,
-          issuerUrl: issuerUrl
+          username: response.username || 'unknown'
         });
       } catch (error) {
         console.debug("Authentication validation failed:", error);

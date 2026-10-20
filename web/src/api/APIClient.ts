@@ -12,8 +12,6 @@ type RequestBody = BodyInit | object | Record<string, unknown> | null;
 type Primitive = string | number | boolean | symbol | undefined;
 type ValidateResponse = {
   username?: AuthInfo['username'];
-  auth_method?: AuthInfo['authMethod'];
-  profile_picture?: AuthInfo['profilePicture'];
 }
 
 interface HttpConfig {
@@ -260,16 +258,6 @@ export const APIClient = {
     canOnboard: () => appClient.Get("api/auth/onboard"),
     updateUser: (req: UserUpdate) => appClient.Patch(`api/auth/user/${req.username_current}`,
       { body: req }),
-    getOIDCConfig: async () => {
-      try {
-        return await appClient.Get<{ enabled: boolean; authorizationUrl: string; state: string; disableBuiltInLogin: boolean; issuerUrl: string }>("api/auth/oidc/config");
-      } catch (error: unknown) {
-        if (error instanceof Error && error.message?.includes('404')) {
-          return { enabled: false, authorizationUrl: '', state: '', disableBuiltInLogin: false, issuerUrl: '' };
-        }
-        throw error;
-      }
-    },
   },
   actions: {
     create: (action: Action) => appClient.Post("api/actions", {

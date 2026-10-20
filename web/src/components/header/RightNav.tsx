@@ -9,7 +9,6 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/r
 import { useTranslation } from "react-i18next";
 
 import { classNames } from "@utils";
-import { OpenIdIcon } from "@components/Icons";
 
 import { RightNavProps } from "./_shared";
 import { InboxMenu } from "./InboxMenu";
@@ -83,25 +82,10 @@ export const RightNav = (props: RightNavProps) => {
                     Open user menu for{" "}
                   </span>
                   <span className="flex items-center">{auth.username}</span>
-                  {auth.authMethod === 'oidc' ? (
-                    auth.profilePicture ? (
-                      <div className="relative flex-shrink-0 ml-2 w-6 h-6 overflow-hidden rounded-full ring-1 ring-white dark:ring-gray-700">
-                        <img
-                          src={auth.profilePicture}
-                          alt={`${auth.username}'s profile`}
-                          className="object-cover w-full h-full transition-opacity duration-200"
-                          onError={() => auth.profilePicture = undefined}
-                        />
-                      </div>
-                    ) : (
-                      <OpenIdIcon className="inline ml-1 h-4 w-4 text-gray-500 dark:text-gray-500" />
-                    )
-                  ) : (
-                    <UserIcon
-                      className="inline ml-1 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  )}
+                  <UserIcon
+                    className="inline ml-1 h-5 w-5"
+                    aria-hidden="true"
+                  />
                 </span>
               </MenuButton>
               <Transition

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useMutation, useQuery, useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { getRouteApi, useRouter } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form"
@@ -13,14 +13,13 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
 
 import { APIClient } from "@api/APIClient";
-import { CanOnboardQueryOptions, OIDCConfigQueryOptions } from "@api/queries";
+import { CanOnboardQueryOptions } from "@api/queries";
 import toast from "@components/hot-toast";
 import Toast from "@components/notifications/Toast";
 import { Tooltip } from "@components/tooltips/Tooltip";
-import { OpenIdIcon } from "@components/Icons";
 
 import Logo from "@app/logo.svg?react";
-import { AuthContext, AuthInfo } from "@utils/Context";
+import { AuthContext } from "@utils/Context";
 import { classNames } from "@utils";
 import { useToggle } from "@hooks/hooks";
 
@@ -29,12 +28,6 @@ type LoginFormFields = {
     password: string;
     remember_me: boolean;
 };
-
-type ValidateResponse = {
-    username?: AuthInfo['username'];
-    auth_method?: AuthInfo['authMethod'];
-    profile_picture?: AuthInfo['profilePicture'];
-}
 
 export const Login = () => {
     const { t } = useTranslation("auth");
@@ -46,7 +39,6 @@ export const Login = () => {
     const search = loginRoute.useSearch();
 
     const {data: canOnboard} = useQuery(CanOnboardQueryOptions());
-    const {data: oidcConfig} = useQuery(OIDCConfigQueryOptions());
 
     const form = useForm({
         defaultValues: {
@@ -65,42 +57,13 @@ export const Login = () => {
         AuthContext.reset();
     }, [queryErrorResetBoundary]);
 
-    const oidcCallbackHandled = useRef(false);
-    useEffect(() => {
-        // Check if this is an OIDC callback
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-
-        if (code && state && !oidcCallbackHandled.current) {
-            oidcCallbackHandled.current = true;
-            // This is an OIDC callback, validate the session
-            APIClient.auth.validate().then((response: ValidateResponse) => {
-                // If validation succeeds, set the user as logged in
-                setAuth({
-                    isLoggedIn: true,
-                    username: response.username || 'unknown',
-                    authMethod: response.auth_method || 'oidc',
-                    profilePicture: response.profile_picture,
-                });
-                router.invalidate();
-            }).catch((error) => {
-                // If validation fails, show an error
-                toast.custom((toastInstance) => (
-                    <Toast type="error" body={error.message || t("errors.oidcFailed")} t={toastInstance}/>
-                ));
-            });
-        }
-    }, [setAuth, router, t]);
-
     const loginMutation = useMutation({
         mutationFn: (data: LoginFormFields) => APIClient.auth.login(data.username, data.password, data.remember_me),
         onSuccess: (_, variables: LoginFormFields) => {
             queryErrorResetBoundary.reset()
             setAuth({
                 isLoggedIn: true,
-                username: variables.username,
-                authMethod: 'password'
+                username: variables.username
             });
             router.invalidate()
         },
@@ -110,12 +73,6 @@ export const Login = () => {
             ));
         }
     });
-
-    const handleOIDCLogin = () => {
-        if (oidcConfig?.enabled && oidcConfig.authorizationUrl) {
-            window.location.href = oidcConfig.authorizationUrl;
-        }
-    };
 
     React.useLayoutEffect(() => {
         if (auth.isLoggedIn && search.redirect) {
@@ -134,155 +91,124 @@ export const Login = () => {
                 </h2>
             </div>
 
-            {/* Wait for OIDC config to load before rendering any login forms */}
-            {typeof oidcConfig !== 'undefined' && (
+            {canOnboard === false && (
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-                    <div className={`px-6 ${(!canOnboard && (!oidcConfig?.enabled || !oidcConfig?.disableBuiltInLogin)) ? 'py-12 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg sm:px-12 border border-gray-150 dark:border-gray-775' : ''}`}>
-                        {/* Built-in login form */}
-                        {!canOnboard && (!oidcConfig?.enabled || !oidcConfig?.disableBuiltInLogin) && (
-                            <>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    form.handleSubmit()
-                                }} className="space-y-6">
-                                    <form.Field
-                                        name="username"
-                                        validators={{
-                                            onChange: ({value}) => !value ? t("errors.usernameRequired") : undefined,
-                                        }}
-                                        children={({state, handleChange, handleBlur}) => {
-                                            return (
-                                                <div className="col-span-12">
-                                                    <div>
-                                                        <label
-                                                            htmlFor="username"
-                                                            className="block ml-px text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide"
-                                                        >
-                                                            {t("username")}
-                                                        </label>
-                                                    </div>
-                                                    <div className="">
-                                                        <input
-                                                            type="text"
-                                                            id="username"
-                                                            onChange={(e) => handleChange(e.target.value)}
-                                                            onBlur={handleBlur}
-                                                            value={state.value}
-                                                            className={classNames(
-                                                                "block mt-1 w-full shadow-xs sm:text-sm rounded-md py-2.5 bg-gray-100 dark:bg-gray-850 dark:text-gray-100",
-                                                                !state.meta.isValid
-                                                                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                                                                    : "border-gray-300 dark:border-gray-700 focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500"
-                                                            )}
-                                                        />
-                                                        {state.meta.errors && (
-                                                            <p className="mt-1 text-sm text-left block text-red-600">{state.meta.errors[0]}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )
-                                        }}
-                                    />
-
-                                    <form.Field
-                                        name="password"
-                                        validators={{
-                                            onChange: ({value}) => !value ? t("errors.passwordRequired") : undefined,
-                                        }}
-                                        children={({name, state, handleChange, handleBlur }) => (
-
-                                            <div className="col-span-12">
+                    <div className="px-6 py-12 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg sm:px-12 border border-gray-150 dark:border-gray-775">
+                        <form onSubmit={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            form.handleSubmit()
+                        }} className="space-y-6">
+                            <form.Field
+                                name="username"
+                                validators={{
+                                    onChange: ({value}) => !value ? t("errors.usernameRequired") : undefined,
+                                }}
+                                children={({state, handleChange, handleBlur}) => {
+                                    return (
+                                        <div className="col-span-12">
                                             <div>
-                                            <label
-                                            htmlFor={name}
-                                        className="block ml-px text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide"
-                                    >
-                                        {t("password")}
-                                    </label>
-                                </div>
-                                <div className="sm:col-span-2 relative">
-                                    <PasswordInputField name={name} value={state.value} onChange={handleChange} onBlur={handleBlur} isValid={state.meta.isValid} />
-                                </div>
-                                {state.meta.errors && (
-                                    <p className="mt-1 text-sm text-left block text-red-600">{state.meta.errors[0]}</p>
-                                )}
-                            </div>
-
-                                        )}
-                                    />
-                                    <div className="col-span-12">
-                                        <div className="flex items-center justify-between">
-                                            <form.Field
-                                                name="remember_me"
-                                                children={({name, state, handleChange, handleBlur}) => (
-                                                    <Field className="flex items-center gap-2">
-                                                        <Checkbox
-                                                            id={name}
-                                                            checked={state.value}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
-                                                        >
-                                                            <svg className="stroke-white opacity-0 group-data-checked:opacity-100" viewBox="0 0 14 14" fill="none">
-                                                                <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
-                                                            </svg>
-                                                        </Checkbox>
-                                                        <Label className="text-sm text-gray-700 dark:text-gray-200">{t("rememberMe")}</Label>
-                                                    </Field>
-                                                )}
-                                            />
-                                            <div className="text-sm">
-                                                <Tooltip
-                                                    label={
-                                                        <div className="flex flex-row items-center cursor-pointer text-gray-700 dark:text-gray-200">
-                                                            {t("forgotPassword")} <svg className="ml-1 w-3 h-3 text-gray-500 dark:text-gray-400 fill-current" viewBox="0 0 72 72">
-                                                            <path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2m5 49.75H27v-24h10v24m-5-29.5a5 5 0 1 1 0-10a5 5 0 0 1 0 10"/>
-                                                        </svg>
-                                                        </div>
-                                                    }
+                                                <label
+                                                    htmlFor="username"
+                                                    className="block ml-px text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide"
                                                 >
-                                                    <p className="py-1">{t("forgotPasswordHelp")} <code>autobrr user change-password $USERNAME --config /home/username/.config/autobrr</code></p>
-                                                </Tooltip>
+                                                    {t("username")}
+                                                </label>
+                                            </div>
+                                            <div className="">
+                                                <input
+                                                    type="text"
+                                                    id="username"
+                                                    onChange={(e) => handleChange(e.target.value)}
+                                                    onBlur={handleBlur}
+                                                    value={state.value}
+                                                    className={classNames(
+                                                        "block mt-1 w-full shadow-xs sm:text-sm rounded-md py-2.5 bg-gray-100 dark:bg-gray-850 dark:text-gray-100",
+                                                        !state.meta.isValid
+                                                            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                                                            : "border-gray-300 dark:border-gray-700 focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500"
+                                                    )}
+                                                />
+                                                {state.meta.errors && (
+                                                    <p className="mt-1 text-sm text-left block text-red-600">{state.meta.errors[0]}</p>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
+                                    )
+                                }}
+                            />
 
-                                    <button
-                                        type="submit"
-                                        className="w-full flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
-                                    >
-                                        <RocketLaunchIcon className="w-4 h-4 mr-1.5"/>
-                                        {t("signIn")}
-                                    </button>
-                                </form>
+                            <form.Field
+                                name="password"
+                                validators={{
+                                    onChange: ({value}) => !value ? t("errors.passwordRequired") : undefined,
+                                }}
+                                children={({name, state, handleChange, handleBlur }) => (
 
-                                {oidcConfig?.enabled && (
-                                    <div className="relative mt-10">
-                                        <div aria-hidden="true" className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-gray-200 dark:border-gray-700"/>
-                                        </div>
-                                        <div className="relative flex justify-center text-sm">
-                                            <span className="bg-white dark:bg-gray-800 px-6 text-gray-900 dark:text-gray-200">{t("continueWith")}</span>
-                                        </div>
-                                    </div>
+                                    <div className="col-span-12">
+                                    <div>
+                                    <label
+                                    htmlFor={name}
+                                className="block ml-px text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide"
+                            >
+                                {t("password")}
+                            </label>
+                        </div>
+                        <div className="sm:col-span-2 relative">
+                            <PasswordInputField name={name} value={state.value} onChange={handleChange} onBlur={handleBlur} isValid={state.meta.isValid} />
+                        </div>
+                        {state.meta.errors && (
+                            <p className="mt-1 text-sm text-left block text-red-600">{state.meta.errors[0]}</p>
+                        )}
+                    </div>
+
                                 )}
-                            </>
-                        )}
-
-                        {/* OIDC button */}
-                        {oidcConfig?.enabled && (
-                            <div className={(!canOnboard && !oidcConfig?.disableBuiltInLogin) ? 'mt-6' : ''}>
-                                <button
-                                    type="button"
-                                    onClick={handleOIDCLogin}
-                                    className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 dark:border-gray-700 rounded-md shadow-xs text-sm font-medium text-gray-900 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                                >
-                                    <OpenIdIcon className="h-5 w-5"/>
-                                    <span>{t("openidConnect")}</span>
-                                </button>
+                            />
+                            <div className="col-span-12">
+                                <div className="flex items-center justify-between">
+                                    <form.Field
+                                        name="remember_me"
+                                        children={({name, state, handleChange, handleBlur}) => (
+                                            <Field className="flex items-center gap-2">
+                                                <Checkbox
+                                                    id={name}
+                                                    checked={state.value}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
+                                                >
+                                                    <svg className="stroke-white opacity-0 group-data-checked:opacity-100" viewBox="0 0 14 14" fill="none">
+                                                        <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </Checkbox>
+                                                <Label className="text-sm text-gray-700 dark:text-gray-200">{t("rememberMe")}</Label>
+                                            </Field>
+                                        )}
+                                    />
+                                    <div className="text-sm">
+                                        <Tooltip
+                                            label={
+                                                <div className="flex flex-row items-center cursor-pointer text-gray-700 dark:text-gray-200">
+                                                    {t("forgotPassword")} <svg className="ml-1 w-3 h-3 text-gray-500 dark:text-gray-400 fill-current" viewBox="0 0 72 72">
+                                                    <path d="M32 2C15.432 2 2 15.432 2 32s13.432 30 30 30s30-13.432 30-30S48.568 2 32 2m5 49.75H27v-24h10v24m-5-29.5a5 5 0 1 1 0-10a5 5 0 0 1 0 10"/>
+                                                </svg>
+                                                </div>
+                                            }
+                                        >
+                                            <p className="py-1">{t("forgotPasswordHelp")} <code>autobrr user change-password $USERNAME --config /home/username/.config/autobrr</code></p>
+                                        </Tooltip>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+
+                            <button
+                                type="submit"
+                                className="w-full flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer"
+                            >
+                                <RocketLaunchIcon className="w-4 h-4 mr-1.5"/>
+                                {t("signIn")}
+                            </button>
+                        </form>
                     </div>
                 </div>
             )}

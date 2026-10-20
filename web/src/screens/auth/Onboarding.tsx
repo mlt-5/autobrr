@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { APIClient } from "@api/APIClient";
 import { AuthKeys } from "@api/query_keys";
-import { OIDCConfigQueryOptions } from "@api/queries";
 import { fieldErrors, useAppForm } from "@hooks/form";
 import { TextField, PasswordField } from "@components/inputs";
 
@@ -46,7 +45,6 @@ export const Onboarding = () => {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
-  const { data: oidcConfig } = useQuery(OIDCConfigQueryOptions());
 
   const mutation = useMutation({
     mutationFn: (data: InputValues) => APIClient.auth.onboard(data.username, data.password1),
@@ -68,12 +66,6 @@ export const Onboarding = () => {
     },
     onSubmit: ({ value }) => mutation.mutate(value)
   });
-
-  // If OIDC is enabled, redirect to login
-  if (oidcConfig?.enabled) {
-    navigate({ to: "/login" });
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">

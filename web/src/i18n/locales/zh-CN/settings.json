@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "修改凭据时必填",
     "newPassword": "新密码",
     "confirmNewPassword": "确认新密码",
-    "save": "保存",
-    "identityProvider": "你的身份提供商",
-    "oidcTitle": "OpenID Connect 账户",
-    "oidcDescription": "你的账户凭据由 OpenID Connect 提供商管理。如需修改用户名，请前往提供商的设置页面进行修改，然后重新登录。",
-    "authenticatedViaOidc": "通过 OpenID Connect 认证"
+    "save": "保存"
   },
   "logsPage": {
     "title": "日志",

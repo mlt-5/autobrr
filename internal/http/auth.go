@@ -29,38 +29,25 @@ type authHandler struct {
 	encoder        encoder
 	config         *domain.Config
 	service        authService
-	oidcService    oidcService
 	server         *Server
 	sessionManager *scs.SessionManager
-	oidcHandler    *OIDCHandler
 }
 
-func newAuthHandler(encoder encoder, log zerolog.Logger, server *Server, config *domain.Config, sessionManager *scs.SessionManager, service authService, oidcService oidcService) *authHandler {
-	h := &authHandler{
+func newAuthHandler(encoder encoder, log zerolog.Logger, server *Server, config *domain.Config, sessionManager *scs.SessionManager, service authService) *authHandler {
+	return &authHandler{
 		log:            log,
 		encoder:        encoder,
 		config:         config,
 		service:        service,
-		oidcService:    oidcService,
 		sessionManager: sessionManager,
 		server:         server,
 	}
-
-	if h.oidcService.IsEnabled() {
-		h.oidcHandler = NewOIDCHandler(encoder, log, config, sessionManager, oidcService)
-	}
-
-	return h
 }
 
 func (h *authHandler) Routes(r chi.Router) {
 	r.Post("/login", h.login)
 	r.Post("/onboard", h.onboard)
 	r.Get("/onboard", h.canOnboard)
-
-	if h.config.OIDCEnabled && h.oidcHandler != nil {
-		r.Route("/oidc", h.oidcHandler.Routes)
-	}
 
 	// Group for authenticated routes
 	r.Group(func(r chi.Router) {
@@ -98,7 +85,6 @@ func (h *authHandler) login(w http.ResponseWriter, r *http.Request) {
 	h.sessionManager.Put(r.Context(), "authenticated", true)
 	h.sessionManager.Put(r.Context(), "username", data.Username)
 	h.sessionManager.Put(r.Context(), "created", time.Now().Unix())
-	h.sessionManager.Put(r.Context(), "auth_method", "password")
 
 	h.encoder.NoContent(w)
 }
@@ -151,10 +137,6 @@ func (h *authHandler) canOnboard(w http.ResponseWriter, r *http.Request) {
 
 // onboardEligible checks if the onboarding process is eligible.
 func (h *authHandler) onboardEligible(ctx context.Context) (int, error) {
-	if h.config.OIDCEnabled {
-		return http.StatusServiceUnavailable, errors.New("onboarding unavailable: using oidc provider")
-	}
-
 	userCount, err := h.service.GetUserCount(ctx)
 	if err != nil {
 		return http.StatusInternalServerError, errors.New("could not get user count")
@@ -173,19 +155,8 @@ func (h *authHandler) onboardEligible(ctx context.Context) (int, error) {
 func (h *authHandler) validate(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	username := h.sessionManager.GetString(ctx, "username")
-	authMethod := h.sessionManager.GetString(ctx, "auth_method")
-	profilePicture := h.sessionManager.GetString(ctx, "profile_picture")
 
-	response := map[string]any{
-		"username":    username,
-		"auth_method": authMethod,
-	}
-
-	if profilePicture != "" {
-		response["profile_picture"] = profilePicture
-	}
-
-	h.encoder.StatusResponse(w, http.StatusOK, response)
+	h.encoder.StatusResponse(w, http.StatusOK, map[string]any{"username": username})
 }
 
 func (h *authHandler) updateUser(w http.ResponseWriter, r *http.Request) {

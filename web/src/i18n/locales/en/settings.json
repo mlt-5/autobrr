@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Required if updating credentials",
     "newPassword": "New Password",
     "confirmNewPassword": "Confirm New Password",
-    "save": "Save",
-    "identityProvider": "your identity provider",
-    "oidcTitle": "OpenID Connect Account",
-    "oidcDescription": "Your account credentials are managed by your OpenID Connect provider. To change your username, please visit your provider's settings page and log in again.",
-    "authenticatedViaOidc": "Authenticated via OpenID Connect"
+    "save": "Save"
   },
   "logsPage": {
     "title": "Logs",

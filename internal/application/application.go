@@ -259,11 +259,6 @@ func (app *App) setupResourceLimits() {
 func (app *App) setup(ctx context.Context) error {
 	app.setupResourceLimits()
 
-	oidcService := auth.NewOIDCService(app.log, app.cfg.Config)
-	if err := oidcService.Discover(ctx); err != nil {
-		return errors.Wrap(err, "could not discover OIDC service")
-	}
-
 	db, err := database.NewDB(app.cfg.Config, app.log)
 	if err != nil {
 		return errors.Wrap(err, "could not init database")
@@ -343,7 +338,6 @@ func (app *App) setup(ctx context.Context) error {
 		IrcService:          app.ircService,
 		ListService:         app.listService,
 		NotificationService: app.notificationService,
-		OIDCService:         oidcService,
 		ProxyService:        app.proxyService,
 		ReleaseService:      app.releaseService,
 	})

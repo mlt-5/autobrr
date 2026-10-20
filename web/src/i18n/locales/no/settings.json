@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Påkrevd ved oppdatering av påloggingsopplysninger",
     "newPassword": "Nytt passord",
     "confirmNewPassword": "Bekreft nytt passord",
-    "save": "Lagre",
-    "identityProvider": "identitetsleverandør",
-    "oidcTitle": "OpenID Connect-konto",
-    "oidcDescription": "Kontoinformasjonen din administreres av OpenID Connect-leverandøren din. For å endre brukernavnet ditt, gå til leverandørens innstillingsside og logg inn på nytt.",
-    "authenticatedViaOidc": "Autentisert via OpenID Connect"
+    "save": "Lagre"
   },
   "logsPage": {
     "title": "Logger",

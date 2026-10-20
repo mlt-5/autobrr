@@ -8,7 +8,6 @@ import (
 	"net"
 	"testing"
 
-	"github.com/autobrr/autobrr/internal/auth"
 	"github.com/autobrr/autobrr/internal/config"
 	"github.com/autobrr/autobrr/internal/domain"
 
@@ -26,7 +25,6 @@ func newLifecycleTestServer(port int) *Server {
 		SSE:            sse.New(),
 		Config:         &config.AppConfig{Config: cfg},
 		SessionManager: scs.New(),
-		OIDCService:    auth.NewOIDCService(zerolog.Nop(), cfg),
 	})
 }
 

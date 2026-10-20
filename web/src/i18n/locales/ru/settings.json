@@ -62,11 +62,7 @@
     "requiredIfUpdatingCredentials": "Обязательно при обновлении учётных данных",
     "newPassword": "Новый пароль",
     "confirmNewPassword": "Подтвердите новый пароль",
-    "save": "Сохранить",
-    "identityProvider": "ваш провайдер идентификации",
-    "oidcTitle": "Аккаунт OpenID Connect",
-    "oidcDescription": "Учётными данными вашего аккаунта управляет провайдер OpenID Connect. Чтобы изменить имя пользователя, посетите страницу настроек вашего провайдера и войдите снова.",
-    "authenticatedViaOidc": "Аутентифицирован через OpenID Connect"
+    "save": "Сохранить"
   },
   "logsPage": {
     "title": "Логи",

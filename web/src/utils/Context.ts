@@ -49,18 +49,12 @@ export interface DashboardConfigType {
 export interface AuthInfo {
   username: string;
   isLoggedIn: boolean;
-  authMethod?: 'password' | 'oidc';
-  profilePicture?: string;
-  issuerUrl?: string;
 }
 
 // Default values
 const AuthContextDefaults: AuthInfo = {
   username: "",
-  isLoggedIn: false,
-  authMethod: undefined,
-  profilePicture: undefined,
-  issuerUrl: undefined
+  isLoggedIn: false
 };
 
 const SettingsContextDefaults: SettingsType = {
