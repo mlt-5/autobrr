@@ -198,3 +198,21 @@ func TestBridgeWriterAbort(t *testing.T) {
 	assert.Equal(t, http.StatusOK, res.status, "a status already sent stays")
 	assert.Empty(t, res.body, "unflushed output is dropped")
 }
+
+func TestServeKeepsBodyAfterReturn(t *testing.T) {
+	e := startEngine(t)
+
+	// gobind frees the body it passes in once Serve returns
+	body := []byte(`{"log_level":"DEBUG"}`)
+	rec := newRecorder()
+	e.Serve(http.MethodPatch, "app://autobrr/api/config", `{"Content-Type":"application/json"}`, body, rec)
+	for i := range body {
+		body[i] = 0
+	}
+
+	res := rec.wait(t)
+	assert.Equal(t, http.StatusNoContent, res.status, res.body)
+
+	res = serve(t, e, http.MethodGet, "app://autobrr/api/config", nil, "")
+	assert.Contains(t, res.body, `"log_level":"DEBUG"`)
+}

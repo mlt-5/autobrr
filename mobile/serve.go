@@ -39,6 +39,9 @@ func (r *Request) Cancel() {
 // use any scheme and host; only its path and query are routed. headersJSON is
 // a JSON object of header names to values and may be empty.
 func (e *Engine) Serve(method, rawURL, headersJSON string, body []byte, w ResponseWriter) *Request {
+	// gobind frees the body once Serve returns, before the handler reads it
+	body = bytes.Clone(body)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	req := &Request{cancel: cancel}
 
