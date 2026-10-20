@@ -13,7 +13,6 @@ interface List {
   api_key: string;
   filters: ListFilter[];
   match_release: boolean;
-  include_year: boolean;
   skip_clean_sanitize: boolean;
   last_refresh_status: string;
 }
@@ -32,14 +31,10 @@ interface ListCreate {
   api_key: string;
   filters: number[];
   match_release: boolean;
-  include_year: boolean;
   skip_clean_sanitize: boolean;
 }
 
 type ListType =
-  | "MDBLIST"
   | "TRAKT"
-  | "METACRITIC"
-  | "STEAM"
   | "PLAINTEXT"
   | "ANILIST";

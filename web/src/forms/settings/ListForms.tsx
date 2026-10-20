@@ -21,8 +21,6 @@ import {
   TextFieldWide
 } from "@components/inputs";
 import {
-  ListsMDBListOptions,
-  ListsMetacriticOptions,
   ListsTraktOptions,
   ListsAniListOptions,
   ListTypeOptions
@@ -36,13 +34,11 @@ import {
   SelectFieldCreatable
 } from "@components/inputs/select_wide";
 import { useToggle } from "@hooks/hooks.ts";
-import { fieldErrors, useAppForm, useFormContext, useFormValue } from "@hooks/form";
+import { fieldErrors, useAppForm, useFormValue } from "@hooks/form";
 import type { FormFieldErrors } from "@hooks/form";
 
 const LISTSTRAKT_SELECT_OPTIONS = ListsTraktOptions.map((u) => ({ value: u.value, label: u.label, key: u.label }));
 const LISTSANILIST_SELECT_OPTIONS = ListsAniListOptions.map((u) => ({ value: u.value, label: u.label, key: u.label }));
-const LISTSMETACRITIC_SELECT_OPTIONS = ListsMetacriticOptions.map((u) => ({ value: u.value, label: u.label, key: u.label }));
-const LISTSMDBLIST_SELECT_OPTIONS = ListsMDBListOptions.map((u) => ({ value: u.value, label: u.label, key: u.label }));
 import { DeleteModal } from "@components/modals";
 import { SlideOverShell, SlideOverTitle } from "@components/panels";
 import {DocsLink} from "@components/ExternalLink.tsx";
@@ -107,7 +103,6 @@ function ListAddFormPanel({ toggle }: ListAddFormPanelProps) {
     api_key: "",
     filters: [],
     match_release: false,
-    include_year: false,
     skip_clean_sanitize: false,
   };
 
@@ -307,7 +302,6 @@ function ListUpdateFormPanel({ toggle, data }: ListUpdateFormPanelProps) {
     api_key: data.api_key,
     filters: data.filters,
     match_release: data.match_release,
-    include_year: data.include_year,
     skip_clean_sanitize: data.skip_clean_sanitize,
   };
 
@@ -489,12 +483,6 @@ const ListTypeForm = ({ listType }: ListTypeFormProps) => {
   switch (listType) {
     case "TRAKT":
       return <ListTypeTrakt />;
-    case "STEAM":
-      return <ListTypeSteam />;
-    case "METACRITIC":
-      return <ListTypeMetacritic />;
-    case "MDBLIST":
-      return <ListTypeMDBList />;
     case "PLAINTEXT":
       return <ListTypePlainText />;
     case "ANILIST":
@@ -613,96 +601,6 @@ function ListTypePlainText() {
         <fieldset>
           <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
           <SwitchGroupWide name="skip_clean_sanitize" label={t("forms.list.skipCleanSanitize")} description={t("forms.list.skipCleanSanitizeDesc")} />
-        </fieldset>
-      </div>
-    </div>
-  )
-}
-
-function ListTypeSteam() {
-  const { t } = useTranslation("settings");
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-4">
-      <div className="px-4">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-          {t("forms.list.sourceList")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("forms.list.steamSourceDescription")}
-        </p>
-      </div>
-
-      <TextFieldWide name="url" label={t("forms.list.url")} help={t("forms.list.steamUrlHelp")} placeholder={t("forms.list.steamUrlPlaceholder")}/>
-    </div>
-  )
-}
-
-function ListTypeMetacritic() {
-  const { t } = useTranslation("settings");
-  return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-4">
-      <div className="px-4">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-          {t("forms.list.sourceList")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("forms.list.metacriticSourceDescription")}
-        </p>
-      </div>
-
-      <SelectFieldCreatable
-        name="url"
-        label={t("forms.list.listUrl")}
-        help={t("forms.list.metacriticHelp")}
-        options={LISTSMETACRITIC_SELECT_OPTIONS}
-      />
-
-      <div className="space-y-1">
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="match_release" label={t("forms.list.matchRelease")} description={t("forms.list.matchReleaseDesc")} />
-        </fieldset>
-      </div>
-    </div>
-  )
-}
-
-function ListTypeMDBList() {
-    const { t } = useTranslation("settings");
-    const form = useFormContext();
-
-    return (
-    <div className="border-t border-gray-200 dark:border-gray-700 py-4">
-      <div className="px-4">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-          {t("forms.list.sourceList")}
-        </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t("forms.list.mdblistSourceDescription")}
-        </p>
-      </div>
-
-      <SelectFieldCreatable
-        name="url"
-        label={t("forms.list.listUrl")}
-        help={t("forms.list.mdblistHelp")}
-        options={LISTSMDBLIST_SELECT_OPTIONS}
-      />
-
-      <div className="space-y-1">
-        <fieldset>
-          <legend className="sr-only">{t("forms.list.settingsLegend")}</legend>
-          <SwitchGroupWide name="match_release" label={t("forms.list.matchRelease")} description={t("forms.list.matchReleaseDesc")} />
-          <SwitchGroupWide
-            name="include_year"
-            label={t("forms.list.includeYear")}
-            description={t("forms.list.includeYearDesc")}
-            onChange={(includeYear) => {
-              if (includeYear) {
-                form.setFieldValue("match_release", true);
-              }
-            }}
-          />
         </fieldset>
       </div>
     </div>
