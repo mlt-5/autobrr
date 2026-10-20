@@ -73,7 +73,8 @@ FROM action_backup;
 
 DROP TABLE action_backup;
 
--- Dropping list cascades to list_filter, so the filter links are copied aside as well.
+-- Dropping list cascades to list_filter only when foreign keys are on, so the filter links of the
+-- remaining lists are copied aside and list_filter is emptied before they go back in.
 CREATE TEMP TABLE list_backup AS
 SELECT id,
        name,
@@ -94,7 +95,8 @@ FROM list;
 
 CREATE TEMP TABLE list_filter_backup AS
 SELECT list_id, filter_id
-FROM list_filter;
+FROM list_filter
+WHERE list_id IN (SELECT id FROM list_backup);
 
 DROP TABLE list;
 
@@ -135,6 +137,9 @@ SELECT id,
        created_at,
        updated_at
 FROM list_backup;
+
+DELETE
+FROM list_filter;
 
 INSERT INTO list_filter (list_id, filter_id)
 SELECT list_id, filter_id
