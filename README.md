@@ -323,9 +323,6 @@ The following environment variables can be used:
 | `AUTOBRR__OIDC_CLIENT_SECRET`          | OIDC client secret                                       | -           |
 | `AUTOBRR__OIDC_REDIRECT_URL`           | OIDC callback URL                                        | -           |
 | `AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN` | Disable login form (only works when using external auth) | `false`     |
-| `AUTOBRR__PROFILING_ENABLED`           | Enable profiling                                         | `false`     |
-| `AUTOBRR__PROFILING_HOST`              | Profiling listen address                                 | `127.0.0.1` |
-| `AUTOBRR__PROFILING_PORT`              | Profiling listen port                                    | `6060`      |
 
 #### Docker secrets
 

@@ -27,9 +27,6 @@ type Config struct {
 	PostgresSSLMode         string `toml:"postgresSSLMode"`
 	PostgresSocket          string `toml:"postgresSocket"`
 	PostgresExtraParams     string `toml:"postgresExtraParams"`
-	ProfilingEnabled        bool   `toml:"profilingEnabled"`
-	ProfilingHost           string `toml:"profilingHost"`
-	ProfilingPort           int    `toml:"profilingPort"`
 	OIDCEnabled             bool   `toml:"oidcEnabled"`
 	OIDCIssuer              string `toml:"oidcIssuer"`
 	OIDCClientID            string `toml:"oidcClientId"`

@@ -95,15 +95,6 @@ logLevel = "INFO"
 #
 #databaseMaxBackups = 5
 
-# Golang pprof profiling and tracing
-#
-#profilingEnabled = false
-#
-#profilingHost = "127.0.0.1"
-#
-# Default: 6060
-#profilingPort = 6060
-
 # OpenID Connect Configuration
 #
 # Enable OIDC authentication
@@ -257,9 +248,6 @@ func (c *AppConfig) defaults() {
 		PostgresSSLMode:     "disable",
 		PostgresExtraParams: "",
 		PostgresSocket:      "",
-		ProfilingEnabled:    false,
-		ProfilingHost:       "127.0.0.1",
-		ProfilingPort:       6060,
 	}
 }
 
@@ -358,19 +346,6 @@ func (c *AppConfig) loadFromEnv() {
 
 	if v := GetEnvStr("POSTGRES_EXTRA_PARAMS"); v != "" {
 		c.Config.PostgresExtraParams = v
-	}
-
-	// Profiling configuration
-	if v := GetEnvStr("PROFILING_ENABLED"); v != "" {
-		c.Config.ProfilingEnabled = strings.EqualFold(strings.ToLower(v), "true")
-	}
-
-	if v := GetEnvStr("PROFILING_HOST"); v != "" {
-		c.Config.ProfilingHost = v
-	}
-
-	if v := GetEnvInt("PROFILING_PORT"); v > 0 {
-		c.Config.ProfilingPort = v
 	}
 
 	// OIDC configuration
