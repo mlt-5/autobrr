@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	nethttp "net/http"
 
 	"github.com/autobrr/autobrr/internal/action"
 	"github.com/autobrr/autobrr/internal/alert"
@@ -54,6 +55,11 @@ type App struct {
 	db         *database.DB
 	httpServer *http.Server
 
+	// embedded apps serve requests through Handler instead of a listener
+	embedded bool
+	handler  nethttp.Handler
+	ready    chan struct{}
+
 	actionService       *action.Service
 	alertService        *alert.Service
 	authService         *auth.Service
@@ -91,7 +97,28 @@ func New(configPath string) *App {
 		cfg:      cfg,
 		sse:      serverEvents,
 		eventBus: events.NewEventBus(log),
+		ready:    make(chan struct{}),
 	}
+}
+
+// NewEmbedded is New for a host that passes requests to Handler itself, such
+// as the iOS app. It opens no network listener.
+func NewEmbedded(configPath string) *App {
+	app := New(configPath)
+	app.embedded = true
+
+	return app
+}
+
+// Ready is closed once every component has started.
+func (app *App) Ready() <-chan struct{} {
+	return app.ready
+}
+
+// Handler serves the web UI and API of an embedded App. It is nil until Ready
+// is closed.
+func (app *App) Handler() nethttp.Handler {
+	return app.handler
 }
 
 // Run starts the application and blocks until ctx is cancelled or one of its
@@ -127,6 +154,8 @@ func (app *App) Run(ctx context.Context) error {
 	started, err := app.startComponents(runCtx, app.components(fail))
 	if err != nil {
 		fail(err)
+	} else {
+		close(app.ready)
 	}
 
 	<-runCtx.Done()
@@ -145,16 +174,21 @@ func (app *App) Run(ctx context.Context) error {
 func (app *App) components(fail context.CancelCauseFunc) []component {
 	var components []component
 
-	components = append(components,
-		// bind before anything dials out so a port conflict fails startup early,
-		// serving waits until the services behind the API have started
-		component{
-			name: "http listen",
-			start: func(context.Context) error {
-				return app.httpServer.Listen()
+	if !app.embedded {
+		components = append(components,
+			// bind before anything dials out so a port conflict fails startup early,
+			// serving waits until the services behind the API have started
+			component{
+				name: "http listen",
+				start: func(context.Context) error {
+					return app.httpServer.Listen()
+				},
+				stop: app.httpServer.CloseListener,
 			},
-			stop: app.httpServer.CloseListener,
-		},
+		)
+	}
+
+	components = append(components,
 		component{
 			name:  "scheduler",
 			start: app.scheduler.Start,
@@ -212,8 +246,26 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 				return nil
 			},
 		},
-		// last to start so it stops first, before the services its handlers call
-		component{
+	)
+
+	// last to start so it stops first, before the services its handlers call
+	if app.embedded {
+		components = append(components, component{
+			name: "http",
+			start: func(context.Context) error {
+				app.handler = app.httpServer.Handler()
+
+				return nil
+			},
+			// ends open event streams, which would otherwise outlive the services
+			stop: func(context.Context) error {
+				app.sse.Close()
+
+				return nil
+			},
+		})
+	} else {
+		components = append(components, component{
 			name: "http",
 			start: func(context.Context) error {
 				serve(app.httpServer.Serve, func(err error) {
@@ -223,8 +275,8 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 				return nil
 			},
 			stop: app.httpServer.Shutdown,
-		},
-	)
+		})
+	}
 
 	return components
 }
