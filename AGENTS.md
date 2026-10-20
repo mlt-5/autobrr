@@ -41,7 +41,7 @@ The backend follows a layered architecture with clear separation of concerns:
   - **Infrastructure**: External integrations (`internal/indexer/`, `internal/irc/`, `internal/notification/`)
 
 - **`pkg/`**: Reusable packages and client libraries
-  - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `ptp`, `red`) and the Torznab feed client
+  - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `red`) and the Torznab feed client
   - Utility packages for different indexer APIs
 
 ### Frontend Architecture (React/TypeScript)
