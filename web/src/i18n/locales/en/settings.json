@@ -31,8 +31,6 @@
   "application": {
     "title": "Application",
     "description": "Application settings. Change in config.toml and restart to take effect.",
-    "host": "Host",
-    "port": "Port",
     "version": "Version",
     "commit": "Commit",
     "buildDate": "Build date",

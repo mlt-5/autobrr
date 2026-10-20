@@ -34,7 +34,7 @@ func Start(configDir string) (*Engine, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	e := &Engine{
-		app:    application.NewEmbedded(configDir),
+		app:    application.New(configDir),
 		cancel: cancel,
 		done:   make(chan error, 1),
 	}

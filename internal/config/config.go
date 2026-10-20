@@ -4,7 +4,6 @@
 package config
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -13,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"text/template"
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/internal/logger"
@@ -27,18 +25,6 @@ import (
 var EnvVarPrefix = "AUTOBRR__"
 
 var configTemplate = `# config.toml
-
-# Hostname / IP
-#
-# Default: "127.0.0.1"
-#
-host = "{{ .host }}"
-
-# Port
-#
-# Default: 7474
-#
-port = 7474
 
 # autobrr logs file
 # If not defined, logs to stdout
@@ -97,44 +83,6 @@ func (c *AppConfig) writeConfig(configPath string, configFile string) error {
 
 	// check if config exists, if not create it
 	if _, err := os.Stat(cfgPath); errors.Is(err, os.ErrNotExist) {
-		// set default host
-		host := "127.0.0.1"
-
-		if _, err := os.Stat("/.dockerenv"); err == nil {
-			// docker creates a .dockerenv file at the root
-			// of the directory tree inside the container.
-			// if this file exists then the viewer is running
-			// from inside a docker container so return true
-			host = "0.0.0.0"
-		} else if _, err := os.Stat("/dev/.lxc-boot-id"); err == nil {
-			// lxc creates this file containing the uuid
-			// of the container in every boot.
-			// if this file exists then the viewer is running
-			// from inside a lxc container so return true
-			host = "0.0.0.0"
-		} else if os.Getpid() == 1 {
-			// if we're running as pid 1, we're honoured.
-			// but there's a good chance this is an isolated namespace
-			// or a container.
-			host = "0.0.0.0"
-		} else if user := os.Getenv("USERNAME"); user == "ContainerAdministrator" || user == "ContainerUser" {
-			/* this is the correct code below, but golang helpfully Panics when it can't find netapi32.dll
-			   the issue was first reported 7 years ago, but is fixed in go 1.24 where the below code works.
-			*/
-			/*
-				 u, err := user.Current(); err == nil && u != nil &&
-				(u.Name == "ContainerAdministrator" || u.Name == "ContainerUser") {
-				// Windows conatiners run containers as ContainerAdministrator by default */
-			host = "0.0.0.0"
-		} else if pd, _ := os.Open("/proc/1/cgroup"); pd != nil {
-			defer pd.Close()
-			b := make([]byte, 4096)
-			pd.Read(b)
-			if strings.Contains(string(b), "/docker") || strings.Contains(string(b), "/lxc") {
-				host = "0.0.0.0"
-			}
-		}
-
 		f, err := os.Create(cfgPath)
 		if err != nil { // perm 0666
 			// handle failed create
@@ -143,22 +91,7 @@ func (c *AppConfig) writeConfig(configPath string, configFile string) error {
 		}
 		defer f.Close()
 
-		// setup text template to inject variables into
-		tmpl, err := template.New("config").Parse(configTemplate)
-		if err != nil {
-			return errors.Wrap(err, "could not create config template")
-		}
-
-		tmplVars := map[string]string{
-			"host": host,
-		}
-
-		var buffer bytes.Buffer
-		if err = tmpl.Execute(&buffer, &tmplVars); err != nil {
-			return errors.Wrap(err, "could not write torrent url template output")
-		}
-
-		if _, err = f.WriteString(buffer.String()); err != nil {
+		if _, err = f.WriteString(configTemplate); err != nil {
 			log.Printf("error writing contents to file: %v %q", configPath, err)
 			return err
 		}
@@ -189,8 +122,6 @@ func New(configPath string) *AppConfig {
 
 func (c *AppConfig) defaults() {
 	c.Config = &domain.Config{
-		Host:                "127.0.0.1",
-		Port:                7474,
 		LogLevel:            "INFO",
 		LogPath:             "",
 		LogMaxSize:          10,
@@ -203,14 +134,6 @@ func (c *AppConfig) defaults() {
 }
 
 func (c *AppConfig) loadFromEnv() {
-	if v := GetEnvStr("HOST"); v != "" {
-		c.Config.Host = v
-	}
-
-	if v := GetEnvInt("PORT"); v > 0 {
-		c.Config.Port = v
-	}
-
 	if v := GetEnvStr("CUSTOM_DEFINITIONS"); v != "" {
 		c.Config.CustomDefinitions = v
 	}

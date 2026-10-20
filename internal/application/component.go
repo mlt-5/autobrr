@@ -69,13 +69,3 @@ func (app *App) stopComponents(components []component) {
 		}
 	}
 }
-
-// serve runs a blocking serve loop in the background and hands an unexpected
-// exit to onError.
-func serve(fn func() error, onError func(error)) {
-	go func() {
-		if err := fn(); err != nil {
-			onError(err)
-		}
-	}()
-}

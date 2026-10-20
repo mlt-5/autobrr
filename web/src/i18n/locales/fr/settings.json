@@ -31,8 +31,6 @@
   "application": {
     "title": "Application",
     "description": "Paramètres de l'application. Modifier dans config.toml et redémarrer pour appliquer.",
-    "host": "Hôte",
-    "port": "Port",
     "version": "Version",
     "commit": "Commit",
     "buildDate": "Date de build",

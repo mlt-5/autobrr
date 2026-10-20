@@ -19,8 +19,6 @@ import (
 type configJson struct {
 	Application   string `json:"application"`
 	ConfigDir     string `json:"config_dir"`
-	Host          string `json:"host"`
-	Port          int    `json:"port"`
 	LogLevel      string `json:"log_level"`
 	LogPath       string `json:"log_path"`
 	LogMaxSize    int    `json:"log_max_size"`
@@ -59,8 +57,6 @@ func (h configHandler) Routes(r chi.Router) {
 func (h configHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 	conf := configJson{
 		ConfigDir:     h.cfg.Config.ConfigPath,
-		Host:          h.cfg.Config.Host,
-		Port:          h.cfg.Config.Port,
 		LogLevel:      h.cfg.Config.LogLevel,
 		LogPath:       h.cfg.Config.LogPath,
 		LogMaxSize:    h.cfg.Config.LogMaxSize,
