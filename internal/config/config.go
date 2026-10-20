@@ -124,26 +124,6 @@ logLevel = "INFO"
 # Disable Built In Login Form (only works when using external auth)
 #oidcDisableBuiltInLogin = false
 
-# Metrics
-#
-# Enable metrics endpoint
-#metricsEnabled = true
-#
-# Metrics server host
-#
-#metricsHost = "127.0.0.1"
-#
-# Metrics server port
-#
-#metricsPort = 9074
-#
-# Metrics basic auth
-#
-# Comma separate list of user:password. Password must be htpasswd bcrypt hashed. Use autobrrctl to generate.
-# Only enabled if correctly set with user:pass.
-#
-#metricsBasicAuthUsers = ""
-
 # Custom definitions
 #
 #customDefinitions = "test/definitions"
@@ -255,35 +235,31 @@ func New(configPath string) *AppConfig {
 
 func (c *AppConfig) defaults() {
 	c.Config = &domain.Config{
-		Host:                  "127.0.0.1",
-		Port:                  7474,
-		CorsAllowedOrigins:    "*",
-		LogLevel:              "INFO",
-		LogPath:               "",
-		LogMaxSize:            10,
-		LogMaxBackups:         5,
-		BaseURL:               "/",
-		BaseURLModeLegacy:     true,
-		CustomDefinitions:     "",
-		DatabaseType:          "sqlite",
-		DatabaseAutoMigrate:   true,
-		DatabaseMaxBackups:    5,
-		DatabaseDSN:           "",
-		PostgresHost:          "",
-		PostgresPort:          5432,
-		PostgresDatabase:      "",
-		PostgresUser:          "",
-		PostgresPass:          "",
-		PostgresSSLMode:       "disable",
-		PostgresExtraParams:   "",
-		PostgresSocket:        "",
-		ProfilingEnabled:      false,
-		ProfilingHost:         "127.0.0.1",
-		ProfilingPort:         6060,
-		MetricsEnabled:        false,
-		MetricsHost:           "127.0.0.1",
-		MetricsPort:           9074,
-		MetricsBasicAuthUsers: "",
+		Host:                "127.0.0.1",
+		Port:                7474,
+		CorsAllowedOrigins:  "*",
+		LogLevel:            "INFO",
+		LogPath:             "",
+		LogMaxSize:          10,
+		LogMaxBackups:       5,
+		BaseURL:             "/",
+		BaseURLModeLegacy:   true,
+		CustomDefinitions:   "",
+		DatabaseType:        "sqlite",
+		DatabaseAutoMigrate: true,
+		DatabaseMaxBackups:  5,
+		DatabaseDSN:         "",
+		PostgresHost:        "",
+		PostgresPort:        5432,
+		PostgresDatabase:    "",
+		PostgresUser:        "",
+		PostgresPass:        "",
+		PostgresSSLMode:     "disable",
+		PostgresExtraParams: "",
+		PostgresSocket:      "",
+		ProfilingEnabled:    false,
+		ProfilingHost:       "127.0.0.1",
+		ProfilingPort:       6060,
 	}
 }
 
@@ -420,23 +396,6 @@ func (c *AppConfig) loadFromEnv() {
 
 	if v := GetEnvStr("OIDC_DISABLE_BUILT_IN_LOGIN"); v != "" {
 		c.Config.OIDCDisableBuiltInLogin = strings.EqualFold(strings.ToLower(v), "true")
-	}
-
-	// Metrics configuration
-	if v := GetEnvStr("METRICS_ENABLED"); v != "" {
-		c.Config.MetricsEnabled = strings.EqualFold(strings.ToLower(v), "true")
-	}
-
-	if v := GetEnvStr("METRICS_HOST"); v != "" {
-		c.Config.MetricsHost = v
-	}
-
-	if v := GetEnvInt("METRICS_PORT"); v > 0 {
-		c.Config.MetricsPort = v
-	}
-
-	if v := GetEnvStr("METRICS_BASIC_AUTH_USERS"); v != "" {
-		c.Config.MetricsBasicAuthUsers = v
 	}
 }
 
