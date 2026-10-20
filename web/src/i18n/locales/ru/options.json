@@ -22,10 +22,6 @@
     "WEBHOOK": {
       "label": "Webhook",
       "description": "Выполнить webhook"
-    },
-    "EXEC": {
-      "label": "Exec",
-      "description": "Выполнить пользовательскую команду после совпадения фильтра"
     }
   },
   "pushStatus": {

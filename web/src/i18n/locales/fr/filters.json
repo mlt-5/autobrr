@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "Fermer",
       "status": {
-        "EXEC": "Le script s'est terminé avec le code {{status}} (attendu {{expected}}) en {{duration}} ms",
         "WEBHOOK": "Le webhook a répondu avec le statut {{status}} (attendu {{expected}}) en {{duration}} ms"
       },
       "error": {
-        "EXEC": "Échec du script : {{error}}",
         "WEBHOOK": "Échec de la requête webhook : {{error}}"
       }
     },
     "types": {
-      "EXEC": "Exec",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "Rejeter",
       "CONTINUE": "Continuer au suivant"
-    },
-    "execute": {
-      "title": "Exécuter",
-      "subtitle": "Spécifier l'exécutable, l'argument et le statut de sortie attendu pour le pré-filtre",
-      "path": "Chemin vers l'exécutable",
-      "pathPlaceholder": "Chemin absolu vers l'exécutable, ex. /bin/test",
-      "pathTooltip": "Pour les commandes personnalisées, spécifie le chemin complet vers le binaire/programme à exécuter. Tu peux aussi inclure tes propres variables statiques :",
-      "args": "Arguments Exec",
-      "argsPlaceholder": "Arguments, ex. --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "Statut de sortie attendu"
     },
     "request": {
       "title": "Requête",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "Attention !",
       "text": "L'action de test ne fait rien d'autre que vérifier si le filtre fonctionne. Assure-toi que la page Journaux est ouverte pendant le test."
-    },
-    "exec": {
-      "title": "Arguments Exec",
-      "subtitle": "Spécifier l'exécutable et ses arguments à exécuter lors d'une correspondance de filtre. Utiliser un chemin absolu.",
-      "path": "Chemin vers l'exécutable",
-      "pathPlaceholder": "Chemin vers le programme, ex. /bin/test",
-      "arguments": "Arguments",
-      "argumentsPlaceholder": "Arguments, ex. --test"
     },
     "watchFolder": {
       "title": "Arguments du dossier surveillé",

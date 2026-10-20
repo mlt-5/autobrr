@@ -81,7 +81,7 @@ func TestNewWebhookEvent_Action(t *testing.T) {
 		Event:        NotificationEventPushApproved,
 		Timestamp:    now,
 		Action:       "TestAction",
-		ActionType:   ActionTypeExec,
+		ActionType:   ActionTypeWebhook,
 		ActionClient: "qBittorrent",
 		Status:       ReleasePushStatusApproved,
 	}
@@ -92,7 +92,7 @@ func TestNewWebhookEvent_Action(t *testing.T) {
 	assert.Equal(t, WebhookEventActionApproved, result.Event)
 	require.NotNil(t, result.Data.Action)
 	assert.Equal(t, "TestAction", result.Data.Action.Name)
-	assert.Equal(t, "EXEC", result.Data.Action.Type)
+	assert.Equal(t, "WEBHOOK", result.Data.Action.Type)
 
 	require.NotNil(t, result.Data.Result)
 	assert.Equal(t, "PUSH_APPROVED", result.Data.Result.Status)

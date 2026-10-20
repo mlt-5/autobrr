@@ -300,29 +300,25 @@ export interface RadioFieldsetOption {
 export const ActionTypeOptions: RadioFieldsetOption[] = [
   { label: "Test", description: "A simple action to test a filter.", value: "TEST" },
   { label: "Watch dir", description: "Add filtered torrents to a watch directory", value: "WATCH_FOLDER" },
-  { label: "Webhook", description: "Run webhook", value: "WEBHOOK" },
-  { label: "Exec", description: "Run a custom command after a filter match", value: "EXEC" }
+  { label: "Webhook", description: "Run webhook", value: "WEBHOOK" }
 ];
 
 export const getActionTypeOptions = (t: TFunction): RadioFieldsetOption[] => [
   { label: t("options:actionType.TEST.label"), description: t("options:actionType.TEST.description"), value: "TEST" },
   { label: t("options:actionType.WATCH_FOLDER.label"), description: t("options:actionType.WATCH_FOLDER.description"), value: "WATCH_FOLDER" },
-  { label: t("options:actionType.WEBHOOK.label"), description: t("options:actionType.WEBHOOK.description"), value: "WEBHOOK" },
-  { label: t("options:actionType.EXEC.label"), description: t("options:actionType.EXEC.description"), value: "EXEC" }
+  { label: t("options:actionType.WEBHOOK.label"), description: t("options:actionType.WEBHOOK.description"), value: "WEBHOOK" }
 ];
 
 export const ActionTypeNameMap: Record<ActionType, string> = {
   "TEST": "Test",
   "WATCH_FOLDER": "Watch folder",
-  "WEBHOOK": "Webhook",
-  "EXEC": "Exec"
+  "WEBHOOK": "Webhook"
 } as const;
 
 export const getActionTypeNameMap = (t: TFunction): Record<ActionType, string> => ({
   "TEST": t("options:actionType.TEST.label"),
   "WATCH_FOLDER": t("options:actionType.WATCH_FOLDER.label"),
-  "WEBHOOK": t("options:actionType.WEBHOOK.label"),
-  "EXEC": t("options:actionType.EXEC.label")
+  "WEBHOOK": t("options:actionType.WEBHOOK.label")
 });
 
 export interface OptionBasic {
@@ -572,12 +568,10 @@ export const tagsMatchLogicOptions: OptionBasic[] = [
 ];
 
 export const ExternalFilterTypeOptions: RadioFieldsetOption[] = [
-  { label: "Exec", description: "Run a custom command", value: "EXEC" },
   { label: "Webhook", description: "Run webhook", value: "WEBHOOK" }
 ];
 
 export const ExternalFilterTypeNameMap = {
-  "EXEC": "Exec",
   "WEBHOOK": "Webhook"
 };
 

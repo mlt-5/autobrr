@@ -559,6 +559,14 @@ func TestRunMigrationTest_Postgres(t *testing.T) {
 			SetupData:           setupUpdateCheckerData,
 			ValidateResult:      validateUpdateCheckerRemoved,
 		},
+		{
+			Name:                "exec removal deletes exec actions and external filters",
+			MigrationIndex:      97,
+			MigrationsUntilName: "97_remove_update_checker",
+			MigrationToRun:      "98_remove_exec",
+			SetupData:           setupExecData,
+			ValidateResult:      validateExecRemoved,
+		},
 	}
 
 	for _, tc := range tests {

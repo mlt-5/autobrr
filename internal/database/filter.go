@@ -828,9 +828,6 @@ func (r *FilterRepo) findExternalFilters(ctx context.Context, filterIDs []int) (
 			"fe.idx",
 			"fe.type",
 			"fe.enabled",
-			"fe.exec_cmd",
-			"fe.exec_args",
-			"fe.exec_expect_status",
 			"fe.webhook_host",
 			"fe.webhook_method",
 			"fe.webhook_data",
@@ -863,8 +860,8 @@ func (r *FilterRepo) findExternalFilters(ctx context.Context, filterIDs []int) (
 		var external domain.FilterExternal
 
 		// filter external
-		var extExecCmd, extExecArgs, extWebhookHost, extWebhookMethod, extWebhookHeaders, extWebhookData, extWebhookRetryStatus sql.NullString
-		var extWebhookStatus, extWebhookRetryAttempts, extWebhookDelaySeconds, extExecStatus sql.NullInt32
+		var extWebhookHost, extWebhookMethod, extWebhookHeaders, extWebhookData, extWebhookRetryStatus sql.NullString
+		var extWebhookStatus, extWebhookRetryAttempts, extWebhookDelaySeconds sql.NullInt32
 
 		if err := rows.Scan(
 			&filterID,
@@ -873,9 +870,6 @@ func (r *FilterRepo) findExternalFilters(ctx context.Context, filterIDs []int) (
 			&external.Index,
 			&external.Type,
 			&external.Enabled,
-			&extExecCmd,
-			&extExecArgs,
-			&extExecStatus,
 			&extWebhookHost,
 			&extWebhookMethod,
 			&extWebhookData,
@@ -888,10 +882,6 @@ func (r *FilterRepo) findExternalFilters(ctx context.Context, filterIDs []int) (
 		); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
-
-		external.ExecCmd = extExecCmd.String
-		external.ExecArgs = extExecArgs.String
-		external.ExecExpectStatus = int(extExecStatus.Int32)
 
 		external.WebhookHost = extWebhookHost.String
 		external.WebhookMethod = extWebhookMethod.String
@@ -1795,9 +1785,6 @@ func (r *FilterRepo) StoreFilterExternal(ctx context.Context, filterID int, exte
 			"idx",
 			"type",
 			"enabled",
-			"exec_cmd",
-			"exec_args",
-			"exec_expect_status",
 			"webhook_host",
 			"webhook_method",
 			"webhook_data",
@@ -1816,9 +1803,6 @@ func (r *FilterRepo) StoreFilterExternal(ctx context.Context, filterID int, exte
 			external.Index,
 			external.Type,
 			external.Enabled,
-			toNullString(external.ExecCmd),
-			toNullString(external.ExecArgs),
-			toNullInt32(int32(external.ExecExpectStatus)),
 			toNullString(external.WebhookHost),
 			toNullString(external.WebhookMethod),
 			toNullString(external.WebhookData),

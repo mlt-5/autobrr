@@ -22,10 +22,6 @@
     "WEBHOOK": {
       "label": "Webhook",
       "description": "Kjør webhook"
-    },
-    "EXEC": {
-      "label": "Exec",
-      "description": "Kjør en egendefinert kommando etter et filtersamsvar"
     }
   },
   "pushStatus": {

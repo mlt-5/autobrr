@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "Ausblenden",
       "status": {
-        "EXEC": "Skript wurde mit Code {{status}} beendet (erwartet {{expected}}) in {{duration}} ms",
         "WEBHOOK": "Webhook antwortete mit Status {{status}} (erwartet {{expected}}) in {{duration}} ms"
       },
       "error": {
-        "EXEC": "Skript fehlgeschlagen: {{error}}",
         "WEBHOOK": "Webhook-Anfrage fehlgeschlagen: {{error}}"
       }
     },
     "types": {
-      "EXEC": "Exec",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "Ablehnen",
       "CONTINUE": "Weiter zum nächsten"
-    },
-    "execute": {
-      "title": "Ausführen",
-      "subtitle": "Ausführbare Datei, Argument und erwarteten Exitstatus für die Vorfilterung angeben",
-      "path": "Pfad zur ausführbaren Datei",
-      "pathPlaceholder": "Absoluter Pfad zur ausführbaren Datei z.B. /bin/test",
-      "pathTooltip": "Für benutzerdefinierte Befehle solltest du den vollständigen Pfad zur Binärdatei/zum Programm angeben. Du kannst auch eigene statische Variablen einschließen:",
-      "args": "Execargumente",
-      "argsPlaceholder": "Argumente z.B. --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "Erwarteter Exitstatus"
     },
     "request": {
       "title": "Anfrage",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "Achtung!",
       "text": "Die Testaktion macht nichts außer zu zeigen, ob der Filter funktioniert. Stelle sicher, dass die Protokollseite während des Tests geöffnet ist."
-    },
-    "exec": {
-      "title": "Execargumente",
-      "subtitle": "Ausführbare Datei und Argumente angeben, die bei Filtertreffer ausgeführt werden sollen. Absoluten Pfad verwenden.",
-      "path": "Pfad zur ausführbaren Datei",
-      "pathPlaceholder": "Pfad zum Programm z.B. /bin/test",
-      "arguments": "Argumente",
-      "argumentsPlaceholder": "Argumente z.B. --test"
     },
     "watchFolder": {
       "title": "Watchordnerargumente",

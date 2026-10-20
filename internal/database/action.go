@@ -33,8 +33,6 @@ func (r *ActionRepo) FindByFilterID(ctx context.Context, filterID int, active *b
 			"a.name",
 			"a.type",
 			"a.enabled",
-			"a.exec_cmd",
-			"a.exec_args",
 			"a.watch_folder",
 			"a.webhook_host",
 			"a.webhook_type",
@@ -64,14 +62,12 @@ func (r *ActionRepo) FindByFilterID(ctx context.Context, filterID int, active *b
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
+		var watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
 
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
-		a.ExecCmd = execCmd.String
-		a.ExecArgs = execArgs.String
 		a.WatchFolder = watchFolder.String
 
 		a.WebhookHost = webhookHost.String
@@ -96,8 +92,6 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 			"name",
 			"type",
 			"enabled",
-			"exec_cmd",
-			"exec_args",
 			"watch_folder",
 			"webhook_host",
 			"webhook_type",
@@ -122,8 +116,8 @@ func (r *ActionRepo) List(ctx context.Context) ([]domain.Action, error) {
 	for rows.Next() {
 		var a domain.Action
 
-		var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
-		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
+		var watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
+		if err := rows.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData); err != nil {
 			return nil, errors.Wrap(err, "error scanning row")
 		}
 
@@ -149,8 +143,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 			"name",
 			"type",
 			"enabled",
-			"exec_cmd",
-			"exec_args",
 			"watch_folder",
 			"webhook_host",
 			"webhook_type",
@@ -173,10 +165,10 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 
 	var a domain.Action
 
-	var execCmd, execArgs, watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
+	var watchFolder, webhookHost, webhookType, webhookMethod, webhookData sql.NullString
 	var filterID sql.NullInt32
 
-	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &execCmd, &execArgs, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &filterID); err != nil {
+	if err := row.Scan(&a.ID, &a.Name, &a.Type, &a.Enabled, &watchFolder, &webhookHost, &webhookType, &webhookMethod, &webhookData, &filterID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.ErrRecordNotFound
 		}
@@ -184,8 +176,6 @@ func (r *ActionRepo) Get(ctx context.Context, req *domain.GetActionRequest) (*do
 		return nil, errors.Wrap(err, "error scanning row")
 	}
 
-	a.ExecCmd = execCmd.String
-	a.ExecArgs = execArgs.String
 	a.WatchFolder = watchFolder.String
 
 	a.WebhookHost = webhookHost.String
@@ -251,8 +241,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			"name",
 			"type",
 			"enabled",
-			"exec_cmd",
-			"exec_args",
 			"watch_folder",
 			"webhook_host",
 			"webhook_type",
@@ -264,8 +252,6 @@ func (r *ActionRepo) Store(ctx context.Context, action *domain.Action) error {
 			action.Name,
 			action.Type,
 			action.Enabled,
-			toNullString(action.ExecCmd),
-			toNullString(action.ExecArgs),
 			toNullString(action.WatchFolder),
 			toNullString(action.WebhookHost),
 			toNullString(action.WebhookType),
@@ -295,8 +281,6 @@ func (r *ActionRepo) Update(ctx context.Context, action domain.Action) (*domain.
 		Set("name", action.Name).
 		Set("type", action.Type).
 		Set("enabled", action.Enabled).
-		Set("exec_cmd", toNullString(action.ExecCmd)).
-		Set("exec_args", toNullString(action.ExecArgs)).
 		Set("watch_folder", toNullString(action.WatchFolder)).
 		Set("webhook_host", toNullString(action.WebhookHost)).
 		Set("webhook_type", toNullString(action.WebhookType)).
@@ -341,8 +325,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 				Set("name", action.Name).
 				Set("type", action.Type).
 				Set("enabled", action.Enabled).
-				Set("exec_cmd", toNullString(action.ExecCmd)).
-				Set("exec_args", toNullString(action.ExecArgs)).
 				Set("watch_folder", toNullString(action.WatchFolder)).
 				Set("webhook_host", toNullString(action.WebhookHost)).
 				Set("webhook_type", toNullString(action.WebhookType)).
@@ -369,8 +351,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					"name",
 					"type",
 					"enabled",
-					"exec_cmd",
-					"exec_args",
 					"watch_folder",
 					"webhook_host",
 					"webhook_type",
@@ -382,8 +362,6 @@ func (r *ActionRepo) StoreFilterActions(ctx context.Context, filterID int64, act
 					action.Name,
 					action.Type,
 					action.Enabled,
-					toNullString(action.ExecCmd),
-					toNullString(action.ExecArgs),
 					toNullString(action.WatchFolder),
 					toNullString(action.WebhookHost),
 					toNullString(action.WebhookType),

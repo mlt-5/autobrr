@@ -94,8 +94,6 @@ interface Action {
   name: string;
   type: ActionType;
   enabled: boolean;
-  exec_cmd?: string;
-  exec_args?: string;
   watch_folder?: string;
   webhook_host: string,
   webhook_type: string;
@@ -105,9 +103,9 @@ interface Action {
   filter_id?: number;
 }
 
-type ActionType = "TEST" | "EXEC" | "WATCH_FOLDER" | "WEBHOOK";
+type ActionType = "TEST" | "WATCH_FOLDER" | "WEBHOOK";
 
-type ExternalType = "EXEC" | "WEBHOOK";
+type ExternalType = "WEBHOOK";
 
 type WebhookMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -119,9 +117,6 @@ interface ExternalFilter {
   name: string;
   type: ExternalType;
   enabled: boolean;
-  exec_cmd?: string;
-  exec_args?: string;
-  exec_expect_status?: number;
   webhook_host?: string,
   webhook_type?: string;
   webhook_method?: WebhookMethod;

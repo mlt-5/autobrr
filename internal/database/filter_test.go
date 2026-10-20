@@ -92,11 +92,8 @@ func getMockFilterExternal() domain.FilterExternal {
 	return domain.FilterExternal{
 		Name:                     "ExternalFilter",
 		Index:                    1,
-		Type:                     domain.ExternalFilterTypeExec,
+		Type:                     domain.ExternalFilterTypeWebhook,
 		Enabled:                  true,
-		ExecCmd:                  "",
-		ExecArgs:                 "",
-		ExecExpectStatus:         0,
 		WebhookHost:              "",
 		WebhookMethod:            "",
 		WebhookData:              "",

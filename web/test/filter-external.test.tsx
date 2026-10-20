@@ -20,7 +20,7 @@ const external = (id: number, name: string, index: number): ExternalFilter => ({
   index,
   name,
   enabled: true,
-  type: "EXEC",
+  type: "WEBHOOK",
   on_error: "REJECT"
 });
 

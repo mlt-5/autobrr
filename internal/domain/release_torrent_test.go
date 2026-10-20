@@ -82,7 +82,6 @@ func TestAction_NeedsTorrentDownloaded(t *testing.T) {
 		want       bool
 	}{
 		{ActionTypeWatchFolder, true},
-		{ActionTypeExec, false},
 		{ActionTypeWebhook, false},
 		{ActionTypeTest, false},
 	}
@@ -105,14 +104,14 @@ func TestAction_CheckMacrosNeedTorrent(t *testing.T) {
 		wantFile  bool
 	}{
 		{
-			name:      "path macro in exec args needs both",
-			action:    Action{Type: ActionTypeExec, ExecArgs: "--file {{.TorrentPathName}}"},
+			name:      "path macro in webhook data needs both",
+			action:    Action{Type: ActionTypeWebhook, WebhookData: `{"file":"{{.TorrentPathName}}"}`},
 			wantBytes: true,
 			wantFile:  true,
 		},
 		{
 			name:      "raw bytes macro needs contents only",
-			action:    Action{Type: ActionTypeExec, ExecArgs: "--data {{.TorrentDataRawBytes}}"},
+			action:    Action{Type: ActionTypeWebhook, WebhookData: `{"data":"{{.TorrentDataRawBytes}}"}`},
 			wantBytes: true,
 			wantFile:  false,
 		},
@@ -124,13 +123,13 @@ func TestAction_CheckMacrosNeedTorrent(t *testing.T) {
 		},
 		{
 			name:      "path macro in watch folder is covered",
-			action:    Action{Type: ActionTypeExec, WatchFolder: "/watch/{{.TorrentPathName}}"},
+			action:    Action{Type: ActionTypeWebhook, WatchFolder: "/watch/{{.TorrentPathName}}"},
 			wantBytes: true,
 			wantFile:  true,
 		},
 		{
 			name:      "unrelated macros need nothing",
-			action:    Action{Type: ActionTypeExec, ExecArgs: "--name {{.TorrentName}}", WatchFolder: "/data/{{.Indexer}}"},
+			action:    Action{Type: ActionTypeWebhook, WebhookData: `{"name":"{{.TorrentName}}"}`, WatchFolder: "/data/{{.Indexer}}"},
 			wantBytes: false,
 			wantFile:  false,
 		},
@@ -146,7 +145,7 @@ func TestAction_CheckMacrosNeedTorrent(t *testing.T) {
 	}
 }
 
-// An exec script handed the path may consume or move the file, and cleanup
+// Whatever is handed the path may consume or move the file, and cleanup
 // should treat that as done rather than as an error.
 func TestRelease_CleanupTemporaryFilesAlreadyGone(t *testing.T) {
 	t.Parallel()
@@ -171,20 +170,13 @@ func TestFilterExternal_NeedTorrent(t *testing.T) {
 		wantTmpFil bool
 	}{
 		{
-			// this used to be checked on WebhookData only, so an exec filter
-			// asking for the contents never triggered a download
-			name:      "raw bytes in exec args",
-			external:  FilterExternal{ExecArgs: "--data {{.TorrentDataRawBytes}}"},
-			wantBytes: true,
-		},
-		{
 			name:      "raw bytes in webhook data",
 			external:  FilterExternal{WebhookData: `{"data":"{{.TorrentDataRawBytes}}"}`},
 			wantBytes: true,
 		},
 		{
 			name:       "path macro needs the file on disk",
-			external:   FilterExternal{ExecArgs: "--file {{.TorrentPathName}}"},
+			external:   FilterExternal{WebhookData: `{"file":"{{.TorrentPathName}}"}`},
 			wantBytes:  true,
 			wantTmpFil: true,
 		},
@@ -197,12 +189,12 @@ func TestFilterExternal_NeedTorrent(t *testing.T) {
 		},
 		{
 			name:      "hash needs the contents only",
-			external:  FilterExternal{ExecArgs: "--hash {{.TorrentHash}}"},
+			external:  FilterExternal{WebhookData: `{"hash":"{{.TorrentHash}}"}`},
 			wantBytes: true,
 		},
 		{
 			name:     "unrelated macros need nothing",
-			external: FilterExternal{ExecArgs: "--name {{.TorrentName}}", WebhookData: `{"indexer":"{{.Indexer}}"}`},
+			external: FilterExternal{WebhookData: `{"name":"{{.TorrentName}}","indexer":"{{.Indexer}}"}`},
 		},
 		{
 			name:     "empty",

@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "关闭",
       "status": {
-        "EXEC": "脚本以退出码 {{status}} 结束（预期 {{expected}}），耗时 {{duration}} 毫秒",
         "WEBHOOK": "Webhook 返回状态码 {{status}}（预期 {{expected}}），耗时 {{duration}} 毫秒"
       },
       "error": {
-        "EXEC": "脚本执行失败：{{error}}",
         "WEBHOOK": "Webhook 请求失败：{{error}}"
       }
     },
     "types": {
-      "EXEC": "执行命令",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "拒绝",
       "CONTINUE": "继续下一个"
-    },
-    "execute": {
-      "title": "执行",
-      "subtitle": "指定要作为预过滤器运行的可执行文件、参数和期望退出状态",
-      "path": "可执行文件路径",
-      "pathPlaceholder": "可执行文件绝对路径，例如 /bin/test",
-      "pathTooltip": "对于自定义命令，你应填写要运行的二进制/程序完整路径，也可以带上你自己的静态变量：",
-      "args": "执行参数",
-      "argsPlaceholder": "参数，例如 --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "期望退出状态"
     },
     "request": {
       "title": "请求",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "提示",
       "text": "测试动作本身不会执行任何下载，只用于展示过滤器是否命中。测试时请打开日志页面观察结果。"
-    },
-    "exec": {
-      "title": "Exec 参数",
-      "subtitle": "指定过滤器命中后要执行的程序及其参数。请使用绝对路径。",
-      "path": "可执行文件路径",
-      "pathPlaceholder": "程序路径，例如 /bin/test",
-      "arguments": "参数",
-      "argumentsPlaceholder": "参数，例如 --test"
     },
     "watchFolder": {
       "title": "监视目录参数",

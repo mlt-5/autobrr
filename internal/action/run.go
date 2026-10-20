@@ -39,9 +39,6 @@ func (s *Service) RunAction(ctx context.Context, action *domain.Action, release 
 	case domain.ActionTypeTest:
 		s.runTest(ctx)
 
-	case domain.ActionTypeExec:
-		err = s.runExecCmd(ctx, action, release)
-
 	case domain.ActionTypeWatchFolder:
 		err = s.runWatchFolder(ctx, action, release)
 

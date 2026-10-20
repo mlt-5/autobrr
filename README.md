@@ -50,8 +50,7 @@ let you be a part of what we call the initial swarm of a torrent. This is where 
 Many indexers announce new torrents on their IRC channels the second it is uploaded to the site. autobrr monitors such
 channels in real time and grabs the torrent file as soon as it's uploaded based on certain conditions (hereby referred
 to as filters) that you set up within autobrr. It then hands that torrent file on via an action set within the filter:
-autobrr can drop matches (torrent files that meet your filter's criteria) into a watch folder, run a custom script,
-or call a webhook.
+autobrr can drop matches (torrent files that meet your filter's criteria) into a watch folder or call a webhook.
 
 ## Key Features
 
@@ -71,7 +70,6 @@ or call a webhook.
 ### Available Actions
 
 - **Watch Folder:** Monitors specified folders for new files.
-- **Exec Custom Scripts:** Execute tailored scripts for advanced automation.
 - **Webhook:** Offers webhook support for diverse integration needs.
 
 ### RSS Support
@@ -190,13 +188,6 @@ docker compose up -d
 ```
 
 ### Distroless Docker Images
-
-> [!CAUTION]
-> This image comes without a shell, and external filtering and actions relying on `exec` will therefore not work with anything but compiled static binaries.
-> 
-> To clarify: **`BASH` and `SH` shell scripts WILL NOT WORK!**
->
-> Use the standard image if you rely on this functionality.
 
 For users who prioritize container security, one of the long-term maintainers offers alternative Docker images built on [Distroless](https://github.com/GoogleContainerTools/distroless). Specifically the `distroless/static-debian12:nonroot` base image.
 

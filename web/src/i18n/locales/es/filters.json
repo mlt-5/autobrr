@@ -429,31 +429,18 @@
     "testResult": {
       "dismiss": "Descartar",
       "status": {
-        "EXEC": "El script terminó con código {{status}} (esperado {{expected}}) en {{duration}} ms",
         "WEBHOOK": "El webhook respondió con estado {{status}} (esperado {{expected}}) en {{duration}} ms"
       },
       "error": {
-        "EXEC": "El script falló: {{error}}",
         "WEBHOOK": "La solicitud al webhook falló: {{error}}"
       }
     },
     "types": {
-      "EXEC": "Exec",
       "WEBHOOK": "Webhook"
     },
     "onErrorOptions": {
       "REJECT": "Rechazar",
       "CONTINUE": "Continuar al siguiente"
-    },
-    "execute": {
-      "title": "Ejecutar",
-      "subtitle": "Especifica el ejecutable, el argumento y el estado de salida esperado para ejecutar como pre-filtro",
-      "path": "Ruta al ejecutable",
-      "pathPlaceholder": "Ruta absoluta al ejecutable ej. /bin/test",
-      "pathTooltip": "Para comandos personalizados debes especificar la ruta completa al binario/programa que quieres ejecutar. Y puedes incluir tus propias variables estáticas:",
-      "args": "Argumentos de ejecución",
-      "argsPlaceholder": "Argumentos ej. --test \"{{ .TorrentName }}\"",
-      "expectedExitStatus": "Estado de salida esperado"
     },
     "request": {
       "title": "Solicitud",
@@ -487,14 +474,6 @@
     "test": {
       "alert": "¡Atención!",
       "text": "La acción de prueba no hace nada excepto mostrar si el filtro funciona. Asegúrate de tener la página de Registros abierta mientras pruebas."
-    },
-    "exec": {
-      "title": "Argumentos de ejecución",
-      "subtitle": "Especifica el ejecutable y sus argumentos a ejecutar cuando haya coincidencia de filtro. Usa una ruta absoluta.",
-      "path": "Ruta al ejecutable",
-      "pathPlaceholder": "Ruta al programa ej. /bin/test",
-      "arguments": "Argumentos",
-      "argumentsPlaceholder": "Argumentos ej. --test"
     },
     "watchFolder": {
       "title": "Argumentos de carpeta vigilada",

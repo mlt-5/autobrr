@@ -22,10 +22,6 @@
     "WEBHOOK": {
       "label": "Webhook",
       "description": "Webhook ausführen"
-    },
-    "EXEC": {
-      "label": "Exec",
-      "description": "Benutzerdefinierten Befehl nach Filtertreffer ausführen"
     }
   },
   "pushStatus": {

@@ -25,7 +25,6 @@ import { TitleSubtitle } from "@components/headings";
 
 import { FilterHalfRow, FilterLayout, FilterPage, FilterSection } from "@screens/filters/sections/_components.tsx";
 import {
-  Exec,
   Test,
   WatchFolder, WebHook
 } from "@screens/filters/sections/action_components";
@@ -42,8 +41,6 @@ export function Actions() {
     enabled: true,
     type: "TEST",
     watch_folder: "",
-    exec_cmd: "",
-    exec_args: "",
     filter_id: values.id,
     webhook_host: "",
     webhook_type: "",
@@ -103,8 +100,6 @@ const TypeForm = (props: ClientActionProps) => {
   switch (action.type) {
   case "TEST":
     return <Test />;
-  case "EXEC":
-    return <Exec {...props} />;
   case "WATCH_FOLDER":
     return <WatchFolder {...props} />;
   case "WEBHOOK":
