@@ -35,12 +35,10 @@
   "header": {
     "logoutSuccess": "Du har blitt logget ut. På gjensyn!",
     "openMainMenu": "Åpne hovedmeny",
-    "newUpdateAvailable": "Ny oppdatering tilgjengelig!",
     "listRefreshFailed": "Klarte ikke å oppdatere listen!",
     "multipleListRefreshesFailed": "Klarte ikke å oppdatere flere lister!",
     "ircNetworkUnhealthy": "IRC-nettverk er ikke friskt!",
-    "multipleIrcNetworksUnhealthy": "Flere IRC-nettverk er ikke friske!",
-    "dismiss": "Lukk"
+    "multipleIrcNetworksUnhealthy": "Flere IRC-nettverk er ikke friske!"
   },
   "inbox": {
     "title": "Varsler",

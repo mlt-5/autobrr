@@ -49,8 +49,7 @@ func Set(v, c, d string) {
 // GetVersion returns the build version, "dev" for local builds.
 func GetVersion() string {
 	if version != devVersion {
-		// Only semver gets the v prefix: CI builds pr-<n> and develop images, which
-		// pkg/version matches verbatim to skip update checks.
+		// Only semver gets the v prefix: CI builds pr-<n> and develop images verbatim.
 		if version[0] >= '0' && version[0] <= '9' {
 			return "v" + version
 		}
@@ -60,7 +59,7 @@ func GetVersion() string {
 
 	// `go install module@version` builds from the module cache without ldflags, so the
 	// module version is the only source. Builds from a checkout carry vcs.* settings and
-	// a pseudo-version, and stay "dev" since the logger and update checker key off it.
+	// a pseudo-version, and stay "dev" since the logger keys off it.
 	info, ok := debug.ReadBuildInfo()
 	if !ok || info.Main.Version == "" || info.Main.Version == "(devel)" {
 		return devVersion

@@ -16,7 +16,6 @@ type NotificationEvent =
   | "LIST_REFRESH_ERROR"
   | "FEED_REFRESH_SUCCESS"
   | "FEED_REFRESH_ERROR"
-  | "APP_UPDATE_AVAILABLE"
   | "RELEASE_NEW";
 
 interface ServiceNotification {

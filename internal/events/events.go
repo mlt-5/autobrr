@@ -8,8 +8,6 @@ import "github.com/autobrr/autobrr/internal/domain"
 type EventType string
 
 const (
-	ApplicationUpdate EventType = "application.update"
-
 	IndexerDeleted       EventType = "indexer.deleted"
 	IndexerToggleEnabled EventType = "indexer.toggle-enabled"
 
@@ -49,13 +47,6 @@ type Event struct {
 // GetType returns the event type. It is promoted to every event embedding Event.
 func (e Event) GetType() EventType {
 	return e.Type
-}
-
-type AppUpdateEvent struct {
-	Event
-	CurrentVersion string
-	NewVersion     string
-	URL            string
 }
 
 type ReleaseEvent struct {

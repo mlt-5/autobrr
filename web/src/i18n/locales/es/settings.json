@@ -42,14 +42,9 @@
     "configPath": "Ruta de configuración",
     "database": "Base de datos",
     "webuiDebugMode": "Modo de depuración de WebUI",
-    "checkForUpdates": "Buscar actualizaciones",
-    "checkForUpdatesDescription": "Recibir notificaciones de nuevas actualizaciones.",
     "theme": "Tema",
     "themeDescription": "Elige entre tema claro, oscuro o seguir el sistema.",
-    "languageDescription": "Elige el idioma usado en la WebUI.",
-    "updateEnabled": "Ahora recibirás notificaciones de nuevas actualizaciones.",
-    "updateDisabled": "Ya no recibirás notificaciones de nuevas actualizaciones.",
-    "updateAvailable": "¡{{name}} disponible!"
+    "languageDescription": "Elige el idioma usado en la WebUI."
   },
   "account": {
     "title": "Cuenta",

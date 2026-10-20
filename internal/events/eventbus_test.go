@@ -23,12 +23,12 @@ func TestEventBus_CallerPointsAtCallSite(t *testing.T) {
 
 	bus := NewEventBus(zerolog.New(&buf).Level(zerolog.TraceLevel))
 
-	unregister := bus.OnAppUpdate(func(ctx context.Context, event AppUpdateEvent) error {
+	unregister := bus.OnIRC(func(ctx context.Context, event IRCEvent) error {
 		return nil
 	})
 	defer unregister()
 
-	bus.EmitAppUpdate(t.Context(), AppUpdateEvent{Type: ApplicationUpdate, NewVersion: "v1.7.0"})
+	bus.EmitIRC(t.Context(), IRCEvent{Type: IRCDisconnected})
 
 	lines := strings.Split(strings.TrimSpace(buf.String()), "\n")
 	require.NotEmpty(t, lines)
@@ -54,13 +54,13 @@ func TestEventBus_EmitSurvivesCallerCancellation(t *testing.T) {
 	bus := NewEventBus(zerolog.Nop())
 
 	var received int
-	unregister := bus.OnAppUpdate(func(ctx context.Context, event AppUpdateEvent) error {
+	unregister := bus.OnIRC(func(ctx context.Context, event IRCEvent) error {
 		received++
 		return nil
 	})
 	defer unregister()
 
-	bus.EmitAppUpdate(ctx, AppUpdateEvent{Type: ApplicationUpdate, NewVersion: "v1.7.0"})
+	bus.EmitIRC(ctx, IRCEvent{Type: IRCDisconnected})
 
 	assert.Equal(t, 1, received)
 }

@@ -42,14 +42,9 @@
     "configPath": "Путь конфигурации",
     "database": "База данных",
     "webuiDebugMode": "Режим отладки WebUI",
-    "checkForUpdates": "Проверять обновления",
-    "checkForUpdatesDescription": "Получать уведомления о новых обновлениях.",
     "theme": "Тема",
     "themeDescription": "Выберите светлую, тёмную или системную тему.",
-    "languageDescription": "Выберите язык, используемый в WebUI.",
-    "updateEnabled": "Теперь вы будете получать уведомления о новых обновлениях.",
-    "updateDisabled": "Вы больше не будете получать уведомления о новых обновлениях.",
-    "updateAvailable": "Доступно {{name}}!"
+    "languageDescription": "Выберите язык, используемый в WebUI."
   },
   "account": {
     "title": "Аккаунт",

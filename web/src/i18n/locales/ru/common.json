@@ -35,12 +35,10 @@
   "header": {
     "logoutSuccess": "Вы вышли из системы. До свидания!",
     "openMainMenu": "Открыть главное меню",
-    "newUpdateAvailable": "Доступно новое обновление!",
     "listRefreshFailed": "Ошибка обновления списка!",
     "multipleListRefreshesFailed": "Ошибка обновления нескольких списков!",
     "ircNetworkUnhealthy": "Проблема с IRC-сетью!",
-    "multipleIrcNetworksUnhealthy": "Проблемы с несколькими IRC-сетями!",
-    "dismiss": "Скрыть"
+    "multipleIrcNetworksUnhealthy": "Проблемы с несколькими IRC-сетями!"
   },
   "inbox": {
     "title": "Уведомления",

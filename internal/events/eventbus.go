@@ -122,7 +122,6 @@ func (t *Topic[T]) Emit(ctx context.Context, event T) error {
 }
 
 type EventBus struct {
-	appUpdate   *Topic[AppUpdateEvent]
 	feed        *Topic[FeedRefreshEvent]
 	indexer     *Topic[IndexerChangeEvent]
 	irc         *Topic[IRCEvent]
@@ -136,7 +135,6 @@ func NewEventBus(log zerolog.Logger) *EventBus {
 	log = log.With().Str("module", "eventbus").Logger()
 
 	return &EventBus{
-		appUpdate:   NewTopic[AppUpdateEvent](log, "app_update"),
 		feed:        NewTopic[FeedRefreshEvent](log, "feed"),
 		indexer:     NewTopic[IndexerChangeEvent](log, "indexer"),
 		irc:         NewTopic[IRCEvent](log, "irc"),
@@ -145,14 +143,6 @@ func NewEventBus(log zerolog.Logger) *EventBus {
 		release:     NewTopic[ReleaseEvent](log, "release"),
 		releasePush: NewTopic[ReleasePushEvent](log, "release_push"),
 	}
-}
-
-func (eb *EventBus) EmitAppUpdate(ctx context.Context, event AppUpdateEvent) {
-	eb.appUpdate.Emit(ctx, event)
-}
-
-func (eb *EventBus) OnAppUpdate(handler func(context.Context, AppUpdateEvent) error) func() {
-	return eb.appUpdate.On(handler)
 }
 
 func (eb *EventBus) EmitFeedRefresh(ctx context.Context, event FeedRefreshEvent) {

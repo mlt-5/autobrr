@@ -685,6 +685,19 @@ func TestRunMigrationTest_SQLite(t *testing.T) {
 			},
 			want: "",
 		},
+		{
+			name:   "update checker removal strips the update event",
+			fields: fields{},
+			args: MigrationTestCase{
+				Name:                "update checker removal strips the update event",
+				MigrationIndex:      106,
+				MigrationsUntilName: "106_remove_list_sources",
+				MigrationToRun:      "107_remove_update_checker",
+				SetupData:           setupUpdateCheckerData,
+				ValidateResult:      validateUpdateCheckerRemoved,
+			},
+			want: "",
+		},
 	}
 
 	for _, tt := range tests {
@@ -734,7 +747,7 @@ func TestFullMigrationSequenceSQLite(t *testing.T) {
 	require.NoError(t, err)
 
 	// A fresh install only applies the base schema, so it must seed the built-in notification too.
-	validateBuiltinNotification(db.Handler, t)
+	validateBuiltinNotification(db.Handler, t, []string{"PUSH_ERROR", "IRC_DISCONNECTED"})
 
 	//// Verify current schema version
 	//var version int

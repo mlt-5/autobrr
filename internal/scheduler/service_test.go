@@ -8,8 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/autobrr/autobrr/internal/domain"
-
 	"github.com/robfig/cron/v3"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
@@ -19,7 +17,7 @@ import (
 // Stop must hold shutdown until a running job finishes, since the database is
 // closed right after it.
 func TestService_StopWaitsForRunningJob(t *testing.T) {
-	s := NewService(zerolog.Nop(), nil, &domain.Config{}, nil)
+	s := NewService(zerolog.Nop())
 
 	running := make(chan struct{})
 	release := make(chan struct{})
@@ -60,7 +58,7 @@ func TestService_StopWaitsForRunningJob(t *testing.T) {
 }
 
 func TestService_StopGivesUpWhenContextEnds(t *testing.T) {
-	s := NewService(zerolog.Nop(), nil, &domain.Config{}, nil)
+	s := NewService(zerolog.Nop())
 
 	running := make(chan struct{})
 	release := make(chan struct{})

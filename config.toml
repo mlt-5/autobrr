@@ -59,12 +59,6 @@ logLevel = "TRACE"
 #
 #logMaxBackups = 5
 
-# Check for updates
-#
-# Default: true
-#
-checkForUpdates = true
-
 # Database configuration
 #
 #databaseType = "postgres"

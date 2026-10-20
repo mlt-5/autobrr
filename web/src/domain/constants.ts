@@ -480,11 +480,6 @@ export const EventOptions: SelectOption[] = [
     description: "Reconnected to irc network after error"
   },
   {
-    label: "New update",
-    value: "APP_UPDATE_AVAILABLE",
-    description: "Get notified on updates"
-  },
-  {
     label: "New Release",
     value: "RELEASE_NEW",
     description: "On new release from indexer (before filtering)"
@@ -546,11 +541,6 @@ export const getEventOptions = (t: TFunction): SelectOption[] => [
     label: t("options:event.FEED_REFRESH_ERROR.label"),
     value: "FEED_REFRESH_ERROR",
     description: t("options:event.FEED_REFRESH_ERROR.description")
-  },
-  {
-    label: t("options:event.APP_UPDATE_AVAILABLE.label"),
-    value: "APP_UPDATE_AVAILABLE",
-    description: t("options:event.APP_UPDATE_AVAILABLE.description")
   },
   {
     label: t("options:event.RELEASE_NEW.label"),

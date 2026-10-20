@@ -83,10 +83,6 @@
       "label": "Feed Refresh Error",
       "description": "Feed refresh failed"
     },
-    "APP_UPDATE_AVAILABLE": {
-      "label": "New update",
-      "description": "Get notified on updates"
-    },
     "RELEASE_NEW": {
       "label": "New Release",
       "description": "On new release from indexer (before filtering)"

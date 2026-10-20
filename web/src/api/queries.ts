@@ -74,15 +74,6 @@ export const ConfigQueryOptions = (enabled: boolean = true) =>
     enabled: enabled,
   });
 
-export const UpdatesQueryOptions = (enabled: boolean) =>
-  queryOptions({
-    queryKey: SettingsKeys.updates(),
-    queryFn: () => APIClient.updates.getLatestRelease(),
-    retry: false,
-    refetchOnWindowFocus: false,
-    enabled: enabled,
-  });
-
 // ALERTS_CHANGED on the notifications stream drives updates; the poll catches what has no event,
 // like a disabled IRC network or a deleted list.
 export const AlertsQueryOptions = () =>

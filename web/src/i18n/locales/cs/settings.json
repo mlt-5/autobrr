@@ -42,14 +42,9 @@
       "configPath": "Lokalita konfiguračního souboru",
       "database": "Databáze",
       "webuiDebugMode": "WebUI Debugovací režim",
-      "checkForUpdates": "Zkontrolovat aktualizace",
-      "checkForUpdatesDescription": "Získávat notifikace o nových aktualizacích.",
       "theme": "Režim",
       "themeDescription": "Vyberte mezi světlým, tmavým nebo systémovým režimem.",
-      "languageDescription": "Vyberte jazyk používaný ve WebUI.",
-      "updateEnabled": "Budete obeznámeni o nových aktualizacích.",
-      "updateDisabled": "Už nebudete obeznámeni o nových aktualizacích.",
-      "updateAvailable": "{{name}} je dostupná!"
+      "languageDescription": "Vyberte jazyk používaný ve WebUI."
     },
     "account": {
       "title": "Účet",

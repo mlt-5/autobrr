@@ -42,14 +42,9 @@
     "configPath": "Config path",
     "database": "Database",
     "webuiDebugMode": "WebUI Debug mode",
-    "checkForUpdates": "Check for updates",
-    "checkForUpdatesDescription": "Get notified of new updates.",
     "theme": "Theme",
     "themeDescription": "Choose between light, dark, or follow system theme.",
-    "languageDescription": "Choose the language used in the WebUI.",
-    "updateEnabled": "You will now be notified of new updates.",
-    "updateDisabled": "You will no longer be notified of new updates.",
-    "updateAvailable": "{{name}} available!"
+    "languageDescription": "Choose the language used in the WebUI."
   },
   "account": {
     "title": "Account",

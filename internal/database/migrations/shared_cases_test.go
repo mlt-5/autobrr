@@ -174,7 +174,7 @@ func setupBuiltinNotificationExisting(db *sql.DB) error {
 	return err
 }
 
-func validateBuiltinNotification(db *sql.DB, t *testing.T) {
+func validateBuiltinNotification(db *sql.DB, t *testing.T, wantEvents []string) {
 	var count int
 	err := db.QueryRow(`SELECT COUNT(*) FROM notification WHERE type = 'BUILTIN'`).Scan(&count)
 	require.NoError(t, err)
@@ -187,7 +187,7 @@ func validateBuiltinNotification(db *sql.DB, t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "Built-in", name)
 	assert.True(t, enabled)
-	assert.Equal(t, []string{"PUSH_ERROR", "IRC_DISCONNECTED", "APP_UPDATE_AVAILABLE"}, events)
+	assert.Equal(t, wantEvents, events)
 
 	_, err = db.Exec(`INSERT INTO notification (name, type, enabled) VALUES ('Second', 'BUILTIN', TRUE)`)
 	assert.Error(t, err, "the unique index must reject a second built-in notification")
@@ -197,7 +197,7 @@ func validateBuiltinNotification(db *sql.DB, t *testing.T) {
 }
 
 func validateBuiltinNotificationKeepsExisting(db *sql.DB, t *testing.T) {
-	validateBuiltinNotification(db, t)
+	validateBuiltinNotification(db, t, []string{"PUSH_ERROR", "IRC_DISCONNECTED", "APP_UPDATE_AVAILABLE"})
 
 	var webhook string
 	err := db.QueryRow(`SELECT webhook FROM notification WHERE name = 'Hook'`).Scan(&webhook)
@@ -222,4 +222,51 @@ func validateBuiltinNotificationNotDuplicated(db *sql.DB, t *testing.T) {
 	err = db.QueryRow(`SELECT name FROM notification WHERE type = 'BUILTIN'`).Scan(&name)
 	require.NoError(t, err)
 	assert.Equal(t, "Existing", name, "the seed must not replace a built-in row that already exists")
+}
+
+func setupUpdateCheckerData(db *sql.DB) error {
+	_, err := db.Exec(`INSERT INTO notification (name, type, enabled, events, webhook) VALUES
+		('Only update', 'WEBHOOK', TRUE, '{APP_UPDATE_AVAILABLE}', 'https://hook.example/1'),
+		('Quoted', 'WEBHOOK', TRUE, '{"PUSH_ERROR","APP_UPDATE_AVAILABLE","IRC_HEALTHY"}', 'https://hook.example/2'),
+		('Untouched', 'WEBHOOK', TRUE, '{PUSH_APPROVED}', 'https://hook.example/3')`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`INSERT INTO notification_inbox (event, title, message) VALUES
+		('APP_UPDATE_AVAILABLE', 'New update available!', 'v1.90.0'),
+		('PUSH_ERROR', 'Push error', 'failed')`)
+
+	return err
+}
+
+func validateUpdateCheckerRemoved(db *sql.DB, t *testing.T) {
+	want := map[string][]string{
+		"Built-in":    {"PUSH_ERROR", "IRC_DISCONNECTED"},
+		"Only update": {},
+		"Quoted":      {"PUSH_ERROR", "IRC_HEALTHY"},
+		"Untouched":   {"PUSH_APPROVED"},
+	}
+	for name, wantEvents := range want {
+		var events []string
+		err := db.QueryRow(`SELECT events FROM notification WHERE name = $1`, name).Scan(pq.Array(&events))
+		require.NoError(t, err, name)
+		if len(wantEvents) == 0 {
+			assert.Empty(t, events, name)
+			continue
+		}
+		assert.Equal(t, wantEvents, events, name)
+	}
+
+	var inbox []string
+	rows, err := db.Query(`SELECT event FROM notification_inbox ORDER BY id`)
+	require.NoError(t, err)
+	defer rows.Close()
+	for rows.Next() {
+		var event string
+		require.NoError(t, rows.Scan(&event))
+		inbox = append(inbox, event)
+	}
+	require.NoError(t, rows.Err())
+	assert.Equal(t, []string{"PUSH_ERROR"}, inbox)
 }

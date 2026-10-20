@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-type AlertKind = "APP_UPDATE" | "IRC_UNHEALTHY" | "LIST_REFRESH_ERROR";
+type AlertKind = "IRC_UNHEALTHY" | "LIST_REFRESH_ERROR";
 
 type AlertSeverity = "INFO" | "ERROR";
 

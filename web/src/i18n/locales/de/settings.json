@@ -42,14 +42,9 @@
     "configPath": "Konfigurationspfad",
     "database": "Datenbank",
     "webuiDebugMode": "WebUI-Debugmodus",
-    "checkForUpdates": "Nach Updates suchen",
-    "checkForUpdatesDescription": "Über neue Updates benachrichtigt werden.",
     "theme": "Design",
     "themeDescription": "Zwischen hellem, dunklem oder Systemdesign wählen.",
-    "languageDescription": "Die im WebUI verwendete Sprache wählen.",
-    "updateEnabled": "Du wirst jetzt über neue Updates benachrichtigt.",
-    "updateDisabled": "Du wirst nicht mehr über neue Updates benachrichtigt.",
-    "updateAvailable": "{{name}} verfügbar!"
+    "languageDescription": "Die im WebUI verwendete Sprache wählen."
   },
   "account": {
     "title": "Konto",

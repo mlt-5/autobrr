@@ -28,7 +28,6 @@ require (
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-chi/render v1.0.3
 	github.com/gosimple/slug v1.15.0
-	github.com/hashicorp/go-version v1.9.0
 	github.com/lib/pq v1.12.3
 	github.com/maniartech/signals v1.3.1
 	github.com/mmcdole/gofeed v1.5.0

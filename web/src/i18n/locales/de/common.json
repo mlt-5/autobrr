@@ -35,12 +35,10 @@
   "header": {
     "logoutSuccess": "Du wurdest abgemeldet. Auf Wiedersehen!",
     "openMainMenu": "Hauptmenü öffnen",
-    "newUpdateAvailable": "Neues Update verfügbar!",
     "listRefreshFailed": "Listenaktualisierung fehlgeschlagen!",
     "multipleListRefreshesFailed": "Mehrere Listenaktualisierungen fehlgeschlagen!",
     "ircNetworkUnhealthy": "IRC-Netzwerk fehlerhaft!",
-    "multipleIrcNetworksUnhealthy": "Mehrere IRC-Netzwerke fehlerhaft!",
-    "dismiss": "Ausblenden"
+    "multipleIrcNetworksUnhealthy": "Mehrere IRC-Netzwerke fehlerhaft!"
   },
   "inbox": {
     "title": "Benachrichtigungen",

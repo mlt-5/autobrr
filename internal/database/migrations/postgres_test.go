@@ -115,7 +115,7 @@ func TestFullMigrationSequencePostgres(t *testing.T) {
 	require.NoError(t, err)
 
 	// A fresh install only applies the base schema, so it must seed the built-in notification too.
-	validateBuiltinNotification(db.Handler, t)
+	validateBuiltinNotification(db.Handler, t, []string{"PUSH_ERROR", "IRC_DISCONNECTED"})
 
 	//// Verify current schema version
 	//var version int
@@ -550,6 +550,14 @@ func TestRunMigrationTest_Postgres(t *testing.T) {
 			MigrationToRun:      "89_add_notification_inbox",
 			SetupData:           setupBuiltinNotificationPresent,
 			ValidateResult:      validateBuiltinNotificationNotDuplicated,
+		},
+		{
+			Name:                "update checker removal strips the update event",
+			MigrationIndex:      96,
+			MigrationsUntilName: "96_remove_list_sources",
+			MigrationToRun:      "97_remove_update_checker",
+			SetupData:           setupUpdateCheckerData,
+			ValidateResult:      validateUpdateCheckerRemoved,
 		},
 	}
 

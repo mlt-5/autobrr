@@ -10,7 +10,6 @@ import (
 // BuildTitle constructs the title of the notification message.
 func BuildTitle(event domain.NotificationEvent) string {
 	titles := map[domain.NotificationEvent]string{
-		domain.NotificationEventAppUpdateAvailable: "Autobrr update available",
 		domain.NotificationEventPushApproved:       "Push Approved",
 		domain.NotificationEventPushRejected:       "Push Rejected",
 		domain.NotificationEventPushError:          "Push Error",

@@ -4,7 +4,6 @@
  */
 
 import { baseUrl, sseBaseUrl } from "@utils";
-import { GithubRelease } from "@app/types/Update";
 import { AuthContext, AuthInfo } from "@utils/Context";
 import { ColumnFilter } from "@tanstack/react-table";
 import { IrcEvent } from "@hooks/useIrcEvents";
@@ -569,9 +568,5 @@ export const APIClient = {
         }),
       }
     }
-  },
-  updates: {
-    check: () => appClient.Get("api/updates/check"),
-    getLatestRelease: () => appClient.Get<GithubRelease>("api/updates/latest")
   }
 };

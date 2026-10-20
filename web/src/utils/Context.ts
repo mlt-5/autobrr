@@ -19,7 +19,6 @@ interface SettingsType {
   hideWrappedText: boolean;
   incognitoMode: boolean;
   browserNotifications: boolean;
-  dismissedUpdate: string;
 }
 
 export const isDarkTheme = (theme: Theme): boolean => {
@@ -72,8 +71,7 @@ const SettingsContextDefaults: SettingsType = {
   indentLogLines: false,
   hideWrappedText: false,
   incognitoMode: false,
-  browserNotifications: false,
-  dismissedUpdate: ""
+  browserNotifications: false
 };
 
 const FilterListContextDefaults: FilterListState = {

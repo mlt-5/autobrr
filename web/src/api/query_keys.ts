@@ -18,7 +18,6 @@ export const AuthKeys = {
 
 export const SettingsKeys = {
   all: ["settings"] as const,
-  updates: () => [...SettingsKeys.all, "updates"] as const,
   config: () => [...SettingsKeys.all, "config"] as const,
   lists: () => [...SettingsKeys.all, "list"] as const,
 };

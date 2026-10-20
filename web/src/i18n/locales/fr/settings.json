@@ -42,14 +42,9 @@
     "configPath": "Chemin de configuration",
     "database": "Base de données",
     "webuiDebugMode": "Mode débogage WebUI",
-    "checkForUpdates": "Vérifier les mises à jour",
-    "checkForUpdatesDescription": "Être notifié des nouvelles mises à jour.",
     "theme": "Thème",
     "themeDescription": "Choisir entre le thème clair, sombre ou celui du système.",
-    "languageDescription": "Choisir la langue utilisée dans le WebUI.",
-    "updateEnabled": "Tu seras maintenant notifié des nouvelles mises à jour.",
-    "updateDisabled": "Tu ne seras plus notifié des nouvelles mises à jour.",
-    "updateAvailable": "{{name}} disponible !"
+    "languageDescription": "Choisir la langue utilisée dans le WebUI."
   },
   "account": {
     "title": "Compte",

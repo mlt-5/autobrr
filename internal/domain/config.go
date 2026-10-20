@@ -15,7 +15,6 @@ type Config struct {
 	BaseURL                 string `toml:"baseUrl"`
 	BaseURLModeLegacy       bool   `toml:"baseUrlModeLegacy"`
 	CustomDefinitions       string `toml:"customDefinitions"`
-	CheckForUpdates         bool   `toml:"checkForUpdates"`
 	DatabaseType            string `toml:"databaseType"`
 	DatabaseDSN             string `toml:"databaseDSN"`
 	DatabaseMaxBackups      int    `toml:"databaseMaxBackups"`
@@ -45,10 +44,9 @@ type Config struct {
 }
 
 type ConfigUpdate struct {
-	Host            *string `json:"host,omitempty"`
-	Port            *int    `json:"port,omitempty"`
-	LogLevel        *string `json:"log_level,omitempty"`
-	LogPath         *string `json:"log_path,omitempty"`
-	BaseURL         *string `json:"base_url,omitempty"`
-	CheckForUpdates *bool   `json:"check_for_updates,omitempty"`
+	Host     *string `json:"host,omitempty"`
+	Port     *int    `json:"port,omitempty"`
+	LogLevel *string `json:"log_level,omitempty"`
+	LogPath  *string `json:"log_path,omitempty"`
+	BaseURL  *string `json:"base_url,omitempty"`
 }

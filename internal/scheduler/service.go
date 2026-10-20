@@ -8,36 +8,23 @@ import (
 	"sync"
 	"time"
 
-	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/pkg/errors"
-	"github.com/autobrr/autobrr/pkg/version"
 
 	"github.com/robfig/cron/v3"
 	"github.com/rs/zerolog"
 )
 
-type updateChecker interface {
-	CheckUpdateAvailable(ctx context.Context) (*version.Release, error)
-}
-
 type Service struct {
-	log       zerolog.Logger
-	eventBus  eventBus
-	config    *domain.Config
-	version   string
-	updateSvc updateChecker
+	log zerolog.Logger
 
 	cron *cron.Cron
 	jobs map[string]cron.EntryID
 	m    sync.RWMutex
 }
 
-func NewService(log zerolog.Logger, bus eventBus, config *domain.Config, updateSvc updateChecker) *Service {
+func NewService(log zerolog.Logger) *Service {
 	return &Service{
-		log:       log.With().Str("module", "scheduler").Logger(),
-		eventBus:  bus,
-		config:    config,
-		updateSvc: updateSvc,
+		log: log.With().Str("module", "scheduler").Logger(),
 		cron: cron.New(cron.WithChain(
 			cron.Recover(cron.DefaultLogger),
 		)),
@@ -62,14 +49,6 @@ func (s *Service) addAppJobs(ctx context.Context) {
 	case <-ctx.Done():
 		return
 	case <-time.After(5 * time.Second):
-	}
-
-	if s.config.CheckForUpdates {
-		updateCheckerJob := NewUpdateCheckerJob(s.log, s.eventBus, "app-check-updates", s.version, s.updateSvc)
-
-		if id, err := s.ScheduleJob(updateCheckerJob, 2*time.Hour, "app-check-updates"); err != nil {
-			s.log.Error().Err(err).Int("job_id", id).Msg("error adding job")
-		}
 	}
 
 	tempDirCleanup := NewTempDirCleanupJob(s.log.With().Str("job", "temp-dir-cleanup").Logger())
