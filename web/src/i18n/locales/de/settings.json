@@ -33,7 +33,6 @@
     "description": "Anwendungseinstellungen. Nimm Änderungen in config.toml vor und starte die Anwendung neu, damit sie wirksam werden.",
     "host": "Host",
     "port": "Port",
-    "baseUrl": "Basis-URL",
     "version": "Version",
     "commit": "Commit",
     "buildDate": "Builddatum",

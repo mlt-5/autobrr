@@ -6,7 +6,6 @@ package http
 import (
 	"bufio"
 	"bytes"
-	"html/template"
 	"io"
 	"io/fs"
 	"net/http"
@@ -19,22 +18,14 @@ import (
 )
 
 type webHandler struct {
-	log          zerolog.Logger
-	embedFS      fs.FS
-	baseUrl      string
-	assetBaseURL string
-	version      string
-	files        map[string]string
+	log     zerolog.Logger
+	embedFS fs.FS
 }
 
-func newWebHandler(log zerolog.Logger, embedFS fs.FS, version, baseURL, assetBaseURL string) *webHandler {
+func newWebHandler(log zerolog.Logger, embedFS fs.FS) *webHandler {
 	return &webHandler{
-		log:          log.With().Str("module", "web-assets").Logger(),
-		embedFS:      embedFS,
-		baseUrl:      baseURL,
-		assetBaseURL: assetBaseURL,
-		version:      version,
-		files:        make(map[string]string),
+		log:     log.With().Str("module", "web-assets").Logger(),
+		embedFS: embedFS,
 	}
 }
 
@@ -46,21 +37,17 @@ func (h *webHandler) registerAssets(r *chi.Mux) {
 		}
 
 		if d.IsDir() {
-			//h.log.Trace().Str("dir", d.Name()).Msg("web assets skip dir")
 			return nil
 		}
 
 		h.log.Trace().Str("path", path).Msg("web asset found")
 
-		// ignore index.html, so we can render it as a template and inject variables
-		if path == "index.html" || path == "manifest.webmanifest" || path == ".gitkeep" {
+		if path == "index.html" || path == ".gitkeep" {
 			return nil
 		}
 
 		// use old path.Join to not be os specific
 		FileFS(r, filePath.Join("/", path), path, h.embedFS)
-
-		h.files[path] = path
 
 		return nil
 	})
@@ -73,126 +60,32 @@ func (h *webHandler) registerAssets(r *chi.Mux) {
 func (h *webHandler) RegisterRoutes(r *chi.Mux) {
 	h.registerAssets(r)
 
-	// Serve static files without a prefix
 	assets, err := fs.Sub(h.embedFS, "assets")
 	if err != nil {
 		h.log.Error().Err(err).Msg("could not load assets sub dir")
 	}
 
-	StaticFSNew(r, h.baseUrl, "/assets", assets)
+	StaticFS(r, "/assets", assets)
 
-	p := IndexParams{
-		Title:        "Dashboard",
-		Version:      h.version,
-		BaseUrl:      h.baseUrl,
-		AssetBaseUrl: h.assetBaseURL,
-	}
-
-	// serve on base route
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		if err := h.RenderIndex(w, p); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		fsFile(w, r, "index.html", h.embedFS)
 	})
 
-	// handle manifest
-	r.Get("/manifest.webmanifest", func(w http.ResponseWriter, r *http.Request) {
-		if err := h.RenderManifest(w, p); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
-
-	// handle all other routes
 	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
-		file := strings.TrimPrefix(r.RequestURI, h.baseUrl)
+		file := r.URL.Path
 
-		if strings.Contains(file, "favicon.ico") {
-			fsFile(w, r, "favicon.ico", h.embedFS)
+		if validWebRoute(file) {
+			fsFile(w, r, "index.html", h.embedFS)
 			return
 		}
 
-		if strings.Contains(file, "Inter-Variable.woff2") {
-			fsFile(w, r, "Inter-Variable.woff2", h.embedFS)
-			return
-		}
-
-		// if valid web route then serve html
-		if validWebRoute(file) || file == "index.html" {
-			if err := h.RenderIndex(w, p); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			return
-		}
-
-		// if not valid web route then try and serve files
-		fsFile(w, r, file, h.embedFS)
+		fsFile(w, r, strings.TrimPrefix(file, "/"), h.embedFS)
 	})
-}
-
-func (h *webHandler) RenderIndex(w io.Writer, p IndexParams) error {
-	return h.parseIndex().Execute(w, p)
-}
-
-func (h *webHandler) parseIndex() *template.Template {
-	return template.Must(template.New("index.html").ParseFS(h.embedFS, "index.html"))
-}
-
-func (h *webHandler) RenderManifest(w io.Writer, p IndexParams) error {
-	return h.parseManifest().Execute(w, p)
-}
-
-func (h *webHandler) parseManifest() *template.Template {
-	return template.Must(template.New("manifest.webmanifest").ParseFS(h.embedFS, "manifest.webmanifest"))
-}
-
-func (h *webHandler) RenderFallbackIndex(w io.Writer) error {
-	p := IndexParams{
-		Title:        "autobrr Dashboard",
-		Version:      h.version,
-		BaseUrl:      h.baseUrl,
-		AssetBaseUrl: h.assetBaseURL,
-	}
-	return h.parseFallbackIndex().Execute(w, p)
-}
-
-func (h *webHandler) parseFallbackIndex() *template.Template {
-	return template.Must(template.New("fallback-index").Parse(`<!DOCTYPE html>
-<html>
-  <head>
-    <title>autobrr</title>
-    <style>
-      @media (prefers-color-scheme: dark) {
-		body {
-		  color:#fff;
-		  background:#333333
-        }
-
-       a {
-         color: #3d70ea
-       }
-      }
-    </style>
-  </head>
-  <body>
-    <span>Must use base url: <a href="{{.BaseUrl}}">{{.BaseUrl}}</a></span>
-  </body>
-</html>
-`))
 }
 
 type defaultFS struct {
 	prefix string
 	fs     fs.FS
-}
-
-type IndexParams struct {
-	Title        string
-	Version      string
-	BaseUrl      string
-	AssetBaseUrl string
 }
 
 func (fs defaultFS) Open(name string) (fs.File, error) {
@@ -214,14 +107,9 @@ func StaticFileHandler(file string, filesystem fs.FS) http.HandlerFunc {
 	}
 }
 
-//// StaticFS registers a new route with path prefix to serve static files from the provided file system.
-//func StaticFS(r *chi.Mux, pathPrefix string, filesystem fs.FS) {
-//	r.Handle(pathPrefix+"*", http.StripPrefix(pathPrefix, http.FileServer(http.FS(filesystem))))
-//}
-
-// StaticFSNew registers a new route with path prefix to serve static files from the provided file system.
-func StaticFSNew(r *chi.Mux, baseUrl, pathPrefix string, filesystem fs.FS) {
-	r.Handle(pathPrefix+"*", http.StripPrefix(filePath.Join(baseUrl, pathPrefix), http.FileServer(http.FS(filesystem))))
+// StaticFS registers a new route with path prefix to serve static files from the provided file system.
+func StaticFS(r *chi.Mux, pathPrefix string, filesystem fs.FS) {
+	r.Handle(pathPrefix+"*", http.StripPrefix(pathPrefix, http.FileServer(http.FS(filesystem))))
 }
 
 // fsFile is a helper function to serve a file from the provided file system.

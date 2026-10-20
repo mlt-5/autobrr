@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/autobrr/autobrr/internal/config"
@@ -19,7 +18,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/r3labs/sse/v2"
-	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/hlog"
 )
@@ -33,7 +31,6 @@ type Server struct {
 
 	buildInfo      buildInfo
 	config         *config.AppConfig
-	allowedOrigins []string
 	sessionManager *scs.SessionManager
 
 	actionService       actionService
@@ -81,21 +78,14 @@ func NewServer(deps Deps) *Server {
 	sessionManager.Cookie.Persist = false
 	sessionManager.Cookie.HttpOnly = true
 	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
-	sessionManager.Cookie.Path = deps.Config.Config.BaseURL
+	sessionManager.Cookie.Path = "/"
 	sessionManager.Cookie.Secure = false
 
 	srv := &Server{
 		log:    deps.Log.With().Str("module", "http").Logger(),
 		config: deps.Config,
-		allowedOrigins: []string{
-			"*",
-			//"http://localhost:3000",
-			//"http://localhost:7474",
-			//"http://127.0.0.1:3000",
-			//"http://127.0.0.1:7474",
-		},
-		sse: deps.SSE,
-		db:  deps.DB,
+		sse:    deps.SSE,
+		db:     deps.DB,
 		buildInfo: buildInfo{
 			version: deps.Version,
 			commit:  deps.Commit,
@@ -115,10 +105,6 @@ func NewServer(deps Deps) *Server {
 		notificationService: deps.NotificationService,
 		proxyService:        deps.ProxyService,
 		releaseService:      deps.ReleaseService,
-	}
-
-	if deps.Config.Config.CorsAllowedOrigins != "*" {
-		srv.allowedOrigins = strings.Split(deps.Config.Config.CorsAllowedOrigins, ",")
 	}
 
 	return srv
@@ -193,17 +179,6 @@ func (s *Server) Handler() http.Handler {
 	r.Use(middleware.Recoverer)
 	r.Use(LoggerMiddleware(&s.log))
 
-	c := cors.New(cors.Options{
-		AllowCredentials:   true,
-		AllowedMethods:     []string{http.MethodHead, http.MethodOptions, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete},
-		AllowedHeaders:     []string{"Authorization"},
-		AllowedOrigins:     s.allowedOrigins,
-		OptionsPassthrough: true,
-		// Enable Debugging for testing, consider disabling in production
-		Debug: false,
-	})
-
-	r.Use(c.Handler)
 	r.Use(s.sessionMiddleware)
 
 	encoder := newEncoder(s.log)
@@ -231,8 +206,6 @@ func (s *Server) Handler() http.Handler {
 			r.Route("/webhook", newWebhookHandler(encoder, s.listService).Routes)
 
 			r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
-
-				// inject CORS headers to bypass checks
 				s.sse.Headers = map[string]string{
 					"Content-Type":      "text/event-stream",
 					"Cache-Control":     "no-cache",
@@ -245,46 +218,11 @@ func (s *Server) Handler() http.Handler {
 		})
 	})
 
-	routeBaseURL := "/"
-
 	webRouter := chi.NewRouter()
+	newWebHandler(s.log, web.DistDirFS).RegisterRoutes(webRouter)
 
-	// handle backwards compatibility for base url routing
-	if s.config.Config.BaseURLModeLegacy {
-		// this is required to keep assets "url rewritable" via a reverse-proxy
-		routeAssetBaseURL := "./"
-		// serve the web
-		webHandlers := newWebLegacyHandler(s.log, web.DistDirFS, s.buildInfo.version, s.config.Config.BaseURL, routeAssetBaseURL)
-		webHandlers.RegisterRoutes(webRouter)
-	} else {
-		routeBaseURL = s.config.Config.BaseURL
-
-		// serve the web
-		webHandlers := newWebHandler(s.log, web.DistDirFS, s.buildInfo.version, routeBaseURL, routeBaseURL)
-		webHandlers.RegisterRoutes(webRouter)
-
-		// add fallback routes when base url is set to inform user to redirect and use /baseurl/
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusNotFound)
-			if err := webHandlers.RenderFallbackIndex(w); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		})
-
-		r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(http.StatusNotFound)
-			if err := webHandlers.RenderFallbackIndex(w); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		})
-	}
-
-	// Mount the web router under baseUrl + '/'
-	r.Mount(routeBaseURL, webRouter)
-	// Mount the API router under baseUrl + '/api'
-	r.Mount(routeBaseURL+"api", apiRouter)
+	r.Mount("/", webRouter)
+	r.Mount("/api", apiRouter)
 
 	return r
 }

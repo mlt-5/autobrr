@@ -3,8 +3,6 @@ import { defineConfig, loadEnv, ConfigEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
-import path from "node:path";
-import fs from "node:fs";
 import tailwindcss from '@tailwindcss/vite'
 
 interface PreRenderedAsset {
@@ -26,12 +24,11 @@ export default ({ mode }: ConfigEnv) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
   return defineConfig({
-    // __BASE_URL__: "{{.BaseUrl}}",
-    base: "",
+    base: "/",
     plugins: [react(), svgr(), tailwindcss(), VitePWA({
       injectRegister: null,
       selfDestroying: true,
-      scope: "{{.BaseUrl}}",
+      scope: "/",
       // strategies: "injectManifest",
       useCredentials: true,
       includeAssets: [
@@ -72,8 +69,8 @@ export default ({ mode }: ConfigEnv) => {
             type: "image/png"
           }
         ],
-        start_url: "{{.BaseUrl}}",
-        scope: "{{.BaseUrl}}",
+        start_url: "/",
+        scope: "/",
         display: "standalone"
       },
       workbox: {
@@ -83,34 +80,6 @@ export default ({ mode }: ConfigEnv) => {
         navigateFallbackDenylist: [/^\/api/]
       }
     }),
-    {
-      name: "html-transformer-plugin",
-      enforce: "post",
-      apply: "build",
-      async closeBundle() {
-        const outputDir = 'dist'; // Adjust this if your `build.outDir` is different
-        const htmlPath = path.resolve(outputDir, 'index.html');
-
-        // Check if the file exists
-        if (!fs.existsSync(htmlPath)) {
-          console.error(`Could not find ${htmlPath}. Make sure the output directory matches.`);
-          return;
-        }
-
-        // Read the `index.html` content
-        let html = fs.readFileSync(htmlPath, 'utf-8');
-
-        // Perform your transformations here
-        // the experimental renderBuiltUrl works except for the style font url where it escapes the curly braces
-        // we look for those and replace with the non escaped curly braces to be able to correctly replace baseurl.
-        html = html.replace('%7B%7B.AssetBaseUrl%7D%7D/', '{{.AssetBaseUrl}}'); // Example: Replace `{{.BaseUrl}}`
-
-        // Write the updated `index.html` back
-        fs.writeFileSync(htmlPath, html);
-
-        console.log('Transformed index.html successfully.');
-      },
-    },
     ],
     resolve: {
       alias: [
@@ -157,16 +126,6 @@ export default ({ mode }: ConfigEnv) => {
             return "assets/[name]-[hash].js";
           }
         },
-      }
-    },
-    experimental: {
-      renderBuiltUrl(filename: string, { hostType }: { hostType: "js" | "css" | "html" }) {
-        // Go only templates index.html. URLs emitted into JS (lazy chunks, modulepreload
-        // hints) must resolve relative to the importing chunk so the runtime base URL holds.
-        if (hostType === "js") {
-          return { relative: true };
-        }
-        return '{{.AssetBaseUrl}}' + filename
       }
     }
   });

@@ -7,13 +7,10 @@ type Config struct {
 	ConfigPath          string
 	Host                string `toml:"host"`
 	Port                int    `toml:"port"`
-	CorsAllowedOrigins  string `toml:"corsAllowedOrigins"`
 	LogLevel            string `toml:"logLevel"`
 	LogPath             string `toml:"logPath"`
 	LogMaxSize          int    `toml:"logMaxSize"`
 	LogMaxBackups       int    `toml:"logMaxBackups"`
-	BaseURL             string `toml:"baseUrl"`
-	BaseURLModeLegacy   bool   `toml:"baseUrlModeLegacy"`
 	CustomDefinitions   string `toml:"customDefinitions"`
 	DatabaseDSN         string `toml:"databaseDSN"`
 	DatabaseMaxBackups  int    `toml:"databaseMaxBackups"`
@@ -25,5 +22,4 @@ type ConfigUpdate struct {
 	Port     *int    `json:"port,omitempty"`
 	LogLevel *string `json:"log_level,omitempty"`
 	LogPath  *string `json:"log_path,omitempty"`
-	BaseURL  *string `json:"base_url,omitempty"`
 }

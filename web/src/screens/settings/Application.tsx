@@ -28,7 +28,7 @@ function ApplicationSettings() {
         <form className="mt-6 pb-4" action="#" method="POST">
           {data && (
             <div className="grid grid-cols-12 gap-2 sm:gap-6 px-4 sm:px-6">
-              <div className="col-span-12 sm:col-span-4">
+              <div className="col-span-12 sm:col-span-6">
                 <label htmlFor="host" className="block ml-px text-xs font-bold text-gray-700 dark:text-white uppercase tracking-wide">
                   {t("settings:application.host")}
                 </label>
@@ -42,7 +42,7 @@ function ApplicationSettings() {
                 />
               </div>
 
-              <div className="col-span-12 sm:col-span-4">
+              <div className="col-span-12 sm:col-span-6">
                 <label htmlFor="port" className="block ml-px text-xs font-bold text-gray-700 dark:text-white uppercase tracking-wide">
                   {t("settings:application.port")}
                 </label>
@@ -56,19 +56,6 @@ function ApplicationSettings() {
                 />
               </div>
 
-              <div className="col-span-12 sm:col-span-4">
-                <label htmlFor="base_url" className="block ml-px text-xs font-bold text-gray-700 dark:text-white uppercase tracking-wide">
-                  {t("settings:application.baseUrl")}
-                </label>
-                <input
-                  type="text"
-                  name="base_url"
-                  id="base_url"
-                  value={data.base_url}
-                  disabled={true}
-                  className="mt-1 block w-full sm:text-sm rounded-md border-gray-300 dark:border-gray-750 bg-gray-100 dark:bg-gray-825 dark:text-gray-100"
-                />
-              </div>
             </div>
           )}
         </form>

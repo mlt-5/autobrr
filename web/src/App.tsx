@@ -9,7 +9,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@components/hot-toast";
 import { Router } from "@app/routes";
 import i18n from "@app/i18n";
-import { routerBasePath } from "@utils";
 import { queryClient } from "@api/QueryClient";
 import { SettingsContext, isDarkTheme } from "@utils/Context";
 import { Portal } from "@components/portal";
@@ -48,10 +47,7 @@ export function App() {
       <Portal>
         <Toaster position="top-right" />
       </Portal>
-      <RouterProvider
-        basepath={routerBasePath()}
-        router={Router}
-      />
+      <RouterProvider router={Router} />
     </QueryClientProvider>
   );
 }

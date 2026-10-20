@@ -25,7 +25,6 @@ type configJson struct {
 	LogPath       string `json:"log_path"`
 	LogMaxSize    int    `json:"log_max_size"`
 	LogMaxBackups int    `json:"log_max_backups"`
-	BaseURL       string `json:"base_url"`
 	Version       string `json:"version"`
 	Commit        string `json:"commit"`
 	Date          string `json:"date"`
@@ -66,7 +65,6 @@ func (h configHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 		LogPath:       h.cfg.Config.LogPath,
 		LogMaxSize:    h.cfg.Config.LogMaxSize,
 		LogMaxBackups: h.cfg.Config.LogMaxBackups,
-		BaseURL:       h.cfg.Config.BaseURL,
 		Version:       h.versionInfo.version,
 		Commit:        h.versionInfo.commit,
 		Date:          h.versionInfo.date,

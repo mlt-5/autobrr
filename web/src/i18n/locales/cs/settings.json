@@ -33,7 +33,6 @@
       "description": "Nastavení aplikace. Změňte v config.toml a pro použití restartujte.",
       "host": "Host",
       "port": "Port",
-      "baseUrl": "Základní URL",
       "version": "Verze",
       "commit": "Commit",
       "buildDate": "Datum vytvoření",

@@ -33,7 +33,6 @@
     "description": "Application settings. Change in config.toml and restart to take effect.",
     "host": "Host",
     "port": "Port",
-    "baseUrl": "Base URL",
     "version": "Version",
     "commit": "Commit",
     "buildDate": "Build date",

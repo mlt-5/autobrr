@@ -40,22 +40,6 @@ host = "{{ .host }}"
 #
 port = 7474
 
-# Base url
-# Set custom baseUrl eg /autobrr/ to serve in subdirectory.
-# Not needed for subdomain, or by accessing with the :port directly.
-#
-# Optional
-#
-#baseUrl = "/autobrr/"
-
-# Base url mode legacy
-# This is kept for compatibility with older versions doing url rewrite on the proxy.
-# If you use baseUrl you can set this to false and skip any url rewrite in your proxy.
-#
-# Default: true
-#
-baseUrlModeLegacy = true
-
 # autobrr logs file
 # If not defined, logs to stdout
 # Make sure to use forward slashes and include the filename with extension. eg: "/path/to/logs/autobrr.log", "C:/autobrr/logs/autobrr.log"
@@ -207,13 +191,10 @@ func (c *AppConfig) defaults() {
 	c.Config = &domain.Config{
 		Host:                "127.0.0.1",
 		Port:                7474,
-		CorsAllowedOrigins:  "*",
 		LogLevel:            "INFO",
 		LogPath:             "",
 		LogMaxSize:          10,
 		LogMaxBackups:       5,
-		BaseURL:             "/",
-		BaseURLModeLegacy:   true,
 		CustomDefinitions:   "",
 		DatabaseAutoMigrate: true,
 		DatabaseMaxBackups:  5,
@@ -228,18 +209,6 @@ func (c *AppConfig) loadFromEnv() {
 
 	if v := GetEnvInt("PORT"); v > 0 {
 		c.Config.Port = v
-	}
-
-	if v := GetEnvStr("CORS_ALLOWED_ORIGINS"); v != "" {
-		c.Config.CorsAllowedOrigins = v
-	}
-
-	if v := GetEnvStr("BASE_URL"); v != "" {
-		c.Config.BaseURL = v
-	}
-
-	if v := GetEnvStr("BASE_URL_MODE_LEGACY"); v != "" {
-		c.Config.BaseURLModeLegacy = strings.EqualFold(strings.ToLower(v), "true")
 	}
 
 	if v := GetEnvStr("CUSTOM_DEFINITIONS"); v != "" {
