@@ -22,7 +22,9 @@ struct ContentView: View {
     var body: some View {
         switch host.state {
         case .starting:
-            ProgressView("Starting autobrr…")
+            // ProgressView's UIActivityIndicatorView crashed the iOS 27 simulator at launch
+            Text("Starting autobrr…")
+                .foregroundStyle(.secondary)
         case .failed(let message):
             VStack(spacing: 12) {
                 Text("autobrr could not start").font(.headline)
