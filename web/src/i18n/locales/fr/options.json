@@ -83,10 +83,6 @@
       "label": "Erreur d'actualisation du feed",
       "description": "L'actualisation du feed a échoué"
     },
-    "APP_UPDATE_AVAILABLE": {
-      "label": "Nouvelle mise à jour",
-      "description": "Être notifié des mises à jour"
-    },
     "RELEASE_NEW": {
       "label": "Nouvelle release",
       "description": "Lors d'une nouvelle release de l'indexeur (avant filtrage)"

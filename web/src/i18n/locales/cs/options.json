@@ -83,10 +83,6 @@
         "label": "Chyba obnovení kanálu",
         "description": "Obnovení kanálu selhalo"
       },
-      "APP_UPDATE_AVAILABLE": {
-        "label": "Nová aktualizace",
-        "description": "Obdržet notifikace o aktualizacích"
-      },
       "RELEASE_NEW": {
         "label": "Nový Release",
         "description": "Při novém release z indexeru (před filtrováním)"

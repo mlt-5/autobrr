@@ -89,10 +89,6 @@ logLevel = "INFO"
 #
 #logMaxBackups = 5
 
-# Check for updates
-#
-checkForUpdates = true
-
 # Database Max Backups
 #
 # Default: 5
@@ -269,7 +265,6 @@ func (c *AppConfig) defaults() {
 		BaseURL:               "/",
 		BaseURLModeLegacy:     true,
 		CustomDefinitions:     "",
-		CheckForUpdates:       true,
 		DatabaseType:          "sqlite",
 		DatabaseAutoMigrate:   true,
 		DatabaseMaxBackups:    5,
@@ -315,10 +310,6 @@ func (c *AppConfig) loadFromEnv() {
 
 	if v := GetEnvStr("CUSTOM_DEFINITIONS"); v != "" {
 		c.Config.CustomDefinitions = v
-	}
-
-	if v := GetEnvStr("CHECK_FOR_UPDATES"); v != "" {
-		c.Config.CheckForUpdates = strings.EqualFold(strings.ToLower(v), "true")
 	}
 
 	// Logs configuration
@@ -532,9 +523,6 @@ func (c *AppConfig) DynamicReload(log zerolog.Logger) {
 		logPath := viper.GetString("logPath")
 		c.Config.LogPath = logPath
 
-		checkUpdates := viper.GetBool("checkForUpdates")
-		c.Config.CheckForUpdates = checkUpdates
-
 		log.Debug().Msg("config file reloaded!")
 	})
 }
@@ -561,17 +549,11 @@ func (c *AppConfig) UpdateConfig() error {
 func (c *AppConfig) processLines(lines []string) []string {
 	// keep track of not found values to append at bottom
 	var (
-		foundLineUpdate   = false
 		foundLineLogLevel = false
 		foundLineLogPath  = false
 	)
 
 	for i, line := range lines {
-		// set checkForUpdates
-		if !foundLineUpdate && strings.Contains(line, "checkForUpdates =") {
-			lines[i] = fmt.Sprintf("checkForUpdates = %t", c.Config.CheckForUpdates)
-			foundLineUpdate = true
-		}
 		if !foundLineLogLevel && strings.Contains(line, "logLevel =") {
 			lines[i] = fmt.Sprintf(`logLevel = "%s"`, c.Config.LogLevel)
 			foundLineLogLevel = true
@@ -593,12 +575,6 @@ func (c *AppConfig) processLines(lines []string) []string {
 	}
 
 	// append missing vars to bottom
-	if !foundLineUpdate {
-		lines = append(lines, "# Check for updates")
-		lines = append(lines, "#")
-		lines = append(lines, fmt.Sprintf("checkForUpdates = %t", c.Config.CheckForUpdates))
-	}
-
 	if !foundLineLogLevel {
 		lines = append(lines, "# Log level")
 		lines = append(lines, "#")

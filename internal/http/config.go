@@ -17,20 +17,19 @@ import (
 )
 
 type configJson struct {
-	Application     string `json:"application"`
-	ConfigDir       string `json:"config_dir"`
-	Database        string `json:"database"`
-	Host            string `json:"host"`
-	Port            int    `json:"port"`
-	LogLevel        string `json:"log_level"`
-	LogPath         string `json:"log_path"`
-	LogMaxSize      int    `json:"log_max_size"`
-	LogMaxBackups   int    `json:"log_max_backups"`
-	BaseURL         string `json:"base_url"`
-	CheckForUpdates bool   `json:"check_for_updates"`
-	Version         string `json:"version"`
-	Commit          string `json:"commit"`
-	Date            string `json:"date"`
+	Application   string `json:"application"`
+	ConfigDir     string `json:"config_dir"`
+	Database      string `json:"database"`
+	Host          string `json:"host"`
+	Port          int    `json:"port"`
+	LogLevel      string `json:"log_level"`
+	LogPath       string `json:"log_path"`
+	LogMaxSize    int    `json:"log_max_size"`
+	LogMaxBackups int    `json:"log_max_backups"`
+	BaseURL       string `json:"base_url"`
+	Version       string `json:"version"`
+	Commit        string `json:"commit"`
+	Date          string `json:"date"`
 }
 
 type buildInfo struct {
@@ -61,19 +60,18 @@ func (h configHandler) Routes(r chi.Router) {
 
 func (h configHandler) getConfig(w http.ResponseWriter, r *http.Request) {
 	conf := configJson{
-		ConfigDir:       h.cfg.Config.ConfigPath,
-		Host:            h.cfg.Config.Host,
-		Port:            h.cfg.Config.Port,
-		LogLevel:        h.cfg.Config.LogLevel,
-		LogPath:         h.cfg.Config.LogPath,
-		LogMaxSize:      h.cfg.Config.LogMaxSize,
-		LogMaxBackups:   h.cfg.Config.LogMaxBackups,
-		BaseURL:         h.cfg.Config.BaseURL,
-		Database:        h.cfg.Config.DatabaseType,
-		CheckForUpdates: h.cfg.Config.CheckForUpdates,
-		Version:         h.versionInfo.version,
-		Commit:          h.versionInfo.commit,
-		Date:            h.versionInfo.date,
+		ConfigDir:     h.cfg.Config.ConfigPath,
+		Host:          h.cfg.Config.Host,
+		Port:          h.cfg.Config.Port,
+		LogLevel:      h.cfg.Config.LogLevel,
+		LogPath:       h.cfg.Config.LogPath,
+		LogMaxSize:    h.cfg.Config.LogMaxSize,
+		LogMaxBackups: h.cfg.Config.LogMaxBackups,
+		BaseURL:       h.cfg.Config.BaseURL,
+		Database:      h.cfg.Config.DatabaseType,
+		Version:       h.versionInfo.version,
+		Commit:        h.versionInfo.commit,
+		Date:          h.versionInfo.date,
 	}
 
 	ex, err := os.Executable()
@@ -101,10 +99,6 @@ func (h configHandler) updateConfig(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		h.encoder.Error(w, err)
 		return
-	}
-
-	if data.CheckForUpdates != nil {
-		h.cfg.Config.CheckForUpdates = *data.CheckForUpdates
 	}
 
 	if data.LogLevel != nil {

@@ -35,12 +35,10 @@
   "header": {
     "logoutSuccess": "You have been logged out. Goodbye!",
     "openMainMenu": "Open main menu",
-    "newUpdateAvailable": "New update available!",
     "listRefreshFailed": "List refresh failed!",
     "multipleListRefreshesFailed": "Multiple list refreshes failed!",
     "ircNetworkUnhealthy": "IRC network unhealthy!",
-    "multipleIrcNetworksUnhealthy": "Multiple IRC networks unhealthy!",
-    "dismiss": "Dismiss"
+    "multipleIrcNetworksUnhealthy": "Multiple IRC networks unhealthy!"
   },
   "inbox": {
     "title": "Notifications",

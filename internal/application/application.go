@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"github.com/autobrr/autobrr/internal/action"
 	"github.com/autobrr/autobrr/internal/alert"
@@ -31,12 +30,10 @@ import (
 	"github.com/autobrr/autobrr/internal/proxy"
 	"github.com/autobrr/autobrr/internal/release"
 	"github.com/autobrr/autobrr/internal/scheduler"
-	"github.com/autobrr/autobrr/internal/update"
 	"github.com/autobrr/autobrr/internal/user"
 	"github.com/autobrr/autobrr/pkg/errors"
 	"github.com/autobrr/autobrr/pkg/featureflags"
 	"github.com/autobrr/autobrr/pkg/sqlite3store"
-	"github.com/autobrr/autobrr/pkg/version"
 
 	"github.com/KimMachineGun/automemlimit/memlimit"
 	"github.com/alexedwards/scs/postgresstore"
@@ -53,11 +50,10 @@ func init() {
 
 // App owns the lifecycle of every service, from config load to shutdown.
 type App struct {
-	log           zerolog.Logger
-	cfg           *config.AppConfig
-	sse           *sse.Server
-	eventBus      *events.EventBus
-	updateService *update.Service
+	log      zerolog.Logger
+	cfg      *config.AppConfig
+	sse      *sse.Server
+	eventBus *events.EventBus
 
 	db            *database.DB
 	httpServer    *http.Server
@@ -84,8 +80,8 @@ type App struct {
 }
 
 // New loads the config and builds the parts that need no database. They exist
-// before Run so a host such as the tray can subscribe to events and check for
-// updates while the rest of the application starts.
+// before Run so a host such as the tray can subscribe to events while the rest
+// of the application starts.
 func New(configPath string) *App {
 	cfg := config.New(configPath)
 
@@ -99,11 +95,10 @@ func New(configPath string) *App {
 	cfg.DynamicReload(log)
 
 	return &App{
-		log:           log,
-		cfg:           cfg,
-		sse:           serverEvents,
-		eventBus:      events.NewEventBus(log),
-		updateService: update.NewUpdate(log, cfg.Config),
+		log:      log,
+		cfg:      cfg,
+		sse:      serverEvents,
+		eventBus: events.NewEventBus(log),
 	}
 }
 
@@ -277,17 +272,6 @@ func (app *App) components(fail context.CancelCauseFunc) []component {
 		})
 	}
 
-	if app.cfg.Config.CheckForUpdates {
-		components = append(components, component{
-			name: "update check",
-			start: func(ctx context.Context) error {
-				go app.checkUpdates(ctx)
-
-				return nil
-			},
-		})
-	}
-
 	return components
 }
 
@@ -299,16 +283,6 @@ func (app *App) Config() *domain.Config {
 // Log returns the application logger.
 func (app *App) Log() *zerolog.Logger {
 	return &app.log
-}
-
-// CheckUpdateAvailable checks for a newer release. It is safe to call before Run.
-func (app *App) CheckUpdateAvailable(ctx context.Context) (*version.Release, error) {
-	return app.updateService.CheckUpdateAvailable(ctx)
-}
-
-// OnAppUpdate subscribes to new-release events and returns the unsubscribe func.
-func (app *App) OnAppUpdate(handler func(context.Context, events.AppUpdateEvent) error) func() {
-	return app.eventBus.OnAppUpdate(handler)
 }
 
 func (app *App) setupResourceLimits() {
@@ -377,7 +351,7 @@ func (app *App) setup(ctx context.Context) error {
 	)
 
 	app.apiService = api.NewService(app.log, apikeyRepo)
-	app.scheduler = scheduler.NewService(app.log, app.eventBus, app.cfg.Config, app.updateService)
+	app.scheduler = scheduler.NewService(app.log)
 	app.notificationService = notification.NewService(app.log, app.eventBus, app.sse, notificationRepo, inboxRepo, app.scheduler)
 	app.userService = user.NewService(userRepo)
 	app.authService = auth.NewService(app.log, app.userService)
@@ -391,7 +365,7 @@ func (app *App) setup(ctx context.Context) error {
 	app.ircService = irc.NewService(app.log, app.eventBus, app.sse, ircRepo, app.releaseService, app.indexerService, app.proxyService)
 	app.feedService = feed.NewService(app.log, app.eventBus, feedRepo, feedCacheRepo, app.releaseService, app.proxyService, app.scheduler)
 	app.listService = list.NewService(app.log, app.eventBus, listRepo, app.filterService, app.scheduler)
-	app.alertService = alert.NewService(app.log, app.eventBus, app.cfg.Config, app.sse, app.updateService, app.ircService, app.listService)
+	app.alertService = alert.NewService(app.log, app.eventBus, app.sse, app.ircService, app.listService)
 
 	app.httpServer = http.NewServer(http.Deps{
 		Log:                 app.log,
@@ -415,7 +389,6 @@ func (app *App) setup(ctx context.Context) error {
 		OIDCService:         oidcService,
 		ProxyService:        app.proxyService,
 		ReleaseService:      app.releaseService,
-		UpdateService:       app.updateService,
 	})
 
 	if app.cfg.Config.MetricsEnabled {
@@ -428,16 +401,6 @@ func (app *App) setup(ctx context.Context) error {
 	}
 
 	return nil
-}
-
-func (app *App) checkUpdates(ctx context.Context) {
-	select {
-	case <-ctx.Done():
-		return
-	case <-time.After(5 * time.Second):
-	}
-
-	app.updateService.CheckUpdates(ctx)
 }
 
 func PrintVersion() {

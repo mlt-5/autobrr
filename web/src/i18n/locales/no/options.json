@@ -83,10 +83,6 @@
       "label": "Feil ved oppdatering av feed",
       "description": "Oppdatering av feeden mislyktes"
     },
-    "APP_UPDATE_AVAILABLE": {
-      "label": "Ny oppdatering",
-      "description": "Bli varslet om oppdateringer"
-    },
     "RELEASE_NEW": {
       "label": "Ny utgivelse",
       "description": "Ved ny utgivelse fra indekserer (før filtrering)"

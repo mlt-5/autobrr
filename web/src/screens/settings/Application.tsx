@@ -3,19 +3,13 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
-import { APIClient } from "@api/APIClient";
-import { ConfigQueryOptions, UpdatesQueryOptions } from "@api/queries";
-import { AlertKeys, SettingsKeys } from "@api/query_keys";
+import { ConfigQueryOptions } from "@api/queries";
 import { SettingsContext } from "@utils/Context";
 import type { Language, Theme } from "@utils/Context";
 import { Checkbox } from "@components/Checkbox";
-import { toast } from "@components/hot-toast";
-import Toast from "@components/notifications/Toast";
-import { ExternalLink } from "@components/ExternalLink";
 
 import { Section, RowItem } from "./_components";
 
@@ -23,35 +17,7 @@ function ApplicationSettings() {
   const { t } = useTranslation(["common", "settings"]);
   const [settings, setSettings] = SettingsContext.use();
 
-  const settingsIndexRoute = getRouteApi("/auth/authenticated-routes/settings/");
-  const { queryClient } =  settingsIndexRoute.useRouteContext();
-
   const { data } = useQuery(ConfigQueryOptions());
-
-  const { data: updateData } = useQuery(UpdatesQueryOptions(data?.check_for_updates === true));
-
-  const checkUpdateMutation = useMutation({
-    mutationFn: APIClient.updates.check,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SettingsKeys.updates() });
-      queryClient.invalidateQueries({ queryKey: AlertKeys.all });
-    }
-  });
-
-  const toggleCheckUpdateMutation = useMutation({
-    mutationFn: (value: boolean) => APIClient.config.update({ check_for_updates: value }).then(() => value),
-    onSuccess: (_, value: boolean) => {
-      toast.custom((toastInstance) => (
-        <Toast
-          type="success"
-          body={value ? t("settings:application.updateEnabled") : t("settings:application.updateDisabled")}
-          t={toastInstance}
-        />
-      ));
-      queryClient.invalidateQueries({ queryKey: SettingsKeys.config() });
-      checkUpdateMutation.mutate();
-    }
-  });
 
   return (
     <Section
@@ -107,20 +73,7 @@ function ApplicationSettings() {
           )}
         </form>
 
-        <RowItem
-          label={t("settings:application.version")}
-          value={data?.version}
-          rightSide={
-            updateData && updateData.html_url ? (
-              <ExternalLink
-                href={updateData.html_url}
-                className="ml-2 inline-flex items-center rounded-md bg-green-100 px-2.5 py-0.5 text-sm font-medium text-green-800"
-              >
-                {t("settings:application.updateAvailable", { name: updateData.name })}
-              </ExternalLink>
-            ) : null
-          }
-        />
+        <RowItem label={t("settings:application.version")} value={data?.version} />
         {data?.commit && <RowItem label={t("settings:application.commit")} value={data.commit} />}
         {data?.date && <RowItem label={t("settings:application.buildDate")} value={data.date} />}
         <RowItem label={t("settings:application.application")} value={data?.application} />
@@ -140,16 +93,6 @@ function ApplicationSettings() {
             }
           />
         </div>
-        <Checkbox
-          name="check_for_updates"
-          label={t("settings:application.checkForUpdates")}
-          description={t("settings:application.checkForUpdatesDescription")}
-          value={data?.check_for_updates ?? true}
-          className="p-4 sm:px-6"
-          setValue={(newValue: boolean) => {
-            toggleCheckUpdateMutation.mutate(newValue);
-          }}
-        />
         <div className="flex items-center justify-between p-4 sm:px-6">
           <div className="flex flex-col mr-4">
             <p className="text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white">

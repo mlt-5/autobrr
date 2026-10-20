@@ -7,7 +7,6 @@ import type { ComponentType, SVGProps } from "react";
 import type { TFunction } from "i18next";
 import {
   ArrowPathIcon,
-  ArrowUpCircleIcon,
   BeakerIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
@@ -35,10 +34,6 @@ const AMBER = {
   text: "text-amber-600 dark:text-amber-400"
 };
 
-const BLUE = {
-  text: "text-blue-600 dark:text-blue-400"
-};
-
 const GRAY = {
   text: "text-gray-500 dark:text-gray-400"
 };
@@ -55,7 +50,6 @@ export const INBOX_EVENT_STYLES: Record<InboxMessage["event"], InboxEventStyle> 
   LIST_REFRESH_ERROR: { icon: ArrowPathIcon, ...RED },
   FEED_REFRESH_SUCCESS: { icon: RssIcon, ...GREEN },
   FEED_REFRESH_ERROR: { icon: RssIcon, ...RED },
-  APP_UPDATE_AVAILABLE: { icon: ArrowUpCircleIcon, ...BLUE },
   RELEASE_NEW: { icon: InboxArrowDownIcon, ...GRAY },
   TEST: { icon: BeakerIcon, ...GRAY }
 };
@@ -74,8 +68,7 @@ export const INBOX_FILTER_EVENTS: InboxFilterEvent[] = [
   "LIST_REFRESH_ERROR",
   "LIST_REFRESH_SUCCESS",
   "FEED_REFRESH_ERROR",
-  "FEED_REFRESH_SUCCESS",
-  "APP_UPDATE_AVAILABLE"
+  "FEED_REFRESH_SUCCESS"
 ];
 
 /** inboxEventLabel returns the translated event name, or the stored title for test messages. */

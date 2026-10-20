@@ -35,12 +35,10 @@
     "header": {
       "logoutSuccess": "Byli jste odhlášeni. Nashledanou!",
       "openMainMenu": "Otevřít hlavní menu",
-      "newUpdateAvailable": "Je dostupná nová aktualizace!",
       "listRefreshFailed": "Selhalo obnovení seznamu!",
       "multipleListRefreshesFailed": "Selhalo obnovení několika seznamů!",
       "ircNetworkUnhealthy": "IRC síť není v pořádku!",
-      "multipleIrcNetworksUnhealthy": "Několik IRC sítí není v pořádku!",
-      "dismiss": "Zavřít"
+      "multipleIrcNetworksUnhealthy": "Několik IRC sítí není v pořádku!"
     },
     "inbox": {
       "title": "Oznámení",

@@ -42,14 +42,9 @@
     "configPath": "Konfigurasjonssti",
     "database": "Database",
     "webuiDebugMode": "WebUI-feilsøkingsmodus",
-    "checkForUpdates": "Se etter oppdateringer",
-    "checkForUpdatesDescription": "Bli varslet om nye oppdateringer.",
     "theme": "Tema",
     "themeDescription": "Velg mellom lyst, mørkt eller følg systemtemaet.",
-    "languageDescription": "Velg språket som brukes i WebUI.",
-    "updateEnabled": "Du vil nå bli varslet om nye oppdateringer.",
-    "updateDisabled": "Du vil ikke lenger bli varslet om nye oppdateringer.",
-    "updateAvailable": "{{name}} tilgjengelig!"
+    "languageDescription": "Velg språket som brukes i WebUI."
   },
   "account": {
     "title": "Konto",

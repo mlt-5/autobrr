@@ -88,8 +88,6 @@ type NotificationPayload struct {
 	Sender              string
 	FilterNotifications []FilterNotification // per-filter notifications
 	Release             *Release             // full release data for webhook
-	CurrentVersion      string
-	NewVersion          string
 	URL                 string
 }
 
@@ -103,7 +101,6 @@ const (
 type NotificationEvent string
 
 const (
-	NotificationEventAppUpdateAvailable NotificationEvent = "APP_UPDATE_AVAILABLE"
 	NotificationEventPushApproved       NotificationEvent = "PUSH_APPROVED"
 	NotificationEventPushRejected       NotificationEvent = "PUSH_REJECTED"
 	NotificationEventPushError          NotificationEvent = "PUSH_ERROR"
@@ -191,7 +188,6 @@ const (
 	WebhookEventListRefreshError   WebhookEventType = "list.refresh_error"
 	WebhookEventFeedRefreshSuccess WebhookEventType = "feed.refresh_success"
 	WebhookEventFeedRefreshError   WebhookEventType = "feed.refresh_error"
-	WebhookEventAppUpdate          WebhookEventType = "app.update_available"
 	WebhookEventTest               WebhookEventType = "test"
 )
 
@@ -351,8 +347,6 @@ func mapNotificationEventToWebhookEvent(event NotificationEvent) WebhookEventTyp
 		return WebhookEventFeedRefreshSuccess
 	case NotificationEventFeedRefreshError:
 		return WebhookEventFeedRefreshError
-	case NotificationEventAppUpdateAvailable:
-		return WebhookEventAppUpdate
 	case NotificationEventTest:
 		return WebhookEventTest
 	default:

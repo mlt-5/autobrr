@@ -10,15 +10,10 @@ import (
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/internal/events"
 	"github.com/autobrr/autobrr/internal/notification"
-	"github.com/autobrr/autobrr/pkg/version"
 
 	"github.com/r3labs/sse/v2"
 	"github.com/rs/zerolog"
 )
-
-type updateService interface {
-	GetLatestRelease(ctx context.Context) *version.Release
-}
 
 type ircService interface {
 	UnhealthyNetworks() []domain.IrcUnhealthyNetwork
@@ -33,7 +28,6 @@ type ssePublisher interface {
 }
 
 type eventBus interface {
-	OnAppUpdate(handler func(context.Context, events.AppUpdateEvent) error) func()
 	OnIRC(handler func(context.Context, events.IRCEvent) error) func()
 	OnListRefresh(handler func(context.Context, events.ListRefreshEvent) error) func()
 }
@@ -42,23 +36,19 @@ type eventBus interface {
 type Service struct {
 	log      zerolog.Logger
 	eventBus eventBus
-	config   *domain.Config
 	sse      ssePublisher
 
-	updateSvc updateService
-	ircSvc    ircService
-	listSvc   listService
+	ircSvc  ircService
+	listSvc listService
 }
 
-func NewService(log zerolog.Logger, eventBus eventBus, config *domain.Config, sse ssePublisher, updateSvc updateService, ircSvc ircService, listSvc listService) *Service {
+func NewService(log zerolog.Logger, eventBus eventBus, sse ssePublisher, ircSvc ircService, listSvc listService) *Service {
 	s := &Service{
-		log:       log.With().Str("module", "alert").Logger(),
-		eventBus:  eventBus,
-		config:    config,
-		sse:       sse,
-		updateSvc: updateSvc,
-		ircSvc:    ircSvc,
-		listSvc:   listSvc,
+		log:      log.With().Str("module", "alert").Logger(),
+		eventBus: eventBus,
+		sse:      sse,
+		ircSvc:   ircSvc,
+		listSvc:  listSvc,
 	}
 
 	s.setupEventListeners()
@@ -67,11 +57,6 @@ func NewService(log zerolog.Logger, eventBus eventBus, config *domain.Config, ss
 }
 
 func (s *Service) setupEventListeners() {
-	s.eventBus.OnAppUpdate(func(ctx context.Context, event events.AppUpdateEvent) error {
-		s.publishAlertsChanged()
-		return nil
-	})
-
 	s.eventBus.OnIRC(func(ctx context.Context, event events.IRCEvent) error {
 		switch event.Type {
 		case events.IRCUnhealthy, events.IRCHealthy:
@@ -91,18 +76,6 @@ func (s *Service) setupEventListeners() {
 // source does not hide the others.
 func (s *Service) List(ctx context.Context) []domain.Alert {
 	alerts := make([]domain.Alert, 0)
-
-	if s.config.CheckForUpdates {
-		if latest := s.updateSvc.GetLatestRelease(ctx); latest != nil {
-			alerts = append(alerts, domain.Alert{
-				Kind:     domain.AlertKindAppUpdate,
-				Severity: domain.AlertSeverityInfo,
-				Subject:  latest.TagName,
-				URL:      latest.HtmlURL,
-				Since:    latest.PublishedAt,
-			})
-		}
-	}
 
 	for _, network := range s.ircSvc.UnhealthyNetworks() {
 		alerts = append(alerts, domain.Alert{

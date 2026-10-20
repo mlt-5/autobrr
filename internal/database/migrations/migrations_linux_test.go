@@ -83,7 +83,6 @@ func TestMigrateOldVersionsToLatest(t *testing.T) {
 		// Use a random port to avoid conflicts
 		configContent := `# Minimal config for testing
 logLevel = "ERROR"
-checkForUpdates = false
 host = "127.0.0.1"
 port = 0
 
@@ -189,7 +188,6 @@ type = "sqlite"
 		// Create a minimal config file
 		configContent := fmt.Sprintf(`# Minimal config for testing
 logLevel = "ERROR"
-checkForUpdates = false
 host = "127.0.0.1"
 port = 0
 

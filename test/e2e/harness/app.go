@@ -182,7 +182,6 @@ func writeConfig(t testing.TB, dir string, port int, definitions string) {
 	config := fmt.Sprintf(`host = "127.0.0.1"
 port = %d
 logLevel = "DEBUG"
-checkForUpdates = false
 customDefinitions = %q
 sessionSecret = "e2e-session-secret"
 `, port, definitions)

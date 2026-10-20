@@ -49,7 +49,6 @@ type Server struct {
 	oidcService         oidcService
 	proxyService        proxyService
 	releaseService      releaseService
-	updateService       updateService
 }
 
 type Deps struct {
@@ -77,7 +76,6 @@ type Deps struct {
 	OIDCService         oidcService
 	ProxyService        proxyService
 	ReleaseService      releaseService
-	UpdateService       updateService
 }
 
 func NewServer(deps Deps) *Server {
@@ -123,7 +121,6 @@ func NewServer(deps Deps) *Server {
 		oidcService:         deps.OIDCService,
 		proxyService:        deps.ProxyService,
 		releaseService:      deps.ReleaseService,
-		updateService:       deps.UpdateService,
 	}
 
 	if deps.Config.Config.CorsAllowedOrigins != "*" {
@@ -238,7 +235,6 @@ func (s *Server) Handler() http.Handler {
 			r.Route("/notification", newNotificationHandler(encoder, s.notificationService).Routes)
 			r.Route("/proxy", newProxyHandler(encoder, s.proxyService).Routes)
 			r.Route("/release", newReleaseHandler(encoder, s.releaseService).Routes)
-			r.Route("/updates", newUpdateHandler(encoder, s.updateService).Routes)
 			r.Route("/webhook", newWebhookHandler(encoder, s.listService).Routes)
 
 			r.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {

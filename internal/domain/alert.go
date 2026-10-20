@@ -9,7 +9,6 @@ import "time"
 type AlertKind string
 
 const (
-	AlertKindAppUpdate        AlertKind = "APP_UPDATE"
 	AlertKindIRCUnhealthy     AlertKind = "IRC_UNHEALTHY"
 	AlertKindListRefreshError AlertKind = "LIST_REFRESH_ERROR"
 )

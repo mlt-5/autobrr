@@ -49,7 +49,6 @@ type schedulerService interface {
 }
 
 type eventBus interface {
-	OnAppUpdate(handler func(context.Context, events.AppUpdateEvent) error) func()
 	OnReleaseNew(handler func(context.Context, events.ReleaseEvent) error) func()
 	OnReleasePush(handler func(context.Context, events.ReleasePushEvent) error) func()
 	OnIRC(handler func(context.Context, events.IRCEvent) error) func()
@@ -231,21 +230,6 @@ func (s *Service) setNotification(snapshot *routingSnapshot, notification *domai
 }
 
 func (s *Service) setupEventListeners() {
-	s.eventBus.OnAppUpdate(func(ctx context.Context, event events.AppUpdateEvent) error {
-		payload := domain.NotificationPayload{
-			Event:          domain.NotificationEventAppUpdateAvailable,
-			Subject:        "New update available!",
-			Message:        event.NewVersion,
-			CurrentVersion: event.CurrentVersion,
-			NewVersion:     event.NewVersion,
-			URL:            event.URL,
-			Timestamp:      time.Now(),
-		}
-		s.Send(ctx, payload)
-
-		return nil
-	})
-
 	s.eventBus.OnReleaseNew(func(ctx context.Context, event events.ReleaseEvent) error {
 		release := event.Release
 		payload := domain.NotificationPayload{
@@ -847,15 +831,6 @@ func (s *Service) Test(ctx context.Context, notification *domain.Notification) e
 			FeedError: "error fetching feed items: unexpected status code: 503",
 			Indexer:   "Mock Indexer",
 			Timestamp: time.Now(),
-		},
-		{
-			Event:          domain.NotificationEventAppUpdateAvailable,
-			Subject:        "New update available!",
-			Message:        "v1.85.0",
-			CurrentVersion: "v1.84.0",
-			NewVersion:     "v1.85.0",
-			URL:            "https://github.com/autobrr/autobrr/releases/tag/v1.85.0",
-			Timestamp:      time.Now(),
 		},
 		{
 			Event:          domain.NotificationEventReleaseNew,

@@ -83,10 +83,6 @@
       "label": "Fehler bei Feed-Aktualisierung",
       "description": "Aktualisierung des Feeds fehlgeschlagen"
     },
-    "APP_UPDATE_AVAILABLE": {
-      "label": "Neues Update",
-      "description": "Über Updates benachrichtigt werden"
-    },
     "RELEASE_NEW": {
       "label": "Neuer Release",
       "description": "Bei neuem Release vom Indexer (vor dem Filtern)"

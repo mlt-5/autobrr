@@ -35,12 +35,10 @@
   "header": {
     "logoutSuccess": "Has cerrado sesión. ¡Adiós!",
     "openMainMenu": "Abrir menú principal",
-    "newUpdateAvailable": "¡Nueva actualización disponible!",
     "listRefreshFailed": "¡Error al actualizar la lista!",
     "multipleListRefreshesFailed": "¡Múltiples actualizaciones de lista fallaron!",
     "ircNetworkUnhealthy": "¡Red IRC con problemas!",
-    "multipleIrcNetworksUnhealthy": "¡Varias redes IRC con problemas!",
-    "dismiss": "Descartar"
+    "multipleIrcNetworksUnhealthy": "¡Varias redes IRC con problemas!"
   },
   "inbox": {
     "title": "Notificaciones",

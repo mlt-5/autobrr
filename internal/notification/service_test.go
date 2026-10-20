@@ -42,10 +42,6 @@ func (s *testSender) Name() string {
 
 type testEventBus struct{}
 
-func (testEventBus) OnAppUpdate(func(context.Context, events.AppUpdateEvent) error) func() {
-	return func() {}
-}
-
 func (testEventBus) OnReleaseNew(func(context.Context, events.ReleaseEvent) error) func() {
 	return func() {}
 }
@@ -661,7 +657,7 @@ func TestServiceBuiltinNotification(t *testing.T) {
 		Name:    "Built-in",
 		Type:    domain.NotificationTypeBuiltin,
 		Enabled: true,
-		Events:  []string{string(pushError), string(domain.NotificationEventIRCDisconnected), string(domain.NotificationEventAppUpdateAvailable)},
+		Events:  []string{string(pushError), string(domain.NotificationEventIRCDisconnected)},
 	}
 
 	t.Run("can not be stored, deleted or change type", func(t *testing.T) {

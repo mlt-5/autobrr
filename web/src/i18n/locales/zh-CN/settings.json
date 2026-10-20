@@ -42,14 +42,9 @@
     "configPath": "配置路径",
     "database": "数据库",
     "webuiDebugMode": "WebUI 调试模式",
-    "checkForUpdates": "检查更新",
-    "checkForUpdatesDescription": "有新版本时通知我。",
     "theme": "主题",
     "themeDescription": "可选择浅色、深色或跟随系统主题。",
-    "languageDescription": "选择 WebUI 使用的语言。",
-    "updateEnabled": "后续有新版本时会通知你。",
-    "updateDisabled": "后续将不再通知你新版本更新。",
-    "updateAvailable": "{{name}} 可用。"
+    "languageDescription": "选择 WebUI 使用的语言。"
   },
   "account": {
     "title": "账户",

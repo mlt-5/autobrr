@@ -304,7 +304,6 @@ The following environment variables can be used:
 | `AUTOBRR__LOG_MAX_SIZE`                | Max size in MB before rotation                           | `10`        |
 | `AUTOBRR__LOG_MAX_BACKUPS`             | Number of rotated logs to keep                           | `5`         |
 | `AUTOBRR__CUSTOM_DEFINITIONS`          | Path to custom indexer definitions                       | -           |
-| `AUTOBRR__CHECK_FOR_UPDATES`           | Enable update checks                                     | `true`      |
 | `AUTOBRR__DATABASE_TYPE`               | Database type (sqlite/postgres)                          | `sqlite`    |
 | `AUTOBRR__DATABASE_MAX_BACKUPS`        | Number of backups to keep                                | `5`         |
 | `AUTOBRR__DATABASE_DSN`                | Database connection string. Use this or individual vars  | -           |
