@@ -16,7 +16,7 @@ struct RootView: View {
 
     var body: some View {
         TabView {
-            web("/")
+            DashboardView(client: client)
                 .tabItem { Label("Dashboard", systemImage: "chart.bar") }
 
             web("/filters")
