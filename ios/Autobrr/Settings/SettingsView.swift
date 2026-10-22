@@ -22,7 +22,11 @@ struct SettingsView: View {
 
                 Section {
                     web("Indexers", "/settings/indexers", "antenna.radiowaves.left.and.right")
-                    web("IRC", "/settings/irc", "bubble.left.and.bubble.right")
+                    NavigationLink {
+                        IrcSettingsView(client: client)
+                    } label: {
+                        Label("IRC", systemImage: "bubble.left.and.bubble.right")
+                    }
                     NavigationLink {
                         FeedsView(client: client)
                     } label: {

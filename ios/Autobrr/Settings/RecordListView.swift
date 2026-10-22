@@ -30,6 +30,8 @@ struct RecordKind {
     let title: String
     let noun: String
     let path: String
+    /// itemPath is where single records live when it differs from path, as irc/network for irc.
+    var itemPath: String?
     let empty: String
     let template: [String: JSONValue]
     var canCreate = true
@@ -161,7 +163,7 @@ struct RecordListView<Fields: View>: View {
         guard let id = record["id"]?.intValue else { return }
 
         do {
-            try await client.request(.delete, "\(kind.path)/\(id)")
+            try await client.request(.delete, "\(kind.itemPath ?? kind.path)/\(id)")
             await load()
         } catch {
             self.error = error.localizedDescription
@@ -239,7 +241,7 @@ private struct RecordEditView<Fields: View>: View {
             defer { busy = false }
 
             do {
-                try await client.request(action.method, "\(kind.path)/\(id)/\(action.suffix)")
+                try await client.request(action.method, "\(kind.itemPath ?? kind.path)/\(id)/\(action.suffix)")
                 message = action.done
             } catch {
                 message = error.localizedDescription
@@ -260,7 +262,7 @@ private struct RecordEditView<Fields: View>: View {
                     try await client.request(.post, "\(kind.path)/test", body: body)
                     message = "Test succeeded."
                 } else if let id = draft.id, !kind.updatesByPost {
-                    try await client.request(.put, "\(kind.path)/\(id)", body: body)
+                    try await client.request(.put, "\(kind.itemPath ?? kind.path)/\(id)", body: body)
                     onSaved()
                     dismiss()
                 } else {
