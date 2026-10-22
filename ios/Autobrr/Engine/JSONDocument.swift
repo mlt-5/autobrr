@@ -46,6 +46,15 @@ extension JSONDocument {
         }
     }
 
+    /// commaList edits a comma separated string field as a list.
+    func commaList(_ key: String) -> Binding<[String]> {
+        Binding {
+            (self.values[key]?.stringValue ?? "").split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        } set: {
+            self.set(key, .string($0.joined(separator: ",")))
+        }
+    }
+
     func items(_ key: String) -> [[String: JSONValue]] {
         values[key]?.arrayValue?.compactMap(\.objectValue) ?? []
     }
