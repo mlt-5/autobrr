@@ -1,0 +1,58 @@
+name: ios
+
+on:
+  push:
+    paths:
+      - 'ios/**'
+      - 'mobile/**'
+      - 'go.mod'
+      - 'Makefile'
+      - '.github/workflows/ios.yml'
+
+env:
+  NODE_VERSION: '24.15.0'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build iOS app
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6.1.0
+        with:
+          package_json_file: web/package.json
+
+      - name: Install gomobile and XcodeGen
+        run: |
+          version=$(go list -m -f '{{.Version}}' golang.org/x/mobile)
+          go install golang.org/x/mobile/cmd/gomobile@$version golang.org/x/mobile/cmd/gobind@$version
+          gomobile init
+          brew install xcodegen
+
+      - name: Build engine
+        run: CI= make build/ios
+
+      - name: Build app
+        working-directory: ios
+        run: |
+          xcodegen generate
+          xcodebuild -project Autobrr.xcodeproj -scheme Autobrr -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build
