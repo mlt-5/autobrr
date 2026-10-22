@@ -221,6 +221,175 @@ func validateBuiltinNotificationNotDuplicated(db *sql.DB, t *testing.T) {
 	assert.Equal(t, "Existing", name, "the seed must not replace a built-in row that already exists")
 }
 
+func execAll(db *sql.DB, stmts ...string) error {
+	for _, stmt := range stmts {
+		if _, err := db.Exec(stmt); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func queryIDs(t *testing.T, db *sql.DB, query string) []int {
+	t.Helper()
+
+	rows, err := db.Query(query)
+	require.NoError(t, err)
+	defer rows.Close()
+
+	ids := []int{}
+	for rows.Next() {
+		var id int
+		require.NoError(t, rows.Scan(&id))
+		ids = append(ids, id)
+	}
+	require.NoError(t, rows.Err())
+
+	return ids
+}
+
+func setupDownloadClientData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO client (id, name, type, enabled, host) VALUES (1, 'qbit', 'QBITTORRENT', TRUE, 'http://qbit')`,
+		`INSERT INTO client (id, name, type, enabled, host) VALUES (2, 'radarr', 'RADARR', TRUE, 'http://radarr')`,
+		`INSERT INTO action (id, name, type, enabled, client_id, filter_id) VALUES (1, 'qbit', 'QBITTORRENT', TRUE, 1, 1)`,
+		`INSERT INTO action (id, name, type, enabled, watch_folder, filter_id) VALUES (2, 'watch', 'WATCH_FOLDER', TRUE, '/watch', 1)`,
+		`INSERT INTO "release" (id, torrent_name) VALUES (1, 'Test.Release-GRP')`,
+		`INSERT INTO release_action_status (id, status, action, action_id, type, filter_id, release_id) VALUES (1, 'PUSH_APPROVED', 'qbit', 1, 'QBITTORRENT', 1, 1)`,
+	)
+}
+
+func validateDownloadClientsRemoved(db *sql.DB, t *testing.T) {
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT id FROM action ORDER BY id`))
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT id FROM client ORDER BY id`))
+
+	var actionID sql.NullInt64
+	require.NoError(t, db.QueryRow(`SELECT action_id FROM release_action_status WHERE id = 1`).Scan(&actionID))
+	assert.False(t, actionID.Valid, "release history is kept but unlinked from the deleted action")
+}
+
+func setupTorrentClientColumnData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO action (id, name, type, enabled, watch_folder, category, filter_id) VALUES (1, 'watch', 'WATCH_FOLDER', TRUE, '/watch', 'movies', 1)`,
+	)
+}
+
+func validateTorrentClientColumnsDropped(db *sql.DB, t *testing.T) {
+	var watchFolder string
+	require.NoError(t, db.QueryRow(`SELECT watch_folder FROM action WHERE id = 1`).Scan(&watchFolder))
+	assert.Equal(t, "/watch", watchFolder)
+
+	_, err := db.Exec(`SELECT category FROM action`)
+	assert.Error(t, err, "action.category must be dropped")
+	_, err = db.Exec(`SELECT reannounce_max_attempts FROM action`)
+	assert.Error(t, err, "action.reannounce_max_attempts must be dropped")
+}
+
+func setupUsenetData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO indexer (id, identifier, implementation, name, enabled) VALUES (1, 'generic-newznab', 'newznab', 'Newznab', TRUE)`,
+		`INSERT INTO indexer (id, identifier, implementation, name, enabled) VALUES (2, 'curupira', 'irc', 'Curupira', TRUE)`,
+		`INSERT INTO indexer (id, identifier, implementation, name, enabled) VALUES (3, 'torznab', 'torznab', 'Torznab', TRUE)`,
+		`INSERT INTO feed (id, indexer_id, name, type, enabled) VALUES (1, 1, 'newznab', 'NEWZNAB', TRUE)`,
+		`INSERT INTO feed (id, indexer_id, name, type, enabled) VALUES (2, 3, 'torznab', 'TORZNAB', TRUE)`,
+		`INSERT INTO feed (id, indexer_id, name, type, enabled, settings) VALUES (3, 3, 'rss', 'RSS', TRUE, '{"download_type":"NZB"}')`,
+		`INSERT INTO feed_cache (feed_id, key, value, ttl) VALUES (1, 'a', 'b', CURRENT_TIMESTAMP)`,
+		`INSERT INTO feed_cache (feed_id, key, value, ttl) VALUES (2, 'a', 'b', CURRENT_TIMESTAMP)`,
+		`INSERT INTO filter_indexer (filter_id, indexer_id) VALUES (1, 1)`,
+		`INSERT INTO filter_indexer (filter_id, indexer_id) VALUES (1, 3)`,
+		`INSERT INTO irc_network (id, name, server, port) VALUES (1, 'SynIRC', 'irc.synirc.net', 6697)`,
+		`INSERT INTO irc_channel (id, name, network_id) VALUES (1, '#curupira-anuncios', 1)`,
+	)
+}
+
+func validateUsenetRemoved(db *sql.DB, t *testing.T) {
+	assert.Equal(t, []int{3}, queryIDs(t, db, `SELECT id FROM indexer ORDER BY id`))
+	assert.Equal(t, []int{2, 3}, queryIDs(t, db, `SELECT id FROM feed ORDER BY id`))
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT feed_id FROM feed_cache ORDER BY feed_id`))
+	assert.Equal(t, []int{3}, queryIDs(t, db, `SELECT indexer_id FROM filter_indexer ORDER BY indexer_id`))
+	assert.Empty(t, queryIDs(t, db, `SELECT id FROM irc_channel`))
+	assert.Empty(t, queryIDs(t, db, `SELECT id FROM irc_network`))
+
+	var settings string
+	require.NoError(t, db.QueryRow(`SELECT settings FROM feed WHERE id = 3`).Scan(&settings))
+	assert.Equal(t, `{"download_type":"TORRENT"}`, settings)
+}
+
+func setupNotificationSenderData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO notification (id, name, type, enabled, webhook) VALUES (10, 'discord', 'DISCORD', TRUE, 'https://discord.example')`,
+		`INSERT INTO notification (id, name, type, enabled, webhook) VALUES (11, 'hook', 'WEBHOOK', TRUE, 'https://hook.example')`,
+		`INSERT INTO filter_notification (filter_id, notification_id) VALUES (1, 10)`,
+		`INSERT INTO filter_notification (filter_id, notification_id) VALUES (1, 11)`,
+	)
+}
+
+func validateNotificationSendersRemoved(db *sql.DB, t *testing.T) {
+	assert.NotContains(t, queryIDs(t, db, `SELECT id FROM notification ORDER BY id`), 10)
+	assert.Contains(t, queryIDs(t, db, `SELECT id FROM notification ORDER BY id`), 11)
+	assert.Equal(t, []int{11}, queryIDs(t, db, `SELECT notification_id FROM filter_notification ORDER BY notification_id`))
+
+	_, err := db.Exec(`SELECT token FROM notification`)
+	assert.Error(t, err, "notification.token must be dropped")
+}
+
+func setupListSourceData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO list (id, name, enabled, type, url) VALUES (1, 'mdblist', TRUE, 'MDBLIST', 'https://mdblist.example')`,
+		`INSERT INTO list (id, name, enabled, type, url) VALUES (2, 'trakt', TRUE, 'TRAKT', 'https://trakt.example')`,
+		`INSERT INTO list_filter (list_id, filter_id) VALUES (1, 1)`,
+		`INSERT INTO list_filter (list_id, filter_id) VALUES (2, 1)`,
+	)
+}
+
+func validateListSourcesRemoved(db *sql.DB, t *testing.T) {
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT id FROM list ORDER BY id`))
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT list_id FROM list_filter ORDER BY list_id`))
+
+	_, err := db.Exec(`SELECT include_year FROM list`)
+	assert.Error(t, err, "list.include_year must be dropped")
+}
+
+func setupArrData(db *sql.DB) error {
+	return execAll(db,
+		`INSERT INTO filter (id, name) VALUES (1, 'movies')`,
+		`INSERT INTO client (id, name, type, enabled, host) VALUES (1, 'radarr', 'RADARR', TRUE, 'http://radarr')`,
+		`INSERT INTO action (id, name, type, enabled, client_id, filter_id) VALUES (1, 'radarr', 'RADARR', TRUE, 1, 1)`,
+		`INSERT INTO action (id, name, type, enabled, webhook_host, filter_id) VALUES (2, 'hook', 'WEBHOOK', TRUE, 'https://hook.example', 1)`,
+		`INSERT INTO "release" (id, torrent_name) VALUES (1, 'Test.Release-GRP')`,
+		`INSERT INTO release_action_status (id, status, action, action_id, type, filter_id, release_id) VALUES (1, 'PUSH_APPROVED', 'radarr', 1, 'RADARR', 1, 1)`,
+		`INSERT INTO release_action_status (id, status, action, action_id, type, filter_id, release_id) VALUES (2, 'PUSH_APPROVED', 'hook', 2, 'WEBHOOK', 1, 1)`,
+		`INSERT INTO list (id, name, enabled, type, client_id) VALUES (1, 'radarr', TRUE, 'RADARR', 1)`,
+		`INSERT INTO list (id, name, enabled, type, url) VALUES (2, 'trakt', TRUE, 'TRAKT', 'https://trakt.example')`,
+		`INSERT INTO list_filter (list_id, filter_id) VALUES (1, 1)`,
+		`INSERT INTO list_filter (list_id, filter_id) VALUES (2, 1)`,
+	)
+}
+
+func validateArrRemoved(db *sql.DB, t *testing.T) {
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT id FROM action ORDER BY id`))
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT id FROM list ORDER BY id`))
+	assert.Equal(t, []int{2}, queryIDs(t, db, `SELECT list_id FROM list_filter ORDER BY list_id`), "only the remaining list keeps its filter link")
+
+	var arrHistoryActionID sql.NullInt64
+	require.NoError(t, db.QueryRow(`SELECT action_id FROM release_action_status WHERE id = 1`).Scan(&arrHistoryActionID))
+	assert.False(t, arrHistoryActionID.Valid, "release history is kept but unlinked from the deleted action")
+
+	var webhookHistoryActionID int
+	require.NoError(t, db.QueryRow(`SELECT action_id FROM release_action_status WHERE id = 2`).Scan(&webhookHistoryActionID))
+	assert.Equal(t, 2, webhookHistoryActionID)
+
+	var count int
+	require.NoError(t, db.QueryRow(`SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'client'`).Scan(&count))
+	assert.Equal(t, 0, count, "client table must be dropped")
+}
+
 func setupUpdateCheckerData(db *sql.DB) error {
 	_, err := db.Exec(`INSERT INTO notification (name, type, enabled, events, webhook) VALUES
 		('Only update', 'WEBHOOK', TRUE, '{APP_UPDATE_AVAILABLE}', 'https://hook.example/1'),
