@@ -5,9 +5,10 @@ import SafariServices
 import SwiftUI
 import WebKit
 
-/// WebView shows the autobrr web UI and opens links to other sites in Safari instead of navigating away from it.
+/// WebView shows the autobrr web UI at path and opens links to other sites in Safari instead of navigating away from it.
 struct WebView: UIViewRepresentable {
     let handler: SchemeHandler
+    var path = "/"
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -25,7 +26,7 @@ struct WebView: UIViewRepresentable {
         webView.isInspectable = true
         #endif
 
-        webView.load(URLRequest(url: SchemeHandler.startURL))
+        webView.load(URLRequest(url: SchemeHandler.url(path: path)))
 
         return webView
     }

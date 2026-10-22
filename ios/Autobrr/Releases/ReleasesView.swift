@@ -1,0 +1,147 @@
+// Copyright (c) 2021 - 2025, Ludvig Lundgren and the autobrr contributors.
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+import SwiftUI
+
+struct ReleasesView: View {
+    @StateObject private var model: ReleasesModel
+
+    init(client: EngineClient) {
+        _model = StateObject(wrappedValue: ReleasesModel(client: client))
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(model.releases) { release in
+                    NavigationLink(value: release) {
+                        ReleaseRow(release: release)
+                    }
+                }
+
+                if model.hasMore {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .listRowSeparator(.hidden)
+                        .task { await model.loadMore() }
+                }
+            }
+            .listStyle(.plain)
+            .overlay { placeholder }
+            .navigationTitle("Releases")
+            .navigationDestination(for: Release.self) { release in
+                ReleaseDetailView(release: release, client: model.client)
+            }
+            .searchable(text: $model.query.search, prompt: "Search releases")
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
+            .toolbar { filterMenu }
+            .refreshable { await model.reload() }
+            .task(id: model.query) {
+                if model.hasLoaded {
+                    try? await Task.sleep(nanoseconds: 300_000_000)
+                    guard !Task.isCancelled else { return }
+                }
+
+                await model.reload()
+            }
+            .task { await model.loadIndexers() }
+        }
+    }
+
+    @ViewBuilder
+    private var placeholder: some View {
+        if !model.hasLoaded {
+            ProgressView()
+        } else if model.releases.isEmpty {
+            VStack(spacing: 8) {
+                Image(systemName: model.error == nil ? "tray" : "exclamationmark.triangle")
+                    .font(.largeTitle)
+                    .foregroundStyle(.secondary)
+                Text(model.error ?? "No releases")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+        }
+    }
+
+    private var filterMenu: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Menu {
+                Picker("Status", selection: $model.query.status) {
+                    Text("Any status").tag(PushStatus?.none)
+                    ForEach([PushStatus.approved, .rejected, .error]) { status in
+                        Text(status.label).tag(PushStatus?.some(status))
+                    }
+                }
+
+                Picker("Indexer", selection: $model.query.indexer) {
+                    Text("Any indexer").tag(String?.none)
+                    ForEach(model.indexers, id: \.self) { indexer in
+                        Text(indexer).tag(String?.some(indexer))
+                    }
+                }
+            } label: {
+                let filtered = model.query.status != nil || model.query.indexer != nil
+                Image(systemName: filtered
+                    ? "line.3.horizontal.decrease.circle.fill"
+                    : "line.3.horizontal.decrease.circle")
+            }
+        }
+    }
+}
+
+private struct ReleaseRow: View {
+    let release: Release
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(release.name)
+                .font(.subheadline)
+                .lineLimit(2)
+
+            HStack(spacing: 6) {
+                Text(release.indexer.name.isEmpty ? release.indexer.identifier : release.indexer.name)
+                Text(release.timestamp.formatted(.relative(presentation: .named)))
+                Spacer(minLength: 0)
+                ForEach(release.actionStatus ?? []) { status in
+                    StatusBadge(status: status.pushStatus)
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// StatusBadge shows the outcome of one action run.
+struct StatusBadge: View {
+    let status: PushStatus?
+
+    var body: some View {
+        Image(systemName: symbol)
+            .foregroundStyle(color)
+            .accessibilityLabel(status?.label ?? "Unknown")
+    }
+
+    private var symbol: String {
+        switch status {
+        case .approved: "checkmark.circle.fill"
+        case .rejected: "minus.circle.fill"
+        case .error: "exclamationmark.circle.fill"
+        case .pending, nil: "clock"
+        }
+    }
+
+    private var color: Color {
+        switch status {
+        case .approved: .green
+        case .rejected: .orange
+        case .error: .red
+        case .pending, nil: .secondary
+        }
+    }
+}

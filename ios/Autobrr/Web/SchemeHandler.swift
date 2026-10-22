@@ -8,7 +8,10 @@ import WebKit
 /// SchemeHandler serves every autobrr:// request from the embedded engine, so the web UI never touches the network stack.
 final class SchemeHandler: NSObject, WKURLSchemeHandler {
     static let scheme = "autobrr"
-    static let startURL = URL(string: "\(scheme)://app/")!
+
+    static func url(path: String) -> URL {
+        URL(string: "\(scheme)://app\(path)")!
+    }
 
     private let engine: MobileEngine
     private var active: [ObjectIdentifier: (writer: TaskWriter, request: MobileRequest?)] = [:]
