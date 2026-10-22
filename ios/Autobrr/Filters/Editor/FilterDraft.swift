@@ -12,6 +12,13 @@ final class FilterDraft: ObservableObject {
         let name: String
     }
 
+    // the engine omits empty lists, but saving needs them: the filter table keeps them NOT NULL
+    private static let listKeys = [
+        "announce_types", "resolutions", "sources", "codecs", "containers", "match_hdr", "except_hdr",
+        "match_other", "except_other", "match_language", "except_language", "formats", "quality", "media",
+        "match_release_types", "origins", "except_origins", "indexers", "actions", "external", "notifications",
+    ]
+
     let id: Int
     let client: EngineClient
 
@@ -35,7 +42,17 @@ final class FilterDraft: ObservableObject {
     func load() async {
         do {
             let data = try await client.request(.get, "filters/\(id)")
-            let filter = try JSONDecoder().decode([String: JSONValue].self, from: data)
+            var filter = try JSONDecoder().decode([String: JSONValue].self, from: data)
+
+            for key in Self.listKeys where filter[key] == nil || filter[key] == .null {
+                filter[key] = .array([])
+            }
+            if filter["max_downloads_window_type"]?.stringValue?.isEmpty != false {
+                filter["max_downloads_window_type"] = .string("FIXED")
+            }
+            if (filter["max_downloads_period"]?.intValue ?? 0) == 0 {
+                filter["max_downloads_period"] = .int(1)
+            }
 
             values = filter
             original = filter
