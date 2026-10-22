@@ -25,8 +25,16 @@ struct SettingsView: View {
                     web("IRC", "/settings/irc", "bubble.left.and.bubble.right")
                     web("Feeds", "/settings/feeds", "dot.radiowaves.up.forward")
                     web("Lists", "/settings/lists", "list.bullet.rectangle")
-                    web("Notifications", "/settings/notifications", "bell")
-                    web("Proxies", "/settings/proxies", "network")
+                    NavigationLink {
+                        NotificationsView(client: client)
+                    } label: {
+                        Label("Notifications", systemImage: "bell")
+                    }
+                    NavigationLink {
+                        ProxiesView(client: client)
+                    } label: {
+                        Label("Proxies", systemImage: "network")
+                    }
                     web("Releases", "/settings/releases", "tray.full")
                 }
             }
