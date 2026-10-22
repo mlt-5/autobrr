@@ -28,7 +28,7 @@ struct RootView: View {
             LogsView(client: client)
                 .tabItem { Label("Logs", systemImage: "text.alignleft") }
 
-            web("/settings")
+            SettingsView(engine: engine, client: client)
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
     }
