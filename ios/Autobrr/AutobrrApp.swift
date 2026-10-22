@@ -31,8 +31,7 @@ struct ContentView: View {
             }
             .padding()
         case .running(let engine):
-            WebView(handler: SchemeHandler(engine: engine))
-                .ignoresSafeArea(.container, edges: .bottom)
+            RootView(engine: engine)
         }
     }
 }
