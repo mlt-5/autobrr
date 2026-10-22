@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Неверное регулярное выражение"
   },
-  "keyField": {
-    "show": "Показать",
-    "copyToClipboard": "Скопировать",
-    "copySuccess": "API-ключ скопирован!",
-    "copyFailed": "Не удалось скопировать API-ключ."
-  },
   "modal": {
     "remove": "Удалить",
     "cancel": "Отмена",

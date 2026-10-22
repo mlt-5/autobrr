@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Отправка отклонена",
-      "description": "При отклонении отправки *arr-приложением или клиентом загрузки"
+      "description": "При отклонении push действием"
     },
     "PUSH_APPROVED": {
       "label": "Отправка одобрена",
-      "description": "При одобрении отправки *arr-приложением или клиентом загрузки"
+      "description": "При одобрении push действием"
     },
     "PUSH_ERROR": {
       "label": "Ошибка отправки",
-      "description": "При ошибке отправки в *arr-приложение или клиент загрузки"
+      "description": "При ошибке push в действии"
     },
     "IRC_DISCONNECTED": {
       "label": "Отключение IRC",

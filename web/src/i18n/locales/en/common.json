@@ -14,12 +14,6 @@
   "input": {
     "invalidRegex": "Invalid regex"
   },
-  "keyField": {
-    "show": "Show",
-    "copyToClipboard": "Copy to clipboard",
-    "copySuccess": "API key copied to clipboard!",
-    "copyFailed": "Failed to copy API key."
-  },
   "modal": {
     "remove": "Remove",
     "cancel": "Cancel",

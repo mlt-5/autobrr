@@ -37,15 +37,15 @@
   "event": {
     "PUSH_REJECTED": {
       "label": "Push Rejected",
-      "description": "On push rejected for the arrs or download client"
+      "description": "On push rejected by an action"
     },
     "PUSH_APPROVED": {
       "label": "Push Approved",
-      "description": "On push approved for the arrs or download client"
+      "description": "On push approved by an action"
     },
     "PUSH_ERROR": {
       "label": "Push Error",
-      "description": "On push error for the arrs or download client"
+      "description": "On push error in an action"
     },
     "IRC_DISCONNECTED": {
       "label": "IRC Disconnected",

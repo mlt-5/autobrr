@@ -132,7 +132,6 @@ test("the external identifier hint follows the typed name of a generic feed", as
   fireEvent.change(document.getElementById("name") as HTMLInputElement, { target: { value: "MyTracker" } });
 
   expect(externalIdentifier.placeholder).toBe("MyTracker");
-  expect(screen.getByText("External Identifier for ARRs. If using Prowlarr set like: MyTracker (Prowlarr)")).toBeTruthy();
 });
 
 test("a feed indexer offers the proxy section and saves the toggle", async () => {

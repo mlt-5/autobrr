@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-import { EyeIcon, EyeSlashIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import TextareaAutosize from "react-textarea-autosize";
 import { useTranslation } from "react-i18next";
 
-import { useToggle } from "@hooks/hooks";
 import { useFormContext, fieldHasError } from "@hooks/form";
 import { DocsTooltip } from "@components/tooltips/DocsTooltip";
 import { classNames } from "@utils";
@@ -485,89 +484,6 @@ export const TextAreaAutoResize = ({
   );
 };
 
-
-interface PasswordFieldProps {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  columns?: COL_WIDTHS;
-  autoComplete?: string;
-  defaultValue?: string;
-  help?: string;
-  required?: boolean;
-  tooltip?: React.JSX.Element;
-}
-
-export const PasswordField = ({
-  name,
-  label,
-  placeholder,
-  defaultValue,
-  columns,
-  autoComplete,
-  help,
-  tooltip,
-  required
-}: PasswordFieldProps) => {
-  const [isVisible, toggleVisibility] = useToggle(false);
-  const form = useFormContext();
-
-  return (
-    <div
-      className={classNames(
-        "col-span-12",
-        columns ? `sm:col-span-${columns}` : ""
-      )}
-    >
-      {label && (
-        <label htmlFor={name} className="flex ml-px text-xs font-bold text-gray-800 dark:text-gray-100 uppercase tracking-wide">
-          {tooltip ? (
-            <DocsTooltip label={label}>{tooltip}</DocsTooltip>
-          ) : (
-            label
-          )}
-          {required && <span className="text-red-500">*</span>}
-        </label>
-      )}
-      <div>
-        <form.Field name={name}>
-          {(field) => (
-            <>
-              <div className="sm:col-span-2 relative">
-                <input
-                  id={name}
-                  name={name}
-                  type={isVisible ? "text" : "password"}
-                  value={field.state.value ?? defaultValue ?? ""}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  autoComplete={autoComplete}
-                  className={classNames(
-                    fieldHasError(field.state.meta)
-                      ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                      : "border-gray-300 dark:border-gray-700 focus:ring-blue-500 dark:focus:ring-blue-500 focus:border-blue-500 dark:focus:border-blue-500",
-                    "mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-815 dark:text-gray-100"
-                  )}
-                  placeholder={placeholder}
-                />
-
-                <div className="absolute inset-y-0 right-0 px-3 flex items-center cursor-pointer" onClick={toggleVisibility}>
-                  {!isVisible ? <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" aria-hidden="true" />
-                    : <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-500" aria-hidden="true" />}
-                </div>
-              </div>
-              {help && (
-                <p className="mt-2 text-sm text-gray-500" id="email-description">{help}</p>
-              )}
-
-              <ErrorField meta={field.state.meta} classNames="error text-sm text-red-600 mt-1" />
-            </>
-          )}
-        </form.Field>
-      </div>
-    </div>
-  );
-};
 
 interface NumberFieldProps {
   name: string;
