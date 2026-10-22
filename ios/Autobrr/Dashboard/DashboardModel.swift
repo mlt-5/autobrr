@@ -61,6 +61,17 @@ enum DayFormat {
     }
 }
 
+/// EngineAlert is a problem the engine reports until it clears, such as an unhealthy IRC network.
+struct EngineAlert: Decodable, Identifiable {
+    let kind: String
+    let severity: String
+    var subjectId: Int64?
+    let subject: String
+    var message: String?
+
+    var id: String { "\(kind)-\(subjectId ?? 0)-\(subject)" }
+}
+
 @MainActor
 final class DashboardModel: ObservableObject {
     enum Period: Int, CaseIterable, Identifiable {
@@ -96,6 +107,7 @@ final class DashboardModel: ObservableObject {
     private let client: EngineClient
 
     @Published var period = Period.month
+    @Published private(set) var alerts: [EngineAlert] = []
     @Published private(set) var stats: ReleaseStats?
     @Published private(set) var activity: [ActivityDay] = []
     @Published private(set) var volume: [VolumeDay] = []
@@ -111,6 +123,10 @@ final class DashboardModel: ObservableObject {
 
     func load() async {
         let days = [URLQueryItem(name: "days", value: String(period.rawValue))]
+
+        if let alerts: [EngineAlert] = try? await client.get("alerts") {
+            self.alerts = alerts
+        }
 
         do {
             async let stats: ReleaseStats = client.get("release/stats")
