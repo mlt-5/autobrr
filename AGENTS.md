@@ -21,16 +21,16 @@ This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, etc
 
 ## Development Commands
 
-- Go targets are in the `Makefile` (`make test`, `make build/ios`); web scripts are in `web/package.json` (`build`, `test`, `lint`)
-- Run web scripts from the repo root as `pnpm --dir web <script>` - `cd web && pnpm ...` aborts under corepack's pnpm 11 with a "no TTY" error
+- Go targets are in the `Makefile` (`make test`, `make build/ios`)
+- The iOS app builds only on macOS with Xcode; CI compiles it for the simulator in `.github/workflows/ios.yml`
 
 ## Project Architecture
 
 ### Backend Architecture (Go)
 The backend follows a layered architecture with clear separation of concerns:
 
-- **`mobile/`**: the only entry point - gomobile binds it for the iOS app. It runs the app without a network listener and serves web view requests through `Engine.Serve` (`make build/ios`)
-- **`ios/`**: SwiftUI app hosting the web UI in a `WKWebView`; `SchemeHandler` passes `autobrr://` requests to `Engine.Serve`. The Xcode project is generated with XcodeGen from `ios/project.yml` - see `ios/README.md`
+- **`mobile/`**: the only entry point - gomobile binds it for the iOS app. It runs the app without a network listener and serves API requests through `Engine.Serve` (`make build/ios`)
+- **`ios/`**: native SwiftUI app; `EngineClient` calls the API in-process through `Engine.Serve` and reads event streams the same way. The Xcode project is generated with XcodeGen from `ios/project.yml` - see `ios/README.md`
 
 - **`internal/`**: Core application logic organized by domain
   - **Domain layer** (`internal/domain/`): Core business entities. It holds no repository or service interfaces - each consumer declares a small unexported interface listing only the methods it calls, and constructors return concrete `*Service` structs
@@ -43,13 +43,10 @@ The backend follows a layered architecture with clear separation of concerns:
   - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `red`) and the Torznab feed client
   - Utility packages for different indexer APIs
 
-### Frontend Architecture (React/TypeScript)
-- **React 19** with **TypeScript** and **Vite** build system
-- **TanStack Router** for routing and **TanStack Query** for API state management
-- **Tailwind CSS** for styling with custom design system
-- **TanStack Form** for form handling (shared setup in `web/src/hooks/form.ts`, house inputs in `web/src/components/inputs/`)
-- Component structure in `web/src/components/` with reusable UI components
-- API client in `web/src/api/` with centralized query management
+### iOS App (SwiftUI)
+- Deployment target iOS 16.4 - avoid APIs introduced later
+- Screens are grouped by tab in `ios/Autobrr/` (`Dashboard`, `Inbox`, `Filters`, `Releases`, `Logs`, `Settings`); shared engine plumbing lives in `ios/Autobrr/Engine/`
+- Engine objects that screens edit field by field are kept as `JSONValue` documents (`JSONDocument`), so fields a screen does not show survive a save; simple read-only data uses `Decodable` structs with `JSON.decoder`
 
 ### Key Domain Concepts
 - **Releases**: Torrent releases that get processed through filters
@@ -81,13 +78,11 @@ The backend follows a layered architecture with clear separation of concerns:
 - Exported identifiers need doc comments; keep names descriptive and consistent
 - Keep domain DTOs and JSON tags synced; prefer tagged struct fields over `map[string]any`
 
-### Frontend
-- Prefer functional components, React hooks, and typed props/interfaces
-- `pnpm --dir web lint`, `build` and `test` are all green on `develop` and stay green - lint runs with `--max-warnings 0`
-- Tailwind: reuse tokens from `web/tailwind.config.ts`; keep utility classes ordered logically
+### Swift
+- Match the surrounding SwiftUI style: small views, `@StateObject` models for screen state, `async`/`await` calls through `EngineClient`
 
 ### Comments
-Applies to Go and TypeScript alike. Excessive low-value comments are the most common defect in AI-generated code - default to writing **no comment**, and only add one when it earns its place:
+Applies to Go and Swift alike. Excessive low-value comments are the most common defect in AI-generated code - default to writing **no comment**, and only add one when it earns its place:
 
 - Comment the *why*, never the *what*: non-obvious invariants, workarounds (link the issue or upstream bug), tracker/IRC protocol quirks, deliberate deviations from the expected approach
 - If a comment restates what the code plainly says, it must be deleted. Banned patterns: step narration (`// loop over filters`, `// return the result`), section banners (`// error handling`), and restating the function name above the function
@@ -100,14 +95,12 @@ Applies to Go and TypeScript alike. Excessive low-value comments are the most co
 - `make test` runs the untagged Go suite. Database and other integration tests carry `//go:build integration` next to the code they test and run with `go test -tags=integration ./...` against an in-memory SQLite database, so no Docker is needed
 - IRC integration tests in `test/irc/`, run with `go test -tags=irc_integration_test ./test/irc/...` (in-process ircd, no Docker) - see `test/irc/README.md`
 - Build-tagged packages are invisible to a plain `go list ./...`; pass the tag to tooling that discovers packages first
-- Frontend tests in `web/test/`, run with `pnpm --dir web test` (Vitest + Testing Library in jsdom)
 - Mock indexer server available in `test/mockindexer/`
 
 ## Development Notes
-- The project uses **pnpm** as the package manager for the frontend
 - The Go minimum is the `go` line in `go.mod`
-- The Go engine embeds the built React frontend (`web/dist`) and serves it to the iOS web view in-process
-- Real-time updates via Server-Sent Events (SSE)
+- The app never opens a network listener: every API call and event stream goes through `Engine.Serve` in-process
+- Real-time updates (logs, inbox) are Server-Sent Events streamed over the same bridge
 
 ## Pull Requests
 - PRs target the `develop` branch

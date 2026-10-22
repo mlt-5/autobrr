@@ -96,7 +96,7 @@ func (app *App) Ready() <-chan struct{} {
 	return app.ready
 }
 
-// Handler serves the web UI and API. It is nil until Ready is closed.
+// Handler serves the API. It is nil until Ready is closed.
 func (app *App) Handler() nethttp.Handler {
 	return app.handler
 }

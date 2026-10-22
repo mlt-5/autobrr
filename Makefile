@@ -1,4 +1,4 @@
-.PHONY: all deps test build build/web build/ios clean
+.PHONY: all deps test build build/ios clean
 .POSIX:
 .SUFFIXES:
 
@@ -10,7 +10,6 @@ RM = rm
 all: clean build
 
 deps:
-	pnpm --dir web install --frozen-lockfile
 	go mod download
 
 test:
@@ -18,11 +17,8 @@ test:
 
 build: build/ios
 
-build/web:
-	pnpm --dir web run build
-
-build/ios: deps build/web
+build/ios: deps
 	gomobile bind -target=ios,iossimulator -ldflags "-X github.com/autobrr/autobrr/internal/meta.commit=$(GIT_COMMIT) -X github.com/autobrr/autobrr/internal/meta.version=$(GIT_TAG)" -o bin/AutobrrEngine.xcframework ./mobile
 
 clean:
-	$(RM) -rf bin web/dist/*
+	$(RM) -rf bin

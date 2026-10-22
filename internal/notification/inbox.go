@@ -110,7 +110,7 @@ func (s *Service) DeleteInbox(ctx context.Context) error {
 	return nil
 }
 
-// publishInboxChanged tells connected web clients to refetch the inbox. It carries no ids
+// publishInboxChanged tells connected clients to refetch the inbox. It carries no ids
 // because deletes shift pages and the counts depend on each client's query filters.
 func publishInboxChanged(publisher ssePublisher) {
 	// r3labs/sse closes the subscriber's stream on an event with empty Data.
@@ -120,7 +120,7 @@ func publishInboxChanged(publisher ssePublisher) {
 	})
 }
 
-// StoreInboxMessage stores msg and publishes it to connected web clients.
+// StoreInboxMessage stores msg and publishes it to connected clients.
 func (s *Service) StoreInboxMessage(ctx context.Context, msg *domain.InboxMessage) error {
 	if err := s.inboxRepo.Store(ctx, msg); err != nil {
 		return err

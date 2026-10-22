@@ -58,7 +58,7 @@ struct IndexerTemplatesView: View {
     }
 }
 
-/// AddIndexerView creates an indexer and, like the web form, the IRC network or feed its definition needs.
+/// AddIndexerView creates an indexer and the IRC network or feed its definition needs.
 private struct AddIndexerView: View {
     private struct Created: Decodable {
         let id: Int64
@@ -159,7 +159,7 @@ private struct AddIndexerView: View {
         draft.values[group]?.objectValue?[name]?.stringValue ?? ""
     }
 
-    /// missing names the first required field left empty or at its placeholder default, as the web form rejects.
+    /// missing names the first required field left empty or at its placeholder default.
     private var missing: String? {
         if definition.isFeed && (draft.values["name"]?.stringValue ?? "").isEmpty {
             return "Name"

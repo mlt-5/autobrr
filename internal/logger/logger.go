@@ -18,7 +18,7 @@ import (
 )
 
 // New builds the root logger. Pass the sse server to mirror log output to the
-// web ui; every logger derived from the returned one inherits the writers, so
+// app; every logger derived from the returned one inherits the writers, so
 // there is no way to attach it afterwards.
 func New(cfg *domain.Config, sseSrv sseServer) zerolog.Logger {
 	SetLevel(cfg.LogLevel)

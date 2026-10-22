@@ -217,7 +217,7 @@ func (h ircHandler) announceProcess(w http.ResponseWriter, r *http.Request) {
 	data.NetworkId = int64(networkID)
 	data.Channel = chi.URLParam(r, "channel")
 
-	// we cant pass # as an url parameter so the frontend has to strip it
+	// we cant pass # as an url parameter so the client has to strip it
 	if !strings.HasPrefix(data.Channel, "#") {
 		data.Channel = fmt.Sprintf("#%s", data.Channel)
 	}
@@ -295,7 +295,7 @@ func (h ircHandler) getMessageHistory(w http.ResponseWriter, r *http.Request) {
 
 	channel := chi.URLParam(r, "channel")
 
-	// we cant pass # as an url parameter so the frontend has to strip it
+	// we cant pass # as an url parameter so the client has to strip it
 	if !strings.HasPrefix(channel, "#") {
 		channel = fmt.Sprintf("#%s", channel)
 	}
