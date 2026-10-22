@@ -23,8 +23,16 @@ struct SettingsView: View {
                 Section {
                     web("Indexers", "/settings/indexers", "antenna.radiowaves.left.and.right")
                     web("IRC", "/settings/irc", "bubble.left.and.bubble.right")
-                    web("Feeds", "/settings/feeds", "dot.radiowaves.up.forward")
-                    web("Lists", "/settings/lists", "list.bullet.rectangle")
+                    NavigationLink {
+                        FeedsView(client: client)
+                    } label: {
+                        Label("Feeds", systemImage: "dot.radiowaves.up.forward")
+                    }
+                    NavigationLink {
+                        ListsView(client: client)
+                    } label: {
+                        Label("Lists", systemImage: "list.bullet.rectangle")
+                    }
                     NavigationLink {
                         NotificationsView(client: client)
                     } label: {
