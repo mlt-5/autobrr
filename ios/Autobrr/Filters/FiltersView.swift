@@ -1,19 +1,15 @@
 // Copyright (c) 2021 - 2025, Ludvig Lundgren and the autobrr contributors.
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import AutobrrEngine
 import SwiftUI
 
 struct FiltersView: View {
-    let engine: MobileEngine
-
     @StateObject private var model: FiltersModel
     @State private var path: [Int] = []
     @State private var showAdd = false
     @State private var deleting: FilterSummary?
 
-    init(engine: MobileEngine, client: EngineClient) {
-        self.engine = engine
+    init(client: EngineClient) {
         _model = StateObject(wrappedValue: FiltersModel(client: client))
     }
 
@@ -44,7 +40,7 @@ struct FiltersView: View {
             .overlay { placeholder }
             .navigationTitle("Filters")
             .navigationDestination(for: Int.self) { id in
-                FilterEditorView(id: id, engine: engine, client: model.client)
+                FilterEditorView(id: id, client: model.client)
                     .onDisappear { Task { await model.load() } }
             }
             .searchable(text: $model.search, prompt: "Search filters")
