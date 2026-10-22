@@ -85,7 +85,8 @@ final class FilterDraft: ObservableObject {
 
         do {
             try await client.request(.put, "filters/\(id)", body: JSONEncoder().encode(values))
-            original = values
+            // new actions and external filters get their ids on save, so take the stored filter back
+            await load()
             return true
         } catch {
             self.error = error.localizedDescription
