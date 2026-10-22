@@ -6,11 +6,9 @@ import SwiftUI
 
 /// RootView holds the app's tabs.
 struct RootView: View {
-    private let engine: MobileEngine
     private let client: EngineClient
 
     init(engine: MobileEngine) {
-        self.engine = engine
         self.client = EngineClient(engine: engine)
     }
 
@@ -28,7 +26,7 @@ struct RootView: View {
             LogsView(client: client)
                 .tabItem { Label("Logs", systemImage: "text.alignleft") }
 
-            SettingsView(engine: engine, client: client)
+            SettingsView(client: client)
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
     }
