@@ -11,6 +11,7 @@ import (
 
 	"github.com/autobrr/autobrr/internal/config"
 	"github.com/autobrr/autobrr/internal/domain"
+	"github.com/autobrr/autobrr/internal/logger"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -95,6 +96,7 @@ func (h configHandler) updateConfig(w http.ResponseWriter, r *http.Request) {
 
 	if data.LogLevel != nil {
 		h.cfg.Config.LogLevel = *data.LogLevel
+		logger.SetLevel(*data.LogLevel)
 	}
 
 	if data.LogPath != nil {

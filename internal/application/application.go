@@ -30,11 +30,8 @@ import (
 	"github.com/autobrr/autobrr/pkg/errors"
 	"github.com/autobrr/autobrr/pkg/featureflags"
 
-	"github.com/KimMachineGun/automemlimit/memlimit"
-	"github.com/dcarbone/zadapters/zstdlog"
 	"github.com/r3labs/sse/v2"
 	"github.com/rs/zerolog"
-	"go.uber.org/automaxprocs/maxprocs"
 )
 
 func init() {
@@ -72,8 +69,11 @@ type App struct {
 // New loads the config and builds the parts that need no database. The host,
 // such as the iOS app, passes requests to Handler itself, so no network
 // listener is opened.
-func New(configPath string) *App {
-	cfg := config.New(configPath)
+func New(configPath string) (*App, error) {
+	cfg, err := config.New(configPath)
+	if err != nil {
+		return nil, err
+	}
 
 	serverEvents := sse.New()
 	serverEvents.CreateStreamWithOpts(logger.StreamLogs, sse.StreamOpts{MaxEntries: 1000, AutoReplay: true})
@@ -82,15 +82,13 @@ func New(configPath string) *App {
 
 	log := logger.New(cfg.Config, serverEvents)
 
-	cfg.DynamicReload(log)
-
 	return &App{
 		log:      log,
 		cfg:      cfg,
 		sse:      serverEvents,
 		eventBus: events.NewEventBus(log),
 		ready:    make(chan struct{}),
-	}
+	}, nil
 }
 
 // Ready is closed once every component has started.
@@ -240,29 +238,17 @@ func (app *App) Log() *zerolog.Logger {
 	return &app.log
 }
 
-func (app *App) setupResourceLimits() {
-	// the returned undo is dropped on purpose, the limit holds for the process lifetime
-	if _, err := maxprocs.Set(maxprocs.Logger(zstdlog.NewStdLoggerWithLevel(app.log.With().Logger(), zerolog.InfoLevel).Printf)); err != nil {
-		app.log.Error().Err(err).Msg("failed to set GOMAXPROCS")
-	}
-
-	memLimit, err := memlimit.Set(memlimit.WithProvider(memlimit.ApplyFallback(memlimit.FromCgroup, memlimit.FromSystem)))
-	if err != nil {
-		app.log.Error().Err(err).Msg("failed to set GOMEMLIMIT")
-	}
-
-	app.log.Debug().Int64("gomemlimit_bytes", memLimit).Msg("memory limit configured")
-}
-
 func (app *App) setup(ctx context.Context) error {
-	app.setupResourceLimits()
-
 	db, err := database.NewDB(app.cfg.Config, app.log)
 	if err != nil {
 		return errors.Wrap(err, "could not init database")
 	}
 
 	if err := db.Open(); err != nil {
+		if closeErr := db.Close(); closeErr != nil {
+			app.log.Error().Err(closeErr).Msg("could not close database")
+		}
+
 		return errors.Wrap(err, "could not open database")
 	}
 

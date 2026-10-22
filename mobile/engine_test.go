@@ -6,6 +6,8 @@ package mobile
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -149,4 +151,68 @@ func TestServeStreamsEvents(t *testing.T) {
 	case <-time.After(10 * time.Second):
 		t.Fatal("stream did not finish after cancel")
 	}
+}
+
+func TestStartOneEngineAtATime(t *testing.T) {
+	e, err := Start(t.TempDir())
+	require.NoError(t, err)
+
+	_, err = Start(t.TempDir())
+	assert.Error(t, err)
+
+	require.NoError(t, e.Stop())
+
+	startEngine(t)
+}
+
+func TestStartInvalidConfig(t *testing.T) {
+	dir := t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "config.toml"), []byte(`logMaxSize = "large"`), 0o644))
+
+	_, err := Start(dir)
+	assert.Error(t, err)
+
+	startEngine(t)
+}
+
+func TestBridgeWriterAbort(t *testing.T) {
+	rec := newRecorder()
+	rw := newBridgeWriter(rec)
+	rw.Header().Set("Content-Type", "application/json")
+
+	rw.abort()
+	rw.finish()
+
+	res := rec.wait(t)
+	assert.Equal(t, http.StatusInternalServerError, res.status)
+	assert.Empty(t, res.headers)
+
+	rec = newRecorder()
+	rw = newBridgeWriter(rec)
+	_, _ = rw.Write([]byte(`{"partial":`))
+
+	rw.abort()
+	rw.finish()
+
+	res = rec.wait(t)
+	assert.Equal(t, http.StatusOK, res.status, "a status already sent stays")
+	assert.Empty(t, res.body, "unflushed output is dropped")
+}
+
+func TestServeKeepsBodyAfterReturn(t *testing.T) {
+	e := startEngine(t)
+
+	// gobind frees the body it passes in once Serve returns
+	body := []byte(`{"log_level":"DEBUG"}`)
+	rec := newRecorder()
+	e.Serve(http.MethodPatch, "app://autobrr/api/config", `{"Content-Type":"application/json"}`, body, rec)
+	for i := range body {
+		body[i] = 0
+	}
+
+	res := rec.wait(t)
+	assert.Equal(t, http.StatusNoContent, res.status, res.body)
+
+	res = serve(t, e, http.MethodGet, "app://autobrr/api/config", nil, "")
+	assert.Contains(t, res.body, `"log_level":"DEBUG"`)
 }

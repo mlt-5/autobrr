@@ -24,6 +24,7 @@ func TestGetUserAgent(t *testing.T) {
 		{name: "slash", version: "feature/foo", want: "featurefoo"},
 		{name: "all_invalid", version: "()", want: devVersion},
 		{name: "dev", version: devVersion, want: devVersion},
+		{name: "empty_ldflag", version: "", want: devVersion},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

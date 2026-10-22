@@ -14,11 +14,8 @@ import (
 	"sync"
 
 	"github.com/autobrr/autobrr/internal/domain"
-	"github.com/autobrr/autobrr/internal/logger"
 	"github.com/autobrr/autobrr/pkg/errors"
 
-	"github.com/fsnotify/fsnotify"
-	"github.com/rs/zerolog"
 	"github.com/spf13/viper"
 )
 
@@ -107,17 +104,21 @@ type AppConfig struct {
 	m      *sync.Mutex
 }
 
-func New(configPath string) *AppConfig {
+// New loads the config file in configPath, creating it with defaults when it
+// is missing, and applies AUTOBRR__ environment overrides.
+func New(configPath string) (*AppConfig, error) {
 	c := &AppConfig{
 		m: new(sync.Mutex),
 	}
 	c.defaults()
 	c.Config.ConfigPath = configPath
 
-	c.load(configPath)
+	if err := c.load(configPath); err != nil {
+		return nil, err
+	}
 	c.loadFromEnv()
 
-	return c
+	return c, nil
 }
 
 func (c *AppConfig) defaults() {
@@ -171,7 +172,7 @@ func GetEnvStr(key string) string {
 	if filePath := os.Getenv(EnvVarPrefix + key + "_FILE"); filePath != "" {
 		content, err := os.ReadFile(filePath)
 		if err != nil {
-			log.Fatalf("Could not read file: %s err: %q", filePath, err)
+			log.Printf("could not read file: %s err: %q", filePath, err)
 			return ""
 		}
 		return strings.TrimSpace(string(content))
@@ -194,7 +195,7 @@ func GetEnvInt(key string) int {
 	return int(i)
 }
 
-func (c *AppConfig) load(configPath string) {
+func (c *AppConfig) load(configPath string) error {
 	viper.SetConfigType("toml")
 
 	// clean trailing slash from configPath
@@ -225,25 +226,10 @@ func (c *AppConfig) load(configPath string) {
 	}
 
 	if err := viper.Unmarshal(c.Config); err != nil {
-		log.Fatalf("Could not unmarshal config file: %v: err %q", viper.ConfigFileUsed(), err)
+		return errors.Wrap(err, "could not unmarshal config file: %s", viper.ConfigFileUsed())
 	}
-}
 
-func (c *AppConfig) DynamicReload(log zerolog.Logger) {
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		c.m.Lock()
-		defer c.m.Unlock()
-
-		logLevel := viper.GetString("logLevel")
-		c.Config.LogLevel = logLevel
-		logger.SetLevel(c.Config.LogLevel)
-
-		logPath := viper.GetString("logPath")
-		c.Config.LogPath = logPath
-
-		log.Debug().Msg("config file reloaded!")
-	})
+	return nil
 }
 
 func (c *AppConfig) UpdateConfig() error {

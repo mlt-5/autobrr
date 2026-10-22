@@ -3,7 +3,7 @@
 .SUFFIXES:
 
 GIT_COMMIT := $(shell git rev-parse HEAD 2> /dev/null)
-GIT_TAG := $(shell git describe --abbrev=0 --tags)
+GIT_TAG := $(shell git describe --abbrev=0 --tags 2> /dev/null)
 
 RM = rm
 
