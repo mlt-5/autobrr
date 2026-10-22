@@ -25,6 +25,9 @@ struct RootView: View {
             ReleasesView(client: client)
                 .tabItem { Label("Releases", systemImage: "tray.full") }
 
+            LogsView(client: client)
+                .tabItem { Label("Logs", systemImage: "text.alignleft") }
+
             web("/settings")
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }

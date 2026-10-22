@@ -34,14 +34,7 @@ final class EngineClient {
 
     @discardableResult
     func request(_ method: Method, _ path: String, query: [URLQueryItem] = [], body: Data? = nil) async throws -> Data {
-        var components = URLComponents()
-        components.scheme = SchemeHandler.scheme
-        components.host = "app"
-        components.path = "/api/" + path
-        components.queryItems = query.isEmpty ? nil : query
-
-        guard let url = components.url else { throw URLError(.badURL) }
-
+        let url = try Self.url(path, query: query)
         let collector = ResponseCollector()
 
         let (status, data) = try await withTaskCancellationHandler {
@@ -65,6 +58,42 @@ final class EngineClient {
         }
 
         return data
+    }
+
+    /// stream yields the response body as the engine flushes it, for endpoints that stay open such as events.
+    /// Ending the iteration cancels the request.
+    func stream(_ path: String, query: [URLQueryItem] = []) -> AsyncThrowingStream<Data, Error> {
+        AsyncThrowingStream { continuation in
+            let url: URL
+            do {
+                url = try Self.url(path, query: query)
+            } catch {
+                continuation.finish(throwing: error)
+                return
+            }
+
+            let request = engine.serve(
+                Method.get.rawValue,
+                rawURL: url.absoluteString,
+                headersJSON: #"{"Accept":"text/event-stream"}"#,
+                body: nil,
+                w: StreamWriter(continuation: continuation)
+            )
+
+            continuation.onTermination = { _ in request?.cancel() }
+        }
+    }
+
+    private static func url(_ path: String, query: [URLQueryItem]) throws -> URL {
+        var components = URLComponents()
+        components.scheme = SchemeHandler.scheme
+        components.host = "app"
+        components.path = "/api/" + path
+        components.queryItems = query.isEmpty ? nil : query
+
+        guard let url = components.url else { throw URLError(.badURL) }
+
+        return url
     }
 }
 
@@ -189,5 +218,70 @@ private final class ResponseCollector: NSObject, MobileResponseWriterProtocol {
         } else {
             continuation?.resume(returning: (status, data))
         }
+    }
+}
+
+/// StreamWriter passes each flushed chunk of a response on to an AsyncThrowingStream.
+private final class StreamWriter: NSObject, MobileResponseWriterProtocol {
+    private let continuation: AsyncThrowingStream<Data, Error>.Continuation
+    private var status = 0
+    private var failure = Data()
+
+    init(continuation: AsyncThrowingStream<Data, Error>.Continuation) {
+        self.continuation = continuation
+    }
+
+    func writeHeader(_ status: Int, headersJSON: String?) {
+        self.status = status
+    }
+
+    func write(_ data: Data?) {
+        guard let data else { return }
+
+        if (200..<300).contains(status) {
+            continuation.yield(data)
+        } else {
+            failure.append(data)
+        }
+    }
+
+    func finish() {
+        if (200..<300).contains(status) {
+            continuation.finish()
+        } else {
+            continuation.finish(throwing: APIError(status: status, data: failure))
+        }
+    }
+}
+
+/// EventStreamParser splits a server-sent event stream into the data of each event.
+struct EventStreamParser {
+    private var buffer = Data()
+
+    mutating func append(_ chunk: Data) -> [String] {
+        buffer.append(chunk)
+
+        var events: [String] = []
+        let separator = Data("\n\n".utf8)
+
+        while let range = buffer.firstRange(of: separator) {
+            let block = String(decoding: buffer[buffer.startIndex..<range.lowerBound], as: UTF8.self)
+            buffer.removeSubrange(buffer.startIndex..<range.upperBound)
+
+            let data = block
+                .split(separator: "\n", omittingEmptySubsequences: false)
+                .filter { $0.hasPrefix("data:") }
+                .map { line in
+                    let value = line.dropFirst("data:".count)
+                    return value.hasPrefix(" ") ? String(value.dropFirst()) : String(value)
+                }
+                .joined(separator: "\n")
+
+            if !data.isEmpty {
+                events.append(data)
+            }
+        }
+
+        return events
     }
 }
