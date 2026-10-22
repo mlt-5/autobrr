@@ -34,6 +34,18 @@ extension JSONDocument {
         }
     }
 
+    func string(in key: String, _ field: String) -> Binding<String> {
+        Binding { self.values[key]?.objectValue?[field]?.stringValue ?? "" } set: { value in
+            self.updateObject(key) { $0[field] = .string(value) }
+        }
+    }
+
+    func int(in key: String, _ field: String) -> Binding<Int> {
+        Binding { Int(self.values[key]?.objectValue?[field]?.intValue ?? 0) } set: { value in
+            self.updateObject(key) { $0[field] = .int(Int64(value)) }
+        }
+    }
+
     func items(_ key: String) -> [[String: JSONValue]] {
         values[key]?.arrayValue?.compactMap(\.objectValue) ?? []
     }
@@ -66,6 +78,12 @@ extension JSONDocument {
         } set: { value in
             self.update(key, index) { $0[field] = .array(value.map(JSONValue.string)) }
         }
+    }
+
+    private func updateObject(_ key: String, _ change: (inout [String: JSONValue]) -> Void) {
+        var object = values[key]?.objectValue ?? [:]
+        change(&object)
+        set(key, .object(object))
     }
 
     private func field(_ key: String, _ index: Int, _ field: String) -> JSONValue? {

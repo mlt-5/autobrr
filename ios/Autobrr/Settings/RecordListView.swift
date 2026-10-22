@@ -17,6 +17,14 @@ final class RecordDraft: ObservableObject, JSONDocument {
     }
 }
 
+/// RecordAction is a request run on a saved record, as POST or DELETE on path/{id}/suffix.
+struct RecordAction {
+    let title: String
+    var method = EngineClient.Method.post
+    let suffix: String
+    let done: String
+}
+
 /// RecordKind describes a settings list the engine serves as GET/POST on path and PUT/DELETE on path/{id}.
 struct RecordKind {
     let title: String
@@ -24,7 +32,9 @@ struct RecordKind {
     let path: String
     let empty: String
     let template: [String: JSONValue]
+    var canCreate = true
     var canTest = false
+    var actions: [RecordAction] = []
     var canDelete: ([String: JSONValue]) -> Bool = { _ in true }
     let summary: ([String: JSONValue]) -> String
 }
@@ -75,13 +85,15 @@ struct RecordListView<Fields: View>: View {
         .navigationTitle(kind.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    adding = true
-                } label: {
-                    Image(systemName: "plus")
+            if kind.canCreate {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        adding = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel("Add \(kind.noun)")
                 }
-                .accessibilityLabel("Add \(kind.noun)")
             }
         }
         .sheet(isPresented: $adding) {
@@ -179,11 +191,19 @@ private struct RecordEditView<Fields: View>: View {
         Form {
             fields(draft)
 
-            if kind.canTest {
+            if kind.canTest || (draft.id != nil && !kind.actions.isEmpty) {
                 Section {
-                    Button("Test") { run(test: true) }
-                        .disabled(busy)
+                    if kind.canTest {
+                        Button("Test") { run(test: true) }
+                    }
+
+                    if let id = draft.id {
+                        ForEach(kind.actions, id: \.suffix) { action in
+                            Button(action.title) { perform(action, id: id) }
+                        }
+                    }
                 }
+                .disabled(busy)
             }
         }
         .navigationTitle(draft.id == nil ? "New \(kind.noun)" : draft.values["name"]?.stringValue ?? kind.noun)
@@ -207,6 +227,21 @@ private struct RecordEditView<Fields: View>: View {
             Button("OK") { message = nil }
         } message: {
             Text(message ?? "")
+        }
+    }
+
+    private func perform(_ action: RecordAction, id: Int64) {
+        busy = true
+
+        Task {
+            defer { busy = false }
+
+            do {
+                try await client.request(action.method, "\(kind.path)/\(id)/\(action.suffix)")
+                message = action.done
+            } catch {
+                message = error.localizedDescription
+            }
         }
     }
 
