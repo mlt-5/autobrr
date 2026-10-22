@@ -3,8 +3,8 @@
 
 import SwiftUI
 
-/// FilterDraft holds a filter as the engine returns it and saves it back whole, like the web editor,
-/// so fields the native screens do not show survive an edit.
+/// FilterDraft holds a filter as the engine returns it and saves it back whole,
+/// so fields the screens do not show survive an edit.
 @MainActor
 final class FilterDraft: ObservableObject, JSONDocument {
     struct Option: Decodable, Identifiable, Hashable {

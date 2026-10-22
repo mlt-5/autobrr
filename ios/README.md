@@ -1,11 +1,11 @@
 # autobrr for iOS
 
-A SwiftUI shell around the autobrr engine. The Go engine is built into `AutobrrEngine.xcframework` with gomobile and runs inside the app. The web UI is loaded in a `WKWebView` from `autobrr://app/`, and every request is handed to the engine in-process by `SchemeHandler`, so nothing listens on the network.
+A native SwiftUI app around the autobrr engine. The Go engine is built into `AutobrrEngine.xcframework` with gomobile and runs inside the app. Screens call its API in-process through `EngineClient`, so nothing listens on the network.
 
 ## Requirements
 
 - macOS with Xcode 15 or later
-- Go (the version in `go.mod`), Node.js and pnpm
+- Go (the version in `go.mod`)
 - [gomobile](https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile): `go install golang.org/x/mobile/cmd/gomobile@latest && gomobile init`
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen): `brew install xcodegen`
 
@@ -14,12 +14,12 @@ A SwiftUI shell around the autobrr engine. The Go engine is built into `AutobrrE
 From the repository root:
 
 ```sh
-make build/ios                       # web UI + bin/AutobrrEngine.xcframework
+make build/ios                       # bin/AutobrrEngine.xcframework
 cd ios && xcodegen generate          # writes Autobrr.xcodeproj
 open Autobrr.xcodeproj
 ```
 
-Set your team under Signing & Capabilities (and change `com.autobrr.ios` if it is taken), then run on a device or simulator. Re-run `make build/ios` after changing Go code or the web UI.
+Set your team under Signing & Capabilities (and change `com.autobrr.ios` if it is taken), then run on a device or simulator. Re-run `make build/ios` after changing Go code.
 
 ## Sideloading
 

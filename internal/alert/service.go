@@ -107,7 +107,7 @@ func (s *Service) List(ctx context.Context) []domain.Alert {
 	return alerts
 }
 
-// publishAlertsChanged tells connected web clients to refetch the alerts.
+// publishAlertsChanged tells connected clients to refetch the alerts.
 func (s *Service) publishAlertsChanged() {
 	// r3labs/sse closes the subscriber's stream on an event with empty Data.
 	s.sse.Publish(notification.InboxStreamKey, &sse.Event{

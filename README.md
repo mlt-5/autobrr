@@ -48,7 +48,7 @@ autobrr can drop matches (torrent files that meet your filter's criteria) into a
 - Torznab and RSS support to easily get access to hundreds of torrent indexers
 - Torrent Magnet support
 - Powerful but simple filtering with RegEx support (like in autodl-irssi)
-- Easy to use web UI (with dark mode!) to manage everything
+- Native iOS app (with dark mode!) to manage everything
 - Runs entirely on your iPhone or iPad, with no server to host
 - SQLite database
 - Notifications (built-in inbox and webhooks)

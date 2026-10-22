@@ -86,7 +86,7 @@ final class EngineClient {
 
     private static func url(_ path: String, query: [URLQueryItem]) throws -> URL {
         var components = URLComponents()
-        components.scheme = SchemeHandler.scheme
+        components.scheme = "autobrr"
         components.host = "app"
         components.path = "/api/" + path
         components.queryItems = query.isEmpty ? nil : query

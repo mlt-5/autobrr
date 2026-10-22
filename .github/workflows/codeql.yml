@@ -20,9 +20,6 @@ on:
   schedule:
     - cron: '20 13 * * 6'
 
-env:
-  NODE_VERSION: '24.15.0'
-
 jobs:
   analyze:
     name: Analyze
@@ -41,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'go', 'javascript' ]
+        language: [ 'go' ]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift' ]
         # Use only 'java' to analyze code written in Java, Kotlin or both
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
@@ -50,27 +47,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v7
-
-    - name: Set up Node
-      uses: actions/setup-node@v7
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-
-    - name: Set up pnpm
-      uses: pnpm/action-setup@v6.1.0
-      with:
-        package_json_file: web/package.json
-
-      # It can not be done before installing pnpm
-    - name: Set up cache
-      uses: actions/setup-node@v7
-      with:
-        cache: pnpm
-        cache-dependency-path: web/pnpm-lock.yaml
-
-    - name: Fetch web dependencies
-      working-directory: web
-      run: pnpm install --frozen-lockfile
 
     - name: Set up Go
       uses: actions/setup-go@v7

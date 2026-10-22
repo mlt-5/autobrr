@@ -24,8 +24,7 @@ Make sure you have the following dependencies installed before setting up your d
 
 - [Git](https://git-scm.com/)
 - [Go](https://golang.org/dl/) (see [go.mod](go.mod#L3) for minimum required version)
-- [Node.js](https://nodejs.org) (we usually use the latest Node LTS version - for further information see `@types/node` major version in [package.json](web/package.json))
-- [pnpm](https://pnpm.io/installation)
+- macOS with Xcode, to build and run the iOS app
 
 ## How to contribute
 
@@ -45,7 +44,7 @@ Make sure you have the following dependencies installed before setting up your d
 
 ## Development environment
 
-The engine is written in Go and the UI in TypeScript using React. Both ship inside the iOS app: the Go engine is built into a framework with gomobile, and the UI runs in a web view that talks to it in-process. There is no standalone server.
+The engine is written in Go and the app in Swift with SwiftUI. The Go engine is built into a framework with gomobile, and the app calls it in-process. There is no standalone server.
 
 Clone the project and change dir:
 
@@ -53,23 +52,11 @@ Clone the project and change dir:
 git clone https://github.com/YOURNAME/autobrr.git && cd autobrr
 ```
 
-Install all dependencies (Go and web) with:
+Install the Go dependencies with:
 
 ```shell
 make deps
 ```
-
-## Frontend
-
-The web UI lives in `web/`. Lint, test and build it from the repository root:
-
-```shell
-pnpm --dir web lint
-pnpm --dir web test
-pnpm --dir web build
-```
-
-The build output in `web/dist` is embedded into the engine, so rebuild it before building the app.
 
 ## iOS app
 

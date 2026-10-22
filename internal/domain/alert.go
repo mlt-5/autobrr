@@ -17,7 +17,7 @@ func (k AlertKind) String() string {
 	return string(k)
 }
 
-// AlertSeverity decides how prominently the web UI shows an Alert.
+// AlertSeverity decides how prominently the app shows an Alert.
 type AlertSeverity string
 
 const (

@@ -15,7 +15,7 @@ import (
 )
 
 // ResponseWriter receives a response from Engine.Serve. The host implements
-// it, typically by forwarding to a WKURLSchemeTask. WriteHeader is called
+// it, collecting the body or streaming it to the caller. WriteHeader is called
 // once, then Write any number of times, then Finish once. Calls come from a
 // background goroutine, never concurrently for the same request.
 type ResponseWriter interface {
@@ -25,7 +25,7 @@ type ResponseWriter interface {
 }
 
 // Request is a request being served. Cancel it when the host no longer wants
-// the response, such as when the web view stops a scheme task.
+// the response, such as when a screen closes or a stream is dropped.
 type Request struct {
 	cancel context.CancelFunc
 }
@@ -35,7 +35,7 @@ func (r *Request) Cancel() {
 	r.cancel()
 }
 
-// Serve handles one request from the web view in the background. rawURL may
+// Serve handles one API request in the background. rawURL may
 // use any scheme and host; only its path and query are routed. headersJSON is
 // a JSON object of header names to values and may be empty.
 func (e *Engine) Serve(method, rawURL, headersJSON string, body []byte, w ResponseWriter) *Request {

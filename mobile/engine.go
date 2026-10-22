@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 // Package mobile embeds autobrr in a host app through gomobile. The host
-// passes each request from its web view to Engine.Serve, so no network
-// listener is opened.
+// calls the API through Engine.Serve, so no network listener is opened.
 package mobile
 
 import (

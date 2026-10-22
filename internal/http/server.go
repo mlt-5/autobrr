@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/autobrr/autobrr/internal/config"
-	"github.com/autobrr/autobrr/web"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -86,7 +85,7 @@ func NewServer(deps Deps) *Server {
 	return srv
 }
 
-// Handler serves the web UI and API.
+// Handler serves the API under /api.
 func (s *Server) Handler() http.Handler {
 	r := chi.NewRouter()
 
@@ -125,10 +124,6 @@ func (s *Server) Handler() http.Handler {
 		s.sse.ServeHTTP(w, r)
 	})
 
-	webRouter := chi.NewRouter()
-	newWebHandler(s.log, web.DistDirFS).RegisterRoutes(webRouter)
-
-	r.Mount("/", webRouter)
 	r.Mount("/api", apiRouter)
 
 	return r
