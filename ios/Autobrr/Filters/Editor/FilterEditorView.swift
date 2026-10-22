@@ -1,17 +1,12 @@
 // Copyright (c) 2021 - 2025, Ludvig Lundgren and the autobrr contributors.
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import AutobrrEngine
 import SwiftUI
 
 struct FilterEditorView: View {
-    let engine: MobileEngine
-
     @StateObject private var draft: FilterDraft
-    @Environment(\.dismiss) private var dismiss
 
-    init(id: Int, engine: MobileEngine, client: EngineClient) {
-        self.engine = engine
+    init(id: Int, client: EngineClient) {
         _draft = StateObject(wrappedValue: FilterDraft(id: id, client: client))
     }
 
@@ -30,13 +25,9 @@ struct FilterEditorView: View {
             }
 
             Section {
-                web("External", "external", "arrow.up.forward.app")
-                web("Actions", "actions", "bolt")
-                web("Notifications", "notifications", "bell")
-            } footer: {
-                if draft.hasChanges {
-                    Text("Save your changes before opening these.")
-                }
+                page("External", "arrow.up.forward.app") { ExternalSection(draft: draft) }
+                page("Actions", "bolt") { ActionsSection(draft: draft) }
+                page("Notifications", "bell") { NotificationsSection(draft: draft) }
             }
         }
         .overlay {
@@ -52,7 +43,7 @@ struct FilterEditorView: View {
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                SaveButton(draft: draft)
+                FilterSaveButton(draft: draft)
             }
         }
         .alert("Filter", isPresented: Binding(get: { draft.error != nil }, set: { if !$0 { draft.error = nil } })) {
@@ -70,28 +61,16 @@ struct FilterEditorView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        SaveButton(draft: draft)
+                        FilterSaveButton(draft: draft)
                     }
                 }
         } label: {
             Label(title, systemImage: symbol)
         }
     }
-
-    private func web(_ title: String, _ path: String, _ symbol: String) -> some View {
-        NavigationLink {
-            WebView(handler: SchemeHandler(engine: engine), path: "/filters/\(draft.id)/\(path)")
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-                .onDisappear { Task { await draft.load() } }
-        } label: {
-            Label(title, systemImage: symbol)
-        }
-        .disabled(draft.hasChanges)
-    }
 }
 
-private struct SaveButton: View {
+struct FilterSaveButton: View {
     @ObservedObject var draft: FilterDraft
 
     var body: some View {

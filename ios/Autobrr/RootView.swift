@@ -19,7 +19,7 @@ struct RootView: View {
             DashboardView(client: client)
                 .tabItem { Label("Dashboard", systemImage: "chart.bar") }
 
-            FiltersView(engine: engine, client: client)
+            FiltersView(client: client)
                 .tabItem { Label("Filters", systemImage: "line.3.horizontal.decrease.circle") }
 
             ReleasesView(client: client)
