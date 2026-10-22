@@ -44,9 +44,7 @@ struct FiltersView: View {
             .overlay { placeholder }
             .navigationTitle("Filters")
             .navigationDestination(for: Int.self) { id in
-                WebView(handler: SchemeHandler(engine: engine), path: "/filters/\(id)")
-                    .navigationTitle(model.filters.first { $0.id == id }?.name ?? "Filter")
-                    .navigationBarTitleDisplayMode(.inline)
+                FilterEditorView(id: id, engine: engine, client: model.client)
                     .onDisappear { Task { await model.load() } }
             }
             .searchable(text: $model.search, prompt: "Search filters")
