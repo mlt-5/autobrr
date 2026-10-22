@@ -43,7 +43,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Proxies", systemImage: "network")
                     }
-                    web("Releases", "/settings/releases", "tray.full")
+                    NavigationLink {
+                        ReleaseSettingsView(client: client)
+                    } label: {
+                        Label("Releases", systemImage: "tray.full")
+                    }
                 }
             }
             .navigationTitle("Settings")

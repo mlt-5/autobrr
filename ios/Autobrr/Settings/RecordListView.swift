@@ -33,6 +33,8 @@ struct RecordKind {
     let empty: String
     let template: [String: JSONValue]
     var canCreate = true
+    /// updatesByPost saves existing records with POST on path, for endpoints that upsert by id.
+    var updatesByPost = false
     var canTest = false
     var actions: [RecordAction] = []
     var canDelete: ([String: JSONValue]) -> Bool = { _ in true }
@@ -257,13 +259,16 @@ private struct RecordEditView<Fields: View>: View {
                 if test {
                     try await client.request(.post, "\(kind.path)/test", body: body)
                     message = "Test succeeded."
-                } else if let id = draft.id {
+                } else if let id = draft.id, !kind.updatesByPost {
                     try await client.request(.put, "\(kind.path)/\(id)", body: body)
                     onSaved()
                     dismiss()
                 } else {
                     try await client.request(.post, kind.path, body: body)
                     onSaved()
+                    if draft.id != nil {
+                        dismiss()
+                    }
                 }
             } catch {
                 message = error.localizedDescription
