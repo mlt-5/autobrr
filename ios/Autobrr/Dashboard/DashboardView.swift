@@ -5,10 +5,15 @@ import Charts
 import SwiftUI
 
 struct DashboardView: View {
+    let client: EngineClient
+
     @StateObject private var model: DashboardModel
+    @StateObject private var inbox: InboxModel
 
     init(client: EngineClient) {
+        self.client = client
         _model = StateObject(wrappedValue: DashboardModel(client: client))
+        _inbox = StateObject(wrappedValue: InboxModel(client: client))
     }
 
     var body: some View {
@@ -21,6 +26,8 @@ struct DashboardView: View {
                             .foregroundStyle(.red)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
+
+                    alertBanners
 
                     tiles
 
@@ -39,12 +46,69 @@ struct DashboardView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Dashboard")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        InboxView(model: inbox, client: client)
+                    } label: {
+                        Image(systemName: inbox.unreadCount > 0 ? "bell.badge" : "bell")
+                    }
+                    .accessibilityLabel(inbox.unreadCount > 0 ? "Inbox, \(inbox.unreadCount) unread" : "Inbox")
+                }
+            }
+            .task {
+                await inbox.load()
+                await inbox.watch()
+            }
             .refreshable { await model.load() }
             .task(id: model.period) { await model.load() }
             .overlay {
                 if !model.hasLoaded { ProgressView() }
             }
         }
+    }
+
+    @ViewBuilder
+    private var alertBanners: some View {
+        let irc = model.alerts.filter { $0.kind == "IRC_UNHEALTHY" }
+        let lists = model.alerts.filter { $0.kind == "LIST_REFRESH_ERROR" }
+
+        if !irc.isEmpty {
+            NavigationLink {
+                IrcSettingsView(client: client)
+            } label: {
+                banner(irc.count == 1 ? "IRC network unhealthy" : "IRC networks unhealthy", irc)
+            }
+        }
+
+        if !lists.isEmpty {
+            NavigationLink {
+                ListsView(client: client)
+            } label: {
+                banner(lists.count == 1 ? "List refresh failed" : "List refreshes failed", lists)
+            }
+        }
+    }
+
+    private func banner(_ title: String, _ alerts: [EngineAlert]) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).fontWeight(.semibold)
+                ForEach(alerts) { alert in
+                    Text([alert.subject, alert.message ?? ""].filter { !$0.isEmpty }.joined(separator: ": "))
+                        .font(.caption)
+                        .lineLimit(2)
+                }
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.caption)
+        }
+        .foregroundStyle(.white)
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.red, in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var tiles: some View {

@@ -48,7 +48,7 @@ struct ProxiesView: View {
 struct NotificationsView: View {
     let client: EngineClient
 
-    private static let events = [
+    static let events = [
         "PUSH_APPROVED": "Push approved",
         "PUSH_REJECTED": "Push rejected",
         "PUSH_ERROR": "Push error",
