@@ -1,0 +1,228 @@
+// Copyright (c) 2021 - 2025, Ludvig Lundgren and the autobrr contributors.
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/// FilterOptions holds the values the filter editor offers, matching the parser's naming.
+enum FilterOptions {
+    static let resolutions = [
+        "2160p",
+        "1080p",
+        "810p",
+        "720p",
+        "576p",
+        "480p",
+    ]
+
+    static let codecs = [
+        "AV1",
+        "AVC",
+        "H.264",
+        "H.265",
+        "HEVC",
+        "MPEG-2",
+        "VC-1",
+        "XviD",
+        "x264",
+        "x265",
+    ]
+
+    static let sources = [
+        "AHDTV",
+        "BD5",
+        "BD9",
+        "BDRip",
+        "BDr",
+        "BRRip",
+        "BluRay",
+        "CAM",
+        "DVDR",
+        "DVDRip",
+        "DVDScr",
+        "HDCAM",
+        "HDDVD",
+        "HDDVDRip",
+        "HDTS",
+        "HDTV",
+        "Mixed",
+        "SiteRip",
+        "UHD.BluRay",
+        "WEB",
+        "WEB-DL",
+        "WEBRip",
+    ]
+
+    static let containers = [
+        "avi",
+        "mp4",
+        "mkv",
+    ]
+
+    static let hdr = [
+        "HDR",
+        "HDR10",
+        "HDR10+",
+        "HLG",
+        "DV",
+        "DV HDR",
+        "DV HDR10",
+        "DV HDR10+",
+        "DoVi",
+        "Dolby Vision",
+    ]
+
+    static let other = [
+        "REMUX",
+        "HYBRID",
+        "REPACK",
+    ]
+
+    static let musicFormats = [
+        "MP3",
+        "FLAC",
+        "Ogg Vorbis",
+        "Ogg",
+        "AAC",
+        "AC3",
+        "DTS",
+        "DSD",
+    ]
+
+    static let musicMedia = [
+        "CD",
+        "WEB",
+        "DVD",
+        "Vinyl",
+        "Soundboard",
+        "DAT",
+        "Cassette",
+        "Blu-Ray",
+        "SACD",
+    ]
+
+    static let musicQuality = [
+        "192",
+        "256",
+        "320",
+        "APS (VBR)",
+        "APX (VBR)",
+        "V2 (VBR)",
+        "V1 (VBR)",
+        "V0 (VBR)",
+        "Lossless",
+        "24bit Lossless",
+        "DSD64",
+        "DSD128",
+        "DSD256",
+        "DSD512",
+    ]
+
+    static let musicReleaseTypes = [
+        "Album",
+        "Anthology",
+        "Bootleg",
+        "Compilation",
+        "Concert Recording",
+        "Demo",
+        "DJ Mix",
+        "EP",
+        "Interview",
+        "Live album",
+        "Mixtape",
+        "Remix",
+        "Sampler",
+        "Single",
+        "Soundtrack",
+        "Unknown",
+    ]
+
+    static let bookFormats = [
+        "epub",
+        "pdf",
+        "mobi",
+        "azw3",
+        "azw",
+        "cbz",
+        "cbr",
+        "pdb",
+        "doc",
+        "docx",
+        "lit",
+        "chm",
+        "djvu",
+        "lrf",
+        "fb2",
+        "html",
+        "htm",
+        "txt",
+        "rtf",
+        "xml",
+        "mp3",
+        "m4a",
+        "m4b",
+        "aac",
+        "ogg",
+        "wma",
+        "flac",
+        "wav",
+    ]
+
+    static let origins = [
+        "P2P",
+        "Internal",
+        "SCENE",
+        "O-SCENE",
+    ]
+
+    static let languages = [
+        "BALTIC",
+        "BRAZiLiAN",
+        "BULGARiAN",
+        "CHiNESE",
+        "CHS",
+        "CHT",
+        "CZECH",
+        "DANiSH",
+        "DUBBED",
+        "DKSUBS",
+        "DUTCH",
+        "ENGLiSH",
+        "ESTONiAN",
+        "FLEMiSH",
+        "FiNNiSH",
+        "FRENCH",
+        "GERMAN",
+        "GREEK",
+        "HAiTiAN",
+        "HARDSUB",
+        "Hardcoded",
+        "HEBREW",
+        "HebSub",
+        "HiNDi",
+        "HUNGARiAN",
+        "iCELANDiC",
+        "iTALiAN",
+        "JAPANESE",
+        "KOREAN",
+        "LATiN",
+        "MANDARiN",
+        "MULTi",
+        "MULTILANG",
+        "MULTiSUB",
+        "MULTiSUBS",
+        "NORDiC",
+        "NORWEGiAN",
+        "POLiSH",
+        "PORTUGUESE",
+        "ROMANiAN",
+        "RUSSiAN",
+        "SLOVAK",
+        "SPANiSH",
+        "SUBBED",
+        "SUBFORCED",
+        "SUBPACK",
+        "SWEDiSH",
+        "SYNCED",
+        "TURKiSH",
+        "UKRAiNiAN",
+        "UNSUBBED",
+    ]
+}
