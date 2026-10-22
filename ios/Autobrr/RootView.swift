@@ -4,7 +4,7 @@
 import AutobrrEngine
 import SwiftUI
 
-/// RootView holds the app's tabs. Screens not yet rebuilt natively show the web UI at their route.
+/// RootView holds the app's tabs.
 struct RootView: View {
     private let engine: MobileEngine
     private let client: EngineClient
@@ -19,7 +19,7 @@ struct RootView: View {
             DashboardView(client: client)
                 .tabItem { Label("Dashboard", systemImage: "chart.bar") }
 
-            web("/filters")
+            FiltersView(engine: engine, client: client)
                 .tabItem { Label("Filters", systemImage: "line.3.horizontal.decrease.circle") }
 
             ReleasesView(client: client)
@@ -31,9 +31,5 @@ struct RootView: View {
             SettingsView(engine: engine, client: client)
                 .tabItem { Label("Settings", systemImage: "gearshape") }
         }
-    }
-
-    private func web(_ path: String) -> some View {
-        WebView(handler: SchemeHandler(engine: engine), path: path)
     }
 }
