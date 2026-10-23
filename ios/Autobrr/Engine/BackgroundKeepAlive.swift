@@ -14,17 +14,17 @@ final class BackgroundKeepAlive: NSObject, ObservableObject {
     private static let enabledKey = "keepAliveInBackground"
 
     @Published private(set) var isEnabled: Bool
-    @Published private(set) var authorization: CLAuthorizationStatus
+    @Published private(set) var authorization = CLAuthorizationStatus.notDetermined
     @Published private(set) var isRunning = false
 
     private let manager = CLLocationManager()
 
     override init() {
         isEnabled = UserDefaults.standard.bool(forKey: Self.enabledKey)
-        authorization = manager.authorizationStatus
 
         super.init()
 
+        authorization = manager.authorizationStatus
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         manager.distanceFilter = CLLocationDistanceMax
