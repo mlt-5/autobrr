@@ -22,6 +22,7 @@ struct ApplicationSettingsView: View {
 
     let client: EngineClient
 
+    @EnvironmentObject private var keepAlive: BackgroundKeepAlive
     @State private var config: AppConfig?
     @State private var logLevel = "INFO"
     @State private var writeLogFiles = false
@@ -67,6 +68,22 @@ struct ApplicationSettingsView: View {
                 Text("Logging")
             } footer: {
                 Text("Log files are written to the data folder and can be shared from the Logs tab. Turning them on or off takes effect the next time autobrr starts.")
+            }
+
+            Section {
+                Toggle("Run in background", isOn: Binding(get: { keepAlive.isEnabled }, set: { keepAlive.setEnabled($0) }))
+
+                if keepAlive.isEnabled && keepAlive.isDenied {
+                    Button("Allow location access in Settings") {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                }
+            } header: {
+                Text("Background")
+            } footer: {
+                Text("Keeps IRC connected and feeds running after you leave the app, by receiving coarse location updates that are discarded. iOS shows the location indicator and battery use goes up. If iOS ends the app anyway, after a restart or when memory runs low, open it again to resume.")
             }
         }
         .navigationTitle("Application")
