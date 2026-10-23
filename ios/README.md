@@ -27,5 +27,5 @@ Archive with Product → Archive and export an `.ipa` for Ad Hoc or Development,
 
 ## Limitations
 
-- iOS suspends the app shortly after it leaves the foreground, so IRC announces and feeds are only processed while it is open.
+- iOS suspends the app shortly after it leaves the foreground, so IRC announces and feeds are only processed while it is open. Settings → Application → Run in background keeps it running by receiving coarse location updates: iOS shows the location indicator, battery use goes up, and an app iOS ends anyway (low memory, a force quit, a restart) stays stopped until it is opened again.
 - Data lives in the app's Application Support folder and is removed with the app.

@@ -6,12 +6,17 @@ import SwiftUI
 @main
 struct AutobrrApp: App {
     @StateObject private var host = EngineHost()
+    @StateObject private var keepAlive = BackgroundKeepAlive()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(host)
-                .task { host.start() }
+                .environmentObject(keepAlive)
+                .task {
+                    host.start()
+                    keepAlive.update()
+                }
         }
     }
 }
