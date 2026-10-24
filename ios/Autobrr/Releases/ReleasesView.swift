@@ -5,6 +5,9 @@ import SwiftUI
 
 struct ReleasesView: View {
     @StateObject private var model: ReleasesModel
+    @State private var exporting = false
+    @State private var exported: ExportedFile?
+    @State private var exportError: String?
 
     init(client: EngineClient) {
         _model = StateObject(wrappedValue: ReleasesModel(client: client))
@@ -35,7 +38,10 @@ struct ReleasesView: View {
             .searchable(text: $model.query.search, prompt: "Search releases")
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
-            .toolbar { filterMenu }
+            .toolbar {
+                exportButton
+                filterMenu
+            }
             .refreshable { await model.reload() }
             .task(id: model.query) {
                 if model.hasLoaded {
@@ -46,6 +52,50 @@ struct ReleasesView: View {
                 await model.reload()
             }
             .task { await model.loadIndexers() }
+            .sheet(item: $exported) { file in
+                ShareSheet(items: [file.url])
+            }
+            .alert("Export", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
+                Button("OK") { exportError = nil }
+            } message: {
+                Text(exportError ?? "")
+            }
+        }
+    }
+
+    private var exportButton: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            if exporting {
+                ProgressView()
+            } else {
+                Button {
+                    export()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel("Export to Excel")
+                .disabled(!model.hasLoaded)
+            }
+        }
+    }
+
+    private func export() {
+        guard !model.releases.isEmpty else {
+            exportError = "No releases match the current search and filters."
+            return
+        }
+
+        exporting = true
+
+        Task {
+            defer { exporting = false }
+
+            do {
+                let url = try await model.export()
+                exported = ExportedFile(url: url)
+            } catch {
+                exportError = error.localizedDescription
+            }
         }
     }
 
@@ -91,6 +141,23 @@ struct ReleasesView: View {
             }
         }
     }
+}
+
+private struct ExportedFile: Identifiable {
+    let url: URL
+
+    var id: URL { url }
+}
+
+/// ShareSheet presents the system share sheet, so a file can be saved to Files or sent to another app.
+private struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
 private struct ReleaseRow: View {

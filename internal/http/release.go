@@ -4,9 +4,15 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"time"
+	// iOS ships no time zone database Go can read, so export times could only be shown in UTC without this.
+	_ "time/tzdata"
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/pkg/errors"
@@ -16,6 +22,7 @@ import (
 
 type releaseService interface {
 	Find(ctx context.Context, query domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error)
+	Export(ctx context.Context, w io.Writer, params domain.ReleaseQueryParams, loc *time.Location) error
 	Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error)
 	GetIndexerOptions(ctx context.Context) ([]string, error)
 	Stats(ctx context.Context) (*domain.ReleaseStats, error)
@@ -56,6 +63,7 @@ func newReleaseHandler(encoder encoder, service releaseService) *releaseHandler 
 func (h releaseHandler) Routes(r chi.Router) {
 	r.Get("/", h.findReleases)
 	r.Get("/recent", h.findRecentReleases)
+	r.Get("/export", h.exportReleases)
 	r.Get("/stats", h.getStats)
 	r.Get("/stats/activity", h.statsHandler(func(ctx context.Context, days int) (any, error) {
 		return h.service.StatsActivity(ctx, days)
@@ -122,27 +130,15 @@ func (h releaseHandler) findReleases(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	indexer := r.URL.Query()["indexer"]
-
-	pushStatus := r.URL.Query().Get("push_status")
-	if pushStatus != "" && !domain.ValidReleasePushStatus(pushStatus) {
-		h.encoder.BadRequestErr(w, errors.New("push_status parameter is of invalid type: %v", pushStatus))
+	query, err := releaseQuery(r)
+	if err != nil {
+		h.encoder.BadRequestErr(w, err)
 		return
 	}
 
-	search := r.URL.Query().Get("q")
-
-	query := domain.ReleaseQueryParams{
-		Limit:  uint64(limit),
-		Offset: uint64(offset),
-		Cursor: uint64(cursor),
-		Sort:   nil,
-		Filters: struct {
-			Indexers   []string
-			PushStatus string
-		}{Indexers: indexer, PushStatus: pushStatus},
-		Search: search,
-	}
+	query.Limit = uint64(limit)
+	query.Offset = uint64(offset)
+	query.Cursor = uint64(cursor)
 
 	resp, err := h.service.Find(r.Context(), query)
 	if err != nil {
@@ -151,6 +147,51 @@ func (h releaseHandler) findReleases(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.encoder.StatusResponse(w, http.StatusOK, resp)
+}
+
+// releaseQuery reads the search and filters shared by the release list and export.
+func releaseQuery(r *http.Request) (domain.ReleaseQueryParams, error) {
+	var query domain.ReleaseQueryParams
+
+	pushStatus := r.URL.Query().Get("push_status")
+	if pushStatus != "" && !domain.ValidReleasePushStatus(pushStatus) {
+		return query, errors.New("push_status parameter is of invalid type: %v", pushStatus)
+	}
+
+	query.Filters.Indexers = r.URL.Query()["indexer"]
+	query.Filters.PushStatus = pushStatus
+	query.Search = r.URL.Query().Get("q")
+
+	return query, nil
+}
+
+// exportReleases returns the releases matching the list's search and filters as an Excel workbook. The tz
+// parameter names the IANA time zone to show times in, UTC when empty.
+func (h releaseHandler) exportReleases(w http.ResponseWriter, r *http.Request) {
+	query, err := releaseQuery(r)
+	if err != nil {
+		h.encoder.BadRequestErr(w, err)
+		return
+	}
+
+	loc := time.UTC
+	if tz := r.URL.Query().Get("tz"); tz != "" {
+		if loc, err = time.LoadLocation(tz); err != nil {
+			h.encoder.BadRequestErr(w, errors.New("tz parameter is not a known time zone: %v", tz))
+			return
+		}
+	}
+
+	var buf bytes.Buffer
+	if err := h.service.Export(r.Context(), &buf, query, loc); err != nil {
+		h.encoder.Error(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="autobrr-releases-%s.xlsx"`, time.Now().In(loc).Format("2006-01-02")))
+	w.WriteHeader(http.StatusOK)
+	_, _ = buf.WriteTo(w)
 }
 
 func (h releaseHandler) findRecentReleases(w http.ResponseWriter, r *http.Request) {

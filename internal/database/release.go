@@ -302,6 +302,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			"i.identifier_external",
 			"r.filter",
 			"r.protocol",
+			"r.implementation",
 			"r.announce_type",
 			"r.info_url",
 			"r.download_url",
@@ -371,7 +372,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 		var rls domain.Release
 		var ras domain.ReleaseActionStatus
 
-		var rlsIndexer, rlsIndexerName, rlsIndexerExternalName, rlsFilter, rlsAnnounceType, infoUrl, downloadUrl, subTitle, normalizedHash, codec, hdr, rlsType, audioStr, audioChannels, region, languageStr, editionStr, cutStr, website, mediaProcessing sql.NullString
+		var rlsIndexer, rlsIndexerName, rlsIndexerExternalName, rlsFilter, implementation, rlsAnnounceType, infoUrl, downloadUrl, subTitle, normalizedHash, codec, hdr, rlsType, audioStr, audioChannels, region, languageStr, editionStr, cutStr, website, mediaProcessing sql.NullString
 		var hybrid sql.NullBool
 
 		var rlsIndexerID sql.NullInt64
@@ -390,6 +391,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			&rlsIndexerExternalName,
 			&rlsFilter,
 			&rls.Protocol,
+			&implementation,
 			&rlsAnnounceType,
 			&infoUrl,
 			&downloadUrl,
@@ -467,6 +469,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 		rls.Indexer.IdentifierExternal = rlsIndexerExternalName.String
 
 		rls.FilterName = rlsFilter.String
+		rls.Implementation = domain.ReleaseImplementation(implementation.String)
 		rls.AnnounceType = domain.AnnounceType(rlsAnnounceType.String)
 		rls.ActionStatus = make([]domain.ReleaseActionStatus, 0)
 		rls.InfoURL = infoUrl.String
