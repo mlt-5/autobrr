@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -27,6 +28,8 @@ type releaseServiceMock struct {
 	cleanupJobs   map[int]*domain.ReleaseCleanupJob
 	nextID        int
 	lastStatsDays int
+	lastExport    *domain.ReleaseQueryParams
+	lastExportLoc *time.Location
 }
 
 func newReleaseServiceMock() *releaseServiceMock {
@@ -103,6 +106,13 @@ func (m *releaseServiceMock) ForceRunCleanupJob(ctx context.Context, id int) err
 // Stub implementations for other required interface methods
 func (m *releaseServiceMock) Find(ctx context.Context, query domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error) {
 	return nil, errors.New("not implemented")
+}
+
+func (m *releaseServiceMock) Export(ctx context.Context, w io.Writer, params domain.ReleaseQueryParams, loc *time.Location) error {
+	m.lastExport = &params
+	m.lastExportLoc = loc
+	_, err := io.WriteString(w, "workbook")
+	return err
 }
 
 func (m *releaseServiceMock) Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error) {
@@ -654,5 +664,38 @@ func TestReleaseHandler_StatsEndpoints_InvalidDays(t *testing.T) {
 
 			assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
 		})
+	}
+}
+
+func TestReleaseHandler_Export(t *testing.T) {
+	t.Parallel()
+
+	service := newReleaseServiceMock()
+	testServer := httptest.NewServer(setupReleaseHandler(service))
+	defer testServer.Close()
+
+	resp, err := http.Get(testServer.URL + "/api/releases/export?q=Dune&indexer=btn&indexer=ptp&push_status=PUSH_APPROVED&tz=Europe/Stockholm")
+	require.NoError(t, err)
+	defer resp.Body.Close()
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resp.Header.Get("Content-Type"))
+	assert.Regexp(t, `^attachment; filename="autobrr-releases-\d{4}-\d{2}-\d{2}\.xlsx"$`, resp.Header.Get("Content-Disposition"))
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.Equal(t, "workbook", string(body))
+
+	require.NotNil(t, service.lastExport)
+	assert.Equal(t, "Dune", service.lastExport.Search)
+	assert.Equal(t, []string{"btn", "ptp"}, service.lastExport.Filters.Indexers)
+	assert.Equal(t, "PUSH_APPROVED", service.lastExport.Filters.PushStatus)
+	assert.Equal(t, "Europe/Stockholm", service.lastExportLoc.String())
+
+	for _, query := range []string{"tz=Not/AZone", "push_status=NOPE"} {
+		resp, err := http.Get(testServer.URL + "/api/releases/export?" + query)
+		require.NoError(t, err)
+		resp.Body.Close()
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, query)
 	}
 }
