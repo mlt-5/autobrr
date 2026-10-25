@@ -170,6 +170,12 @@ struct ReleasesView: View {
                     }
                 }
 
+                Picker("Group", selection: $model.query.vocabGroup) {
+                    Text("Any group").tag(Bool?.none)
+                    Text("Only vocabulary groups").tag(Bool?.some(true))
+                    Text("Hide vocabulary groups").tag(Bool?.some(false))
+                }
+
                 Picker("Indexer", selection: $model.query.indexer) {
                     Text("Any indexer").tag(String?.none)
                     ForEach(model.indexers, id: \.self) { indexer in
@@ -177,7 +183,7 @@ struct ReleasesView: View {
                     }
                 }
             } label: {
-                let filtered = model.query.status != nil || model.query.indexer != nil
+                let filtered = model.query.status != nil || model.query.indexer != nil || model.query.vocabGroup != nil
                 Image(systemName: filtered
                     ? "line.3.horizontal.decrease.circle.fill"
                     : "line.3.horizontal.decrease.circle")

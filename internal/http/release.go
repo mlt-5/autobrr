@@ -166,6 +166,15 @@ func releaseQuery(r *http.Request) (domain.ReleaseQueryParams, error) {
 	query.Filters.Indexers = r.URL.Query()["indexer"]
 	query.Filters.PushStatus = pushStatus
 	query.Filters.Favorite = r.URL.Query().Get("favorite") == "true"
+
+	switch vocabGroup := r.URL.Query().Get("vocab_group"); vocabGroup {
+	case "":
+	case "true", "false":
+		only := vocabGroup == "true"
+		query.Filters.VocabGroup = &only
+	default:
+		return query, errors.New("vocab_group parameter must be true or false: %v", vocabGroup)
+	}
 	query.Search = r.URL.Query().Get("q")
 
 	return query, nil

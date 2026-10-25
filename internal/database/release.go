@@ -257,6 +257,10 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 		whereQueryBuilder = append(whereQueryBuilder, sq.Eq{"r.favorite": true})
 	}
 
+	if params.Filters.VocabGroup != nil {
+		whereQueryBuilder = append(whereQueryBuilder, sq.Eq{"vocab_group(r.release_group)": *params.Filters.VocabGroup})
+	}
+
 	if params.Filters.Indexers != nil {
 		filter := sq.Or{}
 		for _, v := range params.Filters.Indexers {
