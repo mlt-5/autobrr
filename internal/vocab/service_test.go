@@ -67,7 +67,7 @@ func TestService(t *testing.T) {
 	assert.ErrorContains(t, err, "already added")
 
 	err = service.Store(ctx, &domain.VocabEntry{Kind: "collection", Tag: "AMZN"})
-	assert.ErrorContains(t, err, "already built in")
+	assert.ErrorContains(t, err, "already known")
 
 	entries, err := service.List(ctx)
 	require.NoError(t, err)
@@ -166,4 +166,66 @@ func TestService_Export(t *testing.T) {
 	require.NoError(t, service.Export(ctx, &buf, "", ""))
 	rows = readSheet(t, buf.Bytes())
 	assert.Greater(t, len(rows), 1000, "every entry without a filter")
+}
+
+func TestService_UpdateAndPreview(t *testing.T) {
+	ctx := t.Context()
+	log := logger.New(&domain.Config{LogLevel: "ERROR"}, nil)
+
+	db, err := database.NewDB(&domain.Config{LogLevel: "ERROR", DatabaseDSN: ":memory:"}, log)
+	require.NoError(t, err)
+	require.NoError(t, db.Open())
+	require.NoError(t, db.Migrate())
+	t.Cleanup(func() { _ = db.Close() })
+
+	service := NewService(log.With().Logger(), database.NewVocabRepo(log.With().Logger(), db))
+	t.Cleanup(func() {
+		p, err := domain.NewVocabParser(nil, nil)
+		require.NoError(t, err)
+		domain.UseVocabParser(p)
+	})
+
+	const name = "[ASW] Yowaki Max - 04 [1080p HEVC x265 10Bit][AAC]"
+	group := func(preview *domain.VocabPreview) string {
+		for _, field := range preview.Fields {
+			if field.Label == "Group" {
+				return field.Value
+			}
+		}
+		return ""
+	}
+
+	preview, err := service.Preview(ctx, name, nil)
+	require.NoError(t, err)
+	assert.Empty(t, group(preview))
+
+	preview, err = service.Preview(ctx, name, &domain.VocabEntry{Kind: "group", Tag: "ASW"})
+	require.NoError(t, err)
+	assert.Equal(t, "ASW", group(preview), "the preview uses the draft entry")
+	assert.Empty(t, parse(name).Group, "a preview saves nothing")
+
+	_, err = service.Preview(ctx, name, &domain.VocabEntry{Kind: "nope", Tag: "ASW"})
+	assert.ErrorContains(t, err, "unknown kind")
+
+	entry := domain.VocabEntry{Kind: "group", Tag: "ASX"}
+	require.NoError(t, service.Store(ctx, &entry))
+	other := domain.VocabEntry{Kind: "group", Tag: "ZqOther"}
+	require.NoError(t, service.Store(ctx, &other))
+
+	preview, err = service.Preview(ctx, name, &domain.VocabEntry{ID: entry.ID, Kind: "group", Tag: "ASW"})
+	require.NoError(t, err)
+	assert.Equal(t, "ASW", group(preview), "a draft with an ID replaces that entry")
+
+	entry.Tag = "ASW"
+	require.NoError(t, service.Update(ctx, &entry))
+	assert.Equal(t, "ASW", parse(name).Group, "an edited entry is used at once")
+
+	entries, err := service.List(ctx)
+	require.NoError(t, err)
+	assert.NotNil(t, find(entries, "group", "ASW", domain.VocabSourceCustom))
+	assert.Nil(t, find(entries, "group", "ASX", domain.VocabSourceCustom))
+
+	other.Tag = "ASW"
+	assert.ErrorContains(t, service.Update(ctx, &other), "already added")
+	assert.ErrorIs(t, service.Update(ctx, &domain.VocabEntry{ID: 999, Kind: "group", Tag: "Zq"}), domain.ErrRecordNotFound)
 }

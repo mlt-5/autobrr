@@ -44,7 +44,8 @@ private struct VocabKey: Encodable {
     let tag: String
 }
 
-private struct NewVocabEntry: Encodable {
+/// VocabDraft is an added entry being created or edited; id is set when editing.
+struct VocabDraft: Encodable, Equatable {
     var kind = "group"
     var tag = ""
     var title = ""
@@ -52,6 +53,30 @@ private struct NewVocabEntry: Encodable {
     var pattern = ""
     var releaseType = ""
     var exclusive = false
+    var id: Int64?
+}
+
+extension VocabDraft {
+    init(editing entry: VocabEntry) {
+        self.init(kind: entry.kind, tag: entry.tag, title: entry.title, aliases: entry.aliases, pattern: entry.pattern,
+                  releaseType: entry.releaseType, exclusive: entry.exclusive, id: entry.recordID)
+    }
+}
+
+/// VocabPreview is how the parser reads a release name.
+struct VocabPreview: Decodable {
+    struct Field: Decodable, Hashable {
+        let label: String
+        let value: String
+    }
+
+    let fields: [Field]
+    let unused: [String]
+}
+
+private struct VocabPreviewRequest: Encodable {
+    let name: String
+    let entry: VocabDraft?
 }
 
 @MainActor
@@ -105,9 +130,18 @@ final class VocabularyModel: ObservableObject {
         return url
     }
 
-    fileprivate func add(_ entry: NewVocabEntry) async throws {
-        let _: VocabEntry = try await client.send(.post, "vocab", body: entry)
+    func save(_ draft: VocabDraft) async throws {
+        if let id = draft.id {
+            let _: VocabEntry = try await client.send(.put, "vocab/\(id)", body: draft)
+        } else {
+            let _: VocabEntry = try await client.send(.post, "vocab", body: draft)
+        }
         await load()
+    }
+
+    /// preview parses name with the saved vocabulary plus draft, without saving anything.
+    func preview(name: String, draft: VocabDraft?) async throws -> VocabPreview {
+        try await client.send(.post, "vocab/preview", body: VocabPreviewRequest(name: name, entry: draft))
     }
 
     func delete(_ entry: VocabEntry) async {
@@ -270,7 +304,7 @@ struct VocabularyView: View {
         }
         .sheet(isPresented: $adding) {
             NavigationStack {
-                VocabAddView(model: model, kind: kind.isEmpty ? "group" : kind)
+                VocabFormView(model: model, draft: VocabDraft(kind: kind.isEmpty ? "group" : kind))
             }
         }
         .sheet(item: $exported) { file in
@@ -330,6 +364,8 @@ private struct VocabEntryView: View {
     @ObservedObject var model: VocabularyModel
 
     @Environment(\.dismiss) private var dismiss
+    @State private var draft: VocabDraft?
+    @State private var saved = false
 
     var body: some View {
         Form {
@@ -356,6 +392,14 @@ private struct VocabEntryView: View {
                 }
             }
 
+            if entry.source != "custom" && !entry.removed {
+                Section {
+                    Button("Add other spellings") { draft = VocabDraft(kind: entry.kind, tag: entry.tag) }
+                } footer: {
+                    Text("Adds an entry with the same tag, so the parser also reads other spellings as \(entry.tag).")
+                }
+            }
+
             Section {
                 switch (entry.source, entry.removed) {
                 case ("custom", _):
@@ -373,6 +417,24 @@ private struct VocabEntryView: View {
         }
         .navigationTitle(entry.tag)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if entry.source == "custom" {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Edit") { draft = VocabDraft(editing: entry) }
+                }
+            }
+        }
+        .sheet(isPresented: Binding(get: { draft != nil }, set: { if !$0 { draft = nil } }), onDismiss: {
+            if saved {
+                dismiss()
+            }
+        }) {
+            if let draft {
+                NavigationStack {
+                    VocabFormView(model: model, draft: draft) { saved = true }
+                }
+            }
+        }
     }
 
     private var footer: String {
@@ -392,50 +454,94 @@ private struct VocabEntryView: View {
     }
 }
 
-private struct VocabAddView: View {
+/// VocabFormView adds or edits an entry. With a release name it offers the name's words as the tag and shows how the
+/// parser reads the name with the entry.
+struct VocabFormView: View {
     @ObservedObject var model: VocabularyModel
+    var releaseName: String?
+    var onSaved: () -> Void = {}
 
     @Environment(\.dismiss) private var dismiss
-    @State private var entry: NewVocabEntry
-    @State private var aliases = ""
+    @State private var draft: VocabDraft
+    @State private var aliases: String
+    @State private var preview: VocabPreview?
+    @State private var previewError: String?
     @State private var busy = false
     @State private var message: String?
 
-    init(model: VocabularyModel, kind: String) {
+    init(model: VocabularyModel, draft: VocabDraft, releaseName: String? = nil, onSaved: @escaping () -> Void = {}) {
         self.model = model
-        _entry = State(initialValue: NewVocabEntry(kind: kind))
+        self.releaseName = releaseName
+        self.onSaved = onSaved
+        _draft = State(initialValue: draft)
+        _aliases = State(initialValue: draft.aliases.joined(separator: ", "))
+    }
+
+    private var current: VocabDraft {
+        var current = draft
+        current.aliases = aliases.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        return current
+    }
+
+    private var words: [String] {
+        var seen = Set<String>()
+        return (releaseName ?? "")
+            .split(whereSeparator: { " .-_[](){}".contains($0) })
+            .map(String.init)
+            .filter { $0.count > 1 && seen.insert($0.lowercased()).inserted }
     }
 
     var body: some View {
         Form {
+            if let releaseName {
+                Section {
+                    Text(releaseName)
+                        .font(.footnote)
+                        .textSelection(.enabled)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(words, id: \.self) { word in
+                                Button(word) { draft.tag = word }
+                                    .buttonStyle(.bordered)
+                                    .tint(draft.tag == word ? Color.accentColor : Color.secondary)
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Release")
+                } footer: {
+                    Text("Tap a word to use it as the tag.")
+                }
+            }
+
             Section {
-                Picker("Kind", selection: $entry.kind) {
+                Picker("Kind", selection: $draft.kind) {
                     ForEach(model.kinds, id: \.self) { Text(model.kindTitle($0)).tag($0) }
                 }
-                TextField("Tag", text: $entry.tag)
+                TextField("Tag", text: $draft.tag)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                 TextField("Other spellings", text: $aliases)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
             } footer: {
-                Text("The tag is how the parser reports it. Separate other spellings with commas; each is reported as the tag. A - . _ or space in either also matches any of those or none, so WEB-DL finds WEB.DL and WEBDL. To add spellings to a built-in tag, give the same tag.")
+                Text("The tag is how the parser reports it. Separate other spellings with commas; each is reported as the tag. A - . _ or space in either also matches any of those or none, so WEB-DL finds WEB.DL and WEBDL. To add spellings to a tag the parser already knows, give the same tag.")
             }
 
             Section {
-                TextField("Title", text: $entry.title)
-                Picker("Release type", selection: $entry.releaseType) {
+                TextField("Title", text: $draft.title)
+                Picker("Release type", selection: $draft.releaseType) {
                     Text("Any").tag("")
                     ForEach(model.releaseTypes, id: \.self) { Text($0).tag($0) }
                 }
-                Toggle("Only for this type", isOn: $entry.exclusive)
-                    .disabled(entry.releaseType.isEmpty)
+                Toggle("Only for this type", isOn: $draft.exclusive)
+                    .disabled(draft.releaseType.isEmpty)
             } footer: {
                 Text("The title is a longer name, such as High Efficiency Video Coding for HEVC. The release type helps the parser guess what a release is; leave it at Any for tags several kinds of release use.")
             }
 
             Section {
-                TextField("Pattern", text: $entry.pattern)
+                TextField("Pattern", text: $draft.pattern)
                     .font(.body.monospaced())
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
@@ -444,14 +550,38 @@ private struct VocabAddView: View {
             } footer: {
                 Text("A regular expression used instead of the tag, for spellings plain text can't describe. Matching ignores case unless the pattern says (?-i:…).")
             }
-        }
-        .navigationTitle("New entry")
-        .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: entry.releaseType) { type in
-            if type.isEmpty {
-                entry.exclusive = false
+
+            if releaseName != nil {
+                Section {
+                    if let previewError {
+                        Text(previewError)
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    } else if let preview {
+                        ForEach(preview.fields, id: \.self) { field in
+                            LabeledContent(field.label, value: field.value)
+                        }
+                        if !preview.unused.isEmpty {
+                            LabeledContent("Not recognized", value: preview.unused.joined(separator: ", "))
+                        }
+                    } else {
+                        ProgressView()
+                    }
+                } header: {
+                    Text("Parsed with this entry")
+                } footer: {
+                    Text("How the parser reads the name with this entry. Releases already received keep what was parsed when they arrived.")
+                }
             }
         }
+        .navigationTitle(draft.id == nil ? "New entry" : "Edit entry")
+        .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: draft.releaseType) { type in
+            if type.isEmpty {
+                draft.exclusive = false
+            }
+        }
+        .task(id: current) { await updatePreview() }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel") { dismiss() }
@@ -460,8 +590,8 @@ private struct VocabAddView: View {
                 if busy {
                     ProgressView()
                 } else {
-                    Button("Add") { add() }
-                        .disabled(entry.tag.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Button(draft.id == nil ? "Add" : "Save") { save() }
+                        .disabled(draft.tag.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
@@ -472,19 +602,79 @@ private struct VocabAddView: View {
         }
     }
 
-    private func add() {
+    private func updatePreview() async {
+        guard let releaseName else { return }
+
+        do {
+            try await Task.sleep(nanoseconds: 300_000_000)
+        } catch {
+            return
+        }
+
+        let entry = current
+        do {
+            preview = try await model.preview(name: releaseName, draft: entry.tag.trimmingCharacters(in: .whitespaces).isEmpty ? nil : entry)
+            previewError = nil
+        } catch is CancellationError {
+            return
+        } catch {
+            previewError = error.localizedDescription
+        }
+    }
+
+    private func save() {
         busy = true
-        entry.aliases = aliases.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        let entry = current
 
         Task {
             defer { busy = false }
 
             do {
-                try await model.add(entry)
+                try await model.save(entry)
+                onSaved()
                 dismiss()
             } catch {
                 message = error.localizedDescription
             }
         }
+    }
+}
+
+/// VocabAddSheet adds a vocabulary entry from a release name.
+struct VocabAddSheet: View {
+    let releaseName: String
+
+    @StateObject private var model: VocabularyModel
+    @Environment(\.dismiss) private var dismiss
+
+    init(client: EngineClient, releaseName: String) {
+        self.releaseName = releaseName
+        _model = StateObject(wrappedValue: VocabularyModel(client: client))
+    }
+
+    var body: some View {
+        NavigationStack {
+            if model.kinds.isEmpty {
+                Group {
+                    if let error = model.error {
+                        Text(error)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                    } else {
+                        ProgressView()
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                    }
+                }
+            } else {
+                VocabFormView(model: model, draft: VocabDraft(), releaseName: releaseName)
+            }
+        }
+        .task { await model.load() }
     }
 }

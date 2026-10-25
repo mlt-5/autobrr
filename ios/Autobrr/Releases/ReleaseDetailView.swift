@@ -9,6 +9,7 @@ struct ReleaseDetailView: View {
 
     @State private var retrying: Int64?
     @State private var message: String?
+    @State private var addingVocab = false
 
     var body: some View {
         List {
@@ -44,6 +45,12 @@ struct ReleaseDetailView: View {
                 row("Uploader", release.uploader)
             }
 
+            Section {
+                Button("Add to vocabulary") { addingVocab = true }
+            } footer: {
+                Text("Teach the parser a group or tag it missed in this name.")
+            }
+
             if let rejections = release.rejections, !rejections.isEmpty {
                 Section("Filter rejections") {
                     ForEach(rejections, id: \.self) { Text($0).font(.footnote) }
@@ -66,6 +73,9 @@ struct ReleaseDetailView: View {
         }
         .navigationTitle(release.title.isEmpty ? "Release" : release.title)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $addingVocab) {
+            VocabAddSheet(client: client, releaseName: release.name)
+        }
         .alert("Retry", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } }), presenting: message) { _ in
             Button("OK") { message = nil }
         } message: {

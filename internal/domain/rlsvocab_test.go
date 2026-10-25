@@ -99,7 +99,7 @@ func TestVocabParser_Removed(t *testing.T) {
 
 func TestVocabParser_Errors(t *testing.T) {
 	_, err := NewVocabParser([]VocabEntry{{Kind: "collection", Tag: "AMZN"}}, nil)
-	assert.ErrorContains(t, err, "already built in")
+	assert.ErrorContains(t, err, "already known")
 }
 
 func TestVocabEntry_Validate(t *testing.T) {
@@ -172,4 +172,53 @@ func TestVocab(t *testing.T) {
 
 	assert.True(t, IsListedVocab(VocabKey{Kind: "group", Tag: "SubsPlease"}))
 	assert.False(t, IsListedVocab(VocabKey{Kind: "group", Tag: "CODEX"}), "built-in tags are not in the lists")
+}
+
+func TestVocabParser_ShortLeadingGroup(t *testing.T) {
+	useVocab(t, []VocabEntry{{Kind: "group", Tag: "ASW", Aliases: []string{}}}, nil)
+
+	rel := parseRelease("[ASW] Yowaki Max - 04 [1080p HEVC x265 10Bit][AAC]")
+	assert.Equal(t, "ASW", rel.Group)
+	assert.Equal(t, "Yowaki Max", rel.Title, "a short group in brackets is not taken as the title")
+	assert.Equal(t, 4, rel.Episode)
+	assert.Empty(t, rel.Site)
+}
+
+func TestPreviewVocab(t *testing.T) {
+	const name = "[ASW] Yowaki Max - 04 [1080p HEVC x265 10Bit][AAC]"
+
+	p, err := NewVocabParser(nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, VocabPreview{
+		Fields: []VocabPreviewField{
+			{Label: "Type", Value: "episode"},
+			{Label: "Title", Value: "Yowaki Max"},
+			{Label: "Episode", Value: "4"},
+			{Label: "Resolution", Value: "1080p"},
+			{Label: "Codec", Value: "HEVC, x265"},
+			{Label: "Audio", Value: "AAC"},
+			{Label: "Site", Value: "ASW"},
+		},
+		Unused: []string{},
+	}, PreviewVocab(p, name))
+
+	p, err = NewVocabParser([]VocabEntry{{Kind: "group", Tag: "ASW"}}, nil)
+	require.NoError(t, err)
+	preview := PreviewVocab(p, name)
+	assert.Contains(t, preview.Fields, VocabPreviewField{Label: "Group", Value: "ASW"})
+	assert.NotContains(t, preview.Fields, VocabPreviewField{Label: "Site", Value: "ASW"})
+
+	p, err = NewVocabParser(nil, nil)
+	require.NoError(t, err)
+	assert.Equal(t, []string{"Zqfoo"}, PreviewVocab(p, "Movie.2020.1080p.BluRay.Zqfoo.x264-GRP").Unused, "words the parser could not place")
+}
+
+func TestVocabParser_ListedTag(t *testing.T) {
+	useVocab(t, []VocabEntry{{Kind: "group", Tag: "SubsPlease", Aliases: []string{"Subs Please"}}}, nil)
+
+	rel := parseRelease("[Subs Please] Kyoufu Collector - 03 (1080p) [ABCD1234].mkv")
+	assert.Equal(t, "Subs Please", rel.Group, "an entry for a listed tag adds spellings to it")
+
+	_, err := NewVocabParser([]VocabEntry{{Kind: "group", Tag: "SubsPlease"}}, nil)
+	assert.ErrorContains(t, err, "already known")
 }

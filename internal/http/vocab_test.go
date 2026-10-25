@@ -22,11 +22,29 @@ import (
 )
 
 type vocabServiceMock struct {
-	stored   *domain.VocabEntry
-	deleted  int64
-	removed  domain.VocabKey
-	restored domain.VocabKey
-	exported [2]string
+	stored    *domain.VocabEntry
+	deleted   int64
+	removed   domain.VocabKey
+	restored  domain.VocabKey
+	exported  [2]string
+	updated   *domain.VocabEntry
+	previewed string
+}
+
+func (m *vocabServiceMock) Update(ctx context.Context, entry *domain.VocabEntry) error {
+	if entry.ID != 7 {
+		return domain.ErrRecordNotFound
+	}
+	m.updated = entry
+	return nil
+}
+
+func (m *vocabServiceMock) Preview(ctx context.Context, name string, entry *domain.VocabEntry) (*domain.VocabPreview, error) {
+	if entry != nil && entry.Kind == "nope" {
+		return nil, domain.VocabErrorf("unknown kind")
+	}
+	m.previewed = name
+	return &domain.VocabPreview{Fields: []domain.VocabPreviewField{{Label: "Group", Value: "ASW"}}, Unused: []string{}}, nil
 }
 
 func (m *vocabServiceMock) Export(ctx context.Context, w io.Writer, kind, search string) error {
@@ -115,6 +133,20 @@ func TestVocabHandler(t *testing.T) {
 	assert.Equal(t, []string{"Zq Subs"}, service.stored.Aliases)
 
 	assert.Equal(t, http.StatusBadRequest, do(http.MethodPost, "/", map[string]any{"kind": "group"}).StatusCode)
+
+	resp = do(http.MethodPut, "/7", map[string]any{"kind": "group", "tag": "ASW"})
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, int64(7), service.updated.ID, "the ID comes from the path")
+	assert.Equal(t, "ASW", service.updated.Tag)
+	assert.Equal(t, http.StatusNotFound, do(http.MethodPut, "/8", map[string]any{"kind": "group", "tag": "ASW"}).StatusCode)
+
+	resp = do(http.MethodPost, "/preview", map[string]any{"name": "[ASW] Yowaki Max - 04", "entry": map[string]any{"kind": "group", "tag": "ASW"}})
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	var preview domain.VocabPreview
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&preview))
+	assert.Equal(t, "ASW", preview.Fields[0].Value)
+	assert.Equal(t, "[ASW] Yowaki Max - 04", service.previewed)
+	assert.Equal(t, http.StatusBadRequest, do(http.MethodPost, "/preview", map[string]any{"name": "x", "entry": map[string]any{"kind": "nope"}}).StatusCode)
 
 	assert.Equal(t, http.StatusNoContent, do(http.MethodDelete, "/7", nil).StatusCode)
 	assert.Equal(t, http.StatusNotFound, do(http.MethodDelete, "/8", nil).StatusCode)

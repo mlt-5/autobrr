@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 	"sync/atomic"
 
@@ -146,11 +147,11 @@ func (e *VocabEntry) Validate() error {
 	return nil
 }
 
-// taginfo builds the parser's tag info for a custom entry. For a tag rls already has, the entry adds spellings and
-// keeps rls's title, release type and exclusive unless it gives its own.
-func (e *VocabEntry) taginfo(builtin map[string][]*taginfo.Taginfo) (*taginfo.Taginfo, error) {
+// taginfo builds the parser's tag info for a custom entry. For a tag the parser already knows, the entry adds
+// spellings and keeps the known title, release type and exclusive unless it gives its own.
+func (e *VocabEntry) taginfo(known map[string][]*taginfo.Taginfo) (*taginfo.Taginfo, error) {
 	var base *taginfo.Taginfo
-	for _, info := range builtin[e.Kind] {
+	for _, info := range known[e.Kind] {
 		if info.Tag() == e.Tag {
 			base = info
 			break
@@ -168,7 +169,7 @@ func (e *VocabEntry) taginfo(builtin map[string][]*taginfo.Taginfo) (*taginfo.Ta
 		patterns = append(patterns, tagPattern(alias))
 	}
 	if len(patterns) == 0 {
-		return nil, VocabErrorf("%s %q is already built in; give other spellings or a pattern", e.Kind, e.Tag)
+		return nil, VocabErrorf("%s %q is already known; give other spellings or a pattern", e.Kind, e.Tag)
 	}
 
 	title, releaseType, exclusive, other := e.Title, e.ReleaseType, e.Exclusive, ""
@@ -215,8 +216,6 @@ type VocabParser struct {
 // NewVocabParser builds a parser from rls's and autobrr's tags, the new_parser lists without the removed entries,
 // and the custom entries.
 func NewVocabParser(custom []VocabEntry, removed []VocabKey) (*VocabParser, error) {
-	builtin := taginfo.All(autobrrTagInfos)
-
 	list := map[string][]*taginfo.Taginfo{}
 	for kind, infos := range rlsVocab {
 		for _, info := range infos {
@@ -226,9 +225,10 @@ func NewVocabParser(custom []VocabEntry, removed []VocabKey) (*VocabParser, erro
 		}
 	}
 
+	known := taginfo.All(autobrrTagInfos, list)
 	own := map[string][]*taginfo.Taginfo{}
 	for _, entry := range custom {
-		info, err := entry.taginfo(builtin)
+		info, err := entry.taginfo(known)
 		if err != nil {
 			return nil, err
 		}
@@ -299,15 +299,10 @@ func vocabEntry(source VocabSource, kind string, info *taginfo.Taginfo) VocabEnt
 	}
 }
 
-func parseRelease(name string) rls.Release {
-	p := currentParser.Load()
-	return p.leadingGroup(name, p.parser.ParseRelease([]byte(name)))
-}
+// Parse parses a release name.
+func (p *VocabParser) Parse(name string) rls.Release {
+	rel := p.parser.ParseRelease([]byte(name))
 
-// leadingGroup takes a listed group in brackets at the start of a fansub name, such as
-// "[SubsPlease] Title - 04 (1080p)", as the group. rls reads that bracket as the site and looks for the group after
-// the last "-".
-func (p *VocabParser) leadingGroup(name string, rel rls.Release) rls.Release {
 	m := leadingBracket.FindStringSubmatch(name)
 	if m == nil {
 		return rel
@@ -318,10 +313,90 @@ func (p *VocabParser) leadingGroup(name string, rel rls.Release) rls.Release {
 		return rel
 	}
 
+	// rls reads a bracket holding a known tag under 5 characters as plain text, which then becomes the title
+	if rel.Site != group {
+		rel = p.parser.ParseRelease([]byte(name[len(m[0]):]))
+	}
+
+	return leadingGroup(rel, group)
+}
+
+func parseRelease(name string) rls.Release {
+	return currentParser.Load().Parse(name)
+}
+
+// leadingGroup takes a listed group in brackets at the start of a fansub name, such as
+// "[SubsPlease] Title - 04 (1080p)", as the group. rls reads that bracket as the site and looks for the group after
+// the last "-".
+func leadingGroup(rel rls.Release, group string) rls.Release {
 	rel.Group = group
 	if rel.Site == group {
 		rel.Site = ""
 	}
 
 	return rel
+}
+
+// VocabPreview is what the parser reads from a release name.
+type VocabPreview struct {
+	Fields []VocabPreviewField `json:"fields"`
+	Unused []string            `json:"unused"`
+}
+
+// VocabPreviewField is one value the parser read.
+type VocabPreviewField struct {
+	Label string `json:"label"`
+	Value string `json:"value"`
+}
+
+// PreviewVocab parses name with p into the fields a release shows, and the words p could not place.
+func PreviewVocab(p *VocabParser, name string) VocabPreview {
+	rel := p.Parse(name)
+
+	r := NewRelease(IndexerMinimal{})
+	r.ParseStringWith(p, name)
+
+	number := func(n int) string {
+		if n == 0 {
+			return ""
+		}
+		return strconv.Itoa(n)
+	}
+
+	preview := VocabPreview{Fields: []VocabPreviewField{}, Unused: []string{}}
+	for _, field := range []VocabPreviewField{
+		{Label: "Type", Value: r.Type.String()},
+		{Label: "Title", Value: r.Title},
+		{Label: "Subtitle", Value: r.SubTitle},
+		{Label: "Year", Value: number(r.Year)},
+		{Label: "Season", Value: number(r.Season)},
+		{Label: "Episode", Value: number(r.Episode)},
+		{Label: "Resolution", Value: r.Resolution},
+		{Label: "Source", Value: r.Source},
+		{Label: "Codec", Value: strings.Join(r.Codec, ", ")},
+		{Label: "HDR", Value: strings.Join(r.HDR, ", ")},
+		{Label: "Audio", Value: strings.Join(r.Audio, ", ")},
+		{Label: "Channels", Value: r.AudioChannels},
+		{Label: "Container", Value: r.Container},
+		{Label: "Streaming service", Value: r.Website},
+		{Label: "Language", Value: strings.Join(r.Language, ", ")},
+		{Label: "Region", Value: r.Region},
+		{Label: "Edition", Value: strings.Join(r.Edition, ", ")},
+		{Label: "Cut", Value: strings.Join(r.Cut, ", ")},
+		{Label: "Other", Value: strings.Join(r.Other, ", ")},
+		{Label: "Group", Value: r.Group},
+		{Label: "Site", Value: rel.Site},
+	} {
+		if field.Value != "" {
+			preview.Fields = append(preview.Fields, field)
+		}
+	}
+
+	for _, tag := range rel.Unused() {
+		if text := strings.TrimSpace(tag.Text()); text != "" {
+			preview.Unused = append(preview.Unused, text)
+		}
+	}
+
+	return preview
 }

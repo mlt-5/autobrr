@@ -79,6 +79,37 @@ func (r *VocabRepo) Store(ctx context.Context, entry *domain.VocabEntry) error {
 	return nil
 }
 
+// Update replaces a custom vocabulary entry.
+func (r *VocabRepo) Update(ctx context.Context, entry *domain.VocabEntry) error {
+	query, args, err := r.db.squirrel.
+		Update("release_vocab").
+		Set("kind", entry.Kind).
+		Set("tag", entry.Tag).
+		Set("title", entry.Title).
+		Set("aliases", pq.Array(entry.Aliases)).
+		Set("pattern", entry.Pattern).
+		Set("release_type", entry.ReleaseType).
+		Set("exclusive", entry.Exclusive).
+		Where(sq.Eq{"id": entry.ID}).
+		ToSql()
+	if err != nil {
+		return errors.Wrap(err, "error building query")
+	}
+
+	result, err := r.db.Handler.ExecContext(ctx, query, args...)
+	if err != nil {
+		return errors.Wrap(err, "error executing query")
+	}
+
+	if n, err := result.RowsAffected(); err != nil {
+		return errors.Wrap(err, "error getting rows affected")
+	} else if n == 0 {
+		return domain.ErrRecordNotFound
+	}
+
+	return nil
+}
+
 // Delete removes a custom vocabulary entry.
 func (r *VocabRepo) Delete(ctx context.Context, id int64) error {
 	query, args, err := r.db.squirrel.
