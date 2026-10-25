@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/moistari/rls"
-	"github.com/moistari/rls/taginfo"
+	"github.com/autobrr/rls"
+	"github.com/autobrr/rls/taginfo"
 )
 
 var types map[string][]*TagInfo
@@ -319,7 +319,7 @@ func init() {
 		extraTagInfos["collection"] = append(extraTagInfos["collection"], inf)
 	}
 
-	rls.DefaultParser = rls.NewTagParser(taginfo.All(extraTagInfos), rls.DefaultLexers()...)
+	rls.DefaultParser = rls.NewTagParser(taginfo.All(extraTagInfos, rlsVocab), rls.DefaultLexers()...)
 }
 
 type TagInfo struct {
