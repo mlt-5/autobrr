@@ -35,7 +35,7 @@ struct ReleasesView: View {
             .navigationDestination(for: Release.self) { release in
                 ReleaseDetailView(release: release, client: model.client)
             }
-            .searchable(text: $model.query.search, prompt: "Search releases")
+            .searchable(text: $model.query.search, prompt: "Name, group, codec, resolution…")
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .toolbar {
