@@ -343,11 +343,15 @@ CREATE TABLE "release"
     other            TEXT []   DEFAULT '{}' NOT NULL,
     filter_id        INTEGER
                                             REFERENCES filter
-                                                ON DELETE SET NULL
+                                                ON DELETE SET NULL,
+    favorite         BOOLEAN   DEFAULT FALSE NOT NULL
 );
 
 CREATE INDEX release_filter_id_index
     ON "release" (filter_id);
+
+CREATE INDEX release_favorite_index
+    ON "release" (favorite);
 
 CREATE INDEX release_indexer_index
     ON "release" (indexer);

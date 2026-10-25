@@ -30,6 +30,7 @@ type releaseServiceMock struct {
 	lastStatsDays int
 	lastExport    *domain.ReleaseQueryParams
 	lastExportLoc *time.Location
+	favorites     []bool
 }
 
 func newReleaseServiceMock() *releaseServiceMock {
@@ -117,6 +118,14 @@ func (m *releaseServiceMock) Export(ctx context.Context, w io.Writer, params dom
 	m.lastExportLoc = loc
 	_, err := io.WriteString(w, "workbook")
 	return err
+}
+
+func (m *releaseServiceMock) SetFavorite(ctx context.Context, id int64, favorite bool) error {
+	if id != 42 {
+		return domain.ErrRecordNotFound
+	}
+	m.favorites = append(m.favorites, favorite)
+	return nil
 }
 
 func (m *releaseServiceMock) Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error) {
@@ -719,4 +728,29 @@ func TestReleaseHandler_Reparse(t *testing.T) {
 	var result domain.ReparseResult
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&result))
 	assert.Equal(t, domain.ReparseResult{Checked: 12, Updated: 3}, result)
+}
+
+func TestReleaseHandler_Favorite(t *testing.T) {
+	t.Parallel()
+
+	service := newReleaseServiceMock()
+	testServer := httptest.NewServer(setupReleaseHandler(service))
+	defer testServer.Close()
+
+	do := func(method, path string) int {
+		req, err := http.NewRequest(method, testServer.URL+"/api/releases"+path, nil)
+		require.NoError(t, err)
+		resp, err := http.DefaultClient.Do(req)
+		require.NoError(t, err)
+		resp.Body.Close()
+		return resp.StatusCode
+	}
+
+	assert.Equal(t, http.StatusNoContent, do(http.MethodPost, "/42/favorite"))
+	assert.Equal(t, http.StatusNoContent, do(http.MethodDelete, "/42/favorite"))
+	assert.Equal(t, []bool{true, false}, service.favorites)
+	assert.Equal(t, http.StatusNotFound, do(http.MethodPost, "/43/favorite"))
+
+	assert.Equal(t, http.StatusOK, do(http.MethodGet, "/export?favorite=true"))
+	assert.True(t, service.lastExport.Filters.Favorite, "the list and export take favorite=true")
 }

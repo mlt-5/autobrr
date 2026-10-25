@@ -33,6 +33,7 @@ type releaseRepo interface {
 	Update(ctx context.Context, r *domain.Release) error
 	Find(ctx context.Context, params domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error)
 	ListReparse(ctx context.Context, afterID int64, limit uint64) ([]domain.ReleaseReparse, error)
+	SetFavorite(ctx context.Context, id int64, favorite bool) error
 	UpdateParsedFields(ctx context.Context, releases []domain.ReleaseReparse) error
 	Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error)
 	GetIndexerOptions(ctx context.Context) ([]string, error)
@@ -126,6 +127,11 @@ func (s *Service) Find(ctx context.Context, query domain.ReleaseQueryParams) (*d
 
 func (s *Service) Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error) {
 	return s.repo.Get(ctx, req)
+}
+
+// SetFavorite marks or unmarks a release as a favourite. Favourites are kept when releases are deleted.
+func (s *Service) SetFavorite(ctx context.Context, id int64, favorite bool) error {
+	return s.repo.SetFavorite(ctx, id, favorite)
 }
 
 func (s *Service) GetActionStatus(ctx context.Context, req *domain.GetReleaseActionStatusRequest) (*domain.ReleaseActionStatus, error) {

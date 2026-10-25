@@ -35,6 +35,7 @@ struct Release: Decodable, Identifiable, Hashable {
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
+    var favorite: Bool
 
     /// takeParsed copies the fields parsed from the name, for a release whose name was parsed again.
     mutating func takeParsed(from other: Release) {

@@ -24,6 +24,7 @@ type releaseService interface {
 	Find(ctx context.Context, query domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error)
 	Export(ctx context.Context, w io.Writer, params domain.ReleaseQueryParams, loc *time.Location) error
 	Reparse(ctx context.Context) (*domain.ReparseResult, error)
+	SetFavorite(ctx context.Context, id int64, favorite bool) error
 	Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error)
 	GetIndexerOptions(ctx context.Context) ([]string, error)
 	Stats(ctx context.Context) (*domain.ReleaseStats, error)
@@ -90,6 +91,8 @@ func (h releaseHandler) Routes(r chi.Router) {
 	r.Route("/{releaseID}", func(r chi.Router) {
 		r.Get("/", h.getReleaseByID)
 		r.Post("/actions/{actionStatusID}/retry", h.retryAction)
+		r.Post("/favorite", h.setFavorite(true))
+		r.Delete("/favorite", h.setFavorite(false))
 	})
 
 	r.Route("/profiles/duplicate", func(r chi.Router) {
@@ -162,6 +165,7 @@ func releaseQuery(r *http.Request) (domain.ReleaseQueryParams, error) {
 
 	query.Filters.Indexers = r.URL.Query()["indexer"]
 	query.Filters.PushStatus = pushStatus
+	query.Filters.Favorite = r.URL.Query().Get("favorite") == "true"
 	query.Search = r.URL.Query().Get("q")
 
 	return query, nil
@@ -341,6 +345,28 @@ func (h releaseHandler) process(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.encoder.NoContent(w)
+}
+
+func (h releaseHandler) setFavorite(favorite bool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		releaseID, err := parseURLParamInt(r, "releaseID")
+		if err != nil {
+			h.encoder.BadRequestErr(w, err)
+			return
+		}
+
+		if err := h.service.SetFavorite(r.Context(), int64(releaseID), favorite); err != nil {
+			if errors.Is(err, domain.ErrRecordNotFound) {
+				h.encoder.NotFoundErr(w, errors.New("could not find release with id %d", releaseID))
+				return
+			}
+
+			h.encoder.Error(w, err)
+			return
+		}
+
+		h.encoder.NoContent(w)
+	}
 }
 
 func (h releaseHandler) retryAction(w http.ResponseWriter, r *http.Request) {
