@@ -17,38 +17,38 @@ struct ReleasesView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(model.releases) { release in
-                    NavigationLink(value: release) {
-                        ReleaseRow(release: release)
-                    }
-                    .swipeActions(edge: .leading) {
-                        Button {
-                            toggleFavorite(release)
-                        } label: {
-                            Label(release.favorite ? "Unfavourite" : "Favourite", systemImage: release.favorite ? "star.slash" : "star")
+                Section {
+                    ForEach(model.releases) { release in
+                        NavigationLink(value: release) {
+                            ReleaseRow(release: release)
                         }
-                        .tint(.yellow)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                toggleFavorite(release)
+                            } label: {
+                                Label(release.favorite ? "Unfavourite" : "Favourite", systemImage: release.favorite ? "star.slash" : "star")
+                            }
+                            .tint(.yellow)
+                        }
                     }
-                }
 
-                if model.hasMore {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .listRowSeparator(.hidden)
-                        .task { await model.loadMore() }
+                    if model.hasMore {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .listRowSeparator(.hidden)
+                            .task { await model.loadMore() }
+                    }
+                } header: {
+                    Picker("Show", selection: $model.query.favorites) {
+                        Text("All").tag(false)
+                        Text("Favourites").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .textCase(nil)
+                    .padding(.vertical, 4)
                 }
             }
             .listStyle(.plain)
-            .safeAreaInset(edge: .top) {
-                Picker("Show", selection: $model.query.favorites) {
-                    Text("All").tag(false)
-                    Text("Favourites").tag(true)
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                .padding(.bottom, 8)
-                .background(.bar)
-            }
             .overlay { placeholder }
             .navigationTitle("Releases")
             .navigationDestination(for: Release.self) { release in
