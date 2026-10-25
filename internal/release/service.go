@@ -32,6 +32,8 @@ type releaseRepo interface {
 	Store(ctx context.Context, release *domain.Release) error
 	Update(ctx context.Context, r *domain.Release) error
 	Find(ctx context.Context, params domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error)
+	ListReparse(ctx context.Context, afterID int64, limit uint64) ([]domain.ReleaseReparse, error)
+	UpdateParsedFields(ctx context.Context, releases []domain.ReleaseReparse) error
 	Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error)
 	GetIndexerOptions(ctx context.Context) ([]string, error)
 	Stats(ctx context.Context) (*domain.ReleaseStats, error)

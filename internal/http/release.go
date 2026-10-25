@@ -23,6 +23,7 @@ import (
 type releaseService interface {
 	Find(ctx context.Context, query domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error)
 	Export(ctx context.Context, w io.Writer, params domain.ReleaseQueryParams, loc *time.Location) error
+	Reparse(ctx context.Context) (*domain.ReparseResult, error)
 	Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error)
 	GetIndexerOptions(ctx context.Context) ([]string, error)
 	Stats(ctx context.Context) (*domain.ReleaseStats, error)
@@ -64,6 +65,7 @@ func (h releaseHandler) Routes(r chi.Router) {
 	r.Get("/", h.findReleases)
 	r.Get("/recent", h.findRecentReleases)
 	r.Get("/export", h.exportReleases)
+	r.Post("/reparse", h.reparseReleases)
 	r.Get("/stats", h.getStats)
 	r.Get("/stats/activity", h.statsHandler(func(ctx context.Context, days int) (any, error) {
 		return h.service.StatsActivity(ctx, days)
@@ -192,6 +194,16 @@ func (h releaseHandler) exportReleases(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="autobrr-releases-%s.xlsx"`, time.Now().In(loc).Format("2006-01-02")))
 	w.WriteHeader(http.StatusOK)
 	_, _ = buf.WriteTo(w)
+}
+
+func (h releaseHandler) reparseReleases(w http.ResponseWriter, r *http.Request) {
+	result, err := h.service.Reparse(r.Context())
+	if err != nil {
+		h.encoder.Error(w, err)
+		return
+	}
+
+	h.encoder.StatusResponse(w, http.StatusOK, result)
 }
 
 func (h releaseHandler) findRecentReleases(w http.ResponseWriter, r *http.Request) {

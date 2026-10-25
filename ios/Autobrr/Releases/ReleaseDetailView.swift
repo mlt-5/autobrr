@@ -4,12 +4,18 @@
 import SwiftUI
 
 struct ReleaseDetailView: View {
-    let release: Release
     let client: EngineClient
+
+    @State private var release: Release
 
     @State private var retrying: Int64?
     @State private var message: String?
     @State private var addingVocab = false
+
+    init(release: Release, client: EngineClient) {
+        self.client = client
+        _release = State(initialValue: release)
+    }
 
     var body: some View {
         List {
@@ -73,7 +79,7 @@ struct ReleaseDetailView: View {
         }
         .navigationTitle(release.title.isEmpty ? "Release" : release.title)
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $addingVocab) {
+        .sheet(isPresented: $addingVocab, onDismiss: { Task { await reload() } }) {
             VocabAddSheet(client: client, releaseName: release.name)
         }
         .alert("Retry", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } }), presenting: message) { _ in
@@ -81,6 +87,13 @@ struct ReleaseDetailView: View {
         } message: {
             Text($0)
         }
+    }
+
+    /// reload picks up the release's parsed fields again, in case its name was parsed again.
+    private func reload() async {
+        guard let fresh: Release = try? await client.get("release/\(release.id)") else { return }
+
+        release.takeParsed(from: fresh)
     }
 
     @ViewBuilder

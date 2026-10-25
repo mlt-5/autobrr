@@ -74,6 +74,19 @@ struct VocabPreview: Decodable {
     let unused: [String]
 }
 
+private struct Notice {
+    let title: String
+    let message: String
+}
+
+private struct ReparseResult: Decodable {
+    let checked: Int
+    let updated: Int
+}
+
+/// reparseExplanation says what updating existing releases does.
+private let reparseExplanation = "Parses the names of stored releases again with the vocabulary. Their parsed fields are replaced, including values indexers announced. Filter results and actions stay as they were."
+
 private struct VocabPreviewRequest: Encodable {
     let name: String
     let entry: VocabDraft?
@@ -139,6 +152,13 @@ final class VocabularyModel: ObservableObject {
         await load()
     }
 
+    /// reparse parses the names of the stored releases again with the saved vocabulary and returns a summary.
+    func reparse() async throws -> String {
+        let data = try await client.request(.post, "release/reparse")
+        let result = try JSON.decoder.decode(ReparseResult.self, from: data)
+        return "Updated \(result.updated) of \(result.checked) releases."
+    }
+
     /// preview parses name with the saved vocabulary plus draft, without saving anything.
     func preview(name: String, draft: VocabDraft?) async throws -> VocabPreview {
         try await client.send(.post, "vocab/preview", body: VocabPreviewRequest(name: name, entry: draft))
@@ -176,7 +196,8 @@ struct VocabularyView: View {
     @State private var adding = false
     @State private var exporting = false
     @State private var exported: ExportedFile?
-    @State private var exportError: String?
+    @State private var reparsing = false
+    @State private var notice: Notice?
 
     init(client: EngineClient) {
         _model = StateObject(wrappedValue: VocabularyModel(client: client))
@@ -194,6 +215,23 @@ struct VocabularyView: View {
         let builtin = visible.filter { $0.source == "builtin" }
 
         List {
+            Section {
+                Button {
+                    reparse()
+                } label: {
+                    HStack {
+                        Text("Update existing releases")
+                        Spacer()
+                        if reparsing {
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(reparsing)
+            } footer: {
+                Text(reparseExplanation)
+            }
+
             if !added.isEmpty {
                 Section {
                     ForEach(added) { entry in
@@ -310,10 +348,10 @@ struct VocabularyView: View {
         .sheet(item: $exported) { file in
             ShareSheet(items: [file.url])
         }
-        .alert("Export", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
-            Button("OK") { exportError = nil }
+        .alert(notice?.title ?? "", isPresented: Binding(get: { notice != nil }, set: { if !$0 { notice = nil } })) {
+            Button("OK") { notice = nil }
         } message: {
-            Text(exportError ?? "")
+            Text(notice?.message ?? "")
         }
         .alert("Vocabulary", isPresented: Binding(get: { model.error != nil && model.hasLoaded && !model.entries.isEmpty }, set: { if !$0 { model.error = nil } })) {
             Button("OK") { model.error = nil }
@@ -324,9 +362,24 @@ struct VocabularyView: View {
         .task { await model.load() }
     }
 
+    private func reparse() {
+        reparsing = true
+
+        Task {
+            defer { reparsing = false }
+
+            do {
+                let summary = try await model.reparse()
+                notice = Notice(title: "Existing releases", message: summary)
+            } catch {
+                notice = Notice(title: "Existing releases", message: error.localizedDescription)
+            }
+        }
+    }
+
     private func export(isEmpty: Bool) {
         guard !isEmpty else {
-            exportError = "No entries match the current search and kind."
+            notice = Notice(title: "Export", message: "No entries match the current search and kind.")
             return
         }
 
@@ -339,7 +392,7 @@ struct VocabularyView: View {
                 let url = try await model.export(kind: kind, search: search)
                 exported = ExportedFile(url: url)
             } catch {
-                exportError = error.localizedDescription
+                notice = Notice(title: "Export", message: error.localizedDescription)
             }
         }
     }
@@ -467,7 +520,28 @@ struct VocabFormView: View {
     @State private var preview: VocabPreview?
     @State private var previewError: String?
     @State private var busy = false
-    @State private var message: String?
+    @State private var prompt: Prompt?
+
+    private enum Prompt {
+        case error(String)
+        case updateReleases
+        case updated(String)
+
+        var title: String {
+            switch self {
+            case .error: return "Vocabulary"
+            case .updateReleases: return "Update existing releases?"
+            case .updated: return "Existing releases"
+            }
+        }
+
+        var message: String {
+            switch self {
+            case .error(let message), .updated(let message): return message
+            case .updateReleases: return reparseExplanation
+            }
+        }
+    }
 
     init(model: VocabularyModel, draft: VocabDraft, releaseName: String? = nil, onSaved: @escaping () -> Void = {}) {
         self.model = model
@@ -595,10 +669,18 @@ struct VocabFormView: View {
                 }
             }
         }
-        .alert("Vocabulary", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
-            Button("OK") { message = nil }
-        } message: {
-            Text(message ?? "")
+        .alert(prompt?.title ?? "", isPresented: Binding(get: { prompt != nil }, set: { if !$0 { prompt = nil } }), presenting: prompt) { prompt in
+            switch prompt {
+            case .error:
+                Button("OK") {}
+            case .updateReleases:
+                Button("Update") { reparse() }
+                Button("Not now", role: .cancel) { finish() }
+            case .updated:
+                Button("OK") { finish() }
+            }
+        } message: { prompt in
+            Text(prompt.message)
         }
     }
 
@@ -631,12 +713,31 @@ struct VocabFormView: View {
 
             do {
                 try await model.save(entry)
-                onSaved()
-                dismiss()
+                prompt = .updateReleases
             } catch {
-                message = error.localizedDescription
+                prompt = .error(error.localizedDescription)
             }
         }
+    }
+
+    private func reparse() {
+        busy = true
+
+        Task {
+            defer { busy = false }
+
+            do {
+                let summary = try await model.reparse()
+                prompt = .updated(summary)
+            } catch {
+                prompt = .updated(error.localizedDescription)
+            }
+        }
+    }
+
+    private func finish() {
+        onSaved()
+        dismiss()
     }
 }
 
