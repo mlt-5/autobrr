@@ -21,10 +21,12 @@ import (
 type vocabService interface {
 	List(ctx context.Context) ([]domain.VocabEntry, error)
 	Store(ctx context.Context, entry *domain.VocabEntry) error
+	Update(ctx context.Context, entry *domain.VocabEntry) error
 	Delete(ctx context.Context, id int64) error
 	Remove(ctx context.Context, key domain.VocabKey) error
 	Restore(ctx context.Context, key domain.VocabKey) error
 	Export(ctx context.Context, w io.Writer, kind, search string) error
+	Preview(ctx context.Context, name string, entry *domain.VocabEntry) (*domain.VocabPreview, error)
 }
 
 type vocabHandler struct {
@@ -43,6 +45,8 @@ func (h vocabHandler) Routes(r chi.Router) {
 	r.Get("/", h.list)
 	r.Post("/", h.store)
 	r.Get("/export", h.export)
+	r.Post("/preview", h.preview)
+	r.Put("/{vocabID}", h.update)
 	r.Delete("/{vocabID}", h.delete)
 
 	r.Post("/removed", h.remove)
@@ -97,6 +101,49 @@ func (h vocabHandler) store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.encoder.StatusCreatedData(w, entry)
+}
+
+func (h vocabHandler) update(w http.ResponseWriter, r *http.Request) {
+	id, err := parseURLParamInt(r, "vocabID")
+	if err != nil {
+		h.encoder.BadRequestErr(w, err)
+		return
+	}
+
+	var entry domain.VocabEntry
+	if err := json.NewDecoder(r.Body).Decode(&entry); err != nil {
+		h.encoder.BadRequestErr(w, err)
+		return
+	}
+	entry.ID = int64(id)
+
+	if err := h.service.Update(r.Context(), &entry); err != nil {
+		h.error(w, err)
+		return
+	}
+
+	h.encoder.StatusResponse(w, http.StatusOK, entry)
+}
+
+type vocabPreviewRequest struct {
+	Name  string             `json:"name"`
+	Entry *domain.VocabEntry `json:"entry"`
+}
+
+func (h vocabHandler) preview(w http.ResponseWriter, r *http.Request) {
+	var req vocabPreviewRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.encoder.BadRequestErr(w, err)
+		return
+	}
+
+	preview, err := h.service.Preview(r.Context(), req.Name, req.Entry)
+	if err != nil {
+		h.error(w, err)
+		return
+	}
+
+	h.encoder.StatusResponse(w, http.StatusOK, preview)
 }
 
 func (h vocabHandler) delete(w http.ResponseWriter, r *http.Request) {

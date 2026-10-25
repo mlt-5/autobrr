@@ -678,7 +678,15 @@ func NewRelease(indexer IndexerMinimal) *Release {
 }
 
 func (r *Release) ParseString(title string) {
-	rel := parseRelease(title)
+	r.parseRelease(title, parseRelease(title))
+}
+
+// ParseStringWith is ParseString with the parser p instead of the one in use.
+func (r *Release) ParseStringWith(p *VocabParser, title string) {
+	r.parseRelease(title, p.Parse(title))
+}
+
+func (r *Release) parseRelease(title string, rel rls.Release) {
 
 	r.Type = rel.Type
 

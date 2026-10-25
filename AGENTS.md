@@ -39,7 +39,7 @@ The backend follows a layered architecture with clear separation of concerns:
   - **HTTP layer** (`internal/http/`): REST API handlers and routing
   - **Infrastructure**: External integrations (`internal/indexer/`, `internal/irc/`, `internal/notification/`)
 
-- **`rls/`**: the release-name parser, autobrr/rls v0.10.0 with two fixes marked `bard fix`, copied from new_parser (keep the fixes when updating it). `internal/domain/rlsvocab.csv` adds new_parser's extra tags and groups on top of it. Settings → Vocabulary in the app adds entries and removes listed ones at runtime (`internal/vocab`, stored in `release_vocab`), rebuilding the parser on each change
+- **`rls/`**: the release-name parser, autobrr/rls v0.10.0 with two fixes marked `bard fix`, copied from new_parser (keep the fixes when updating it). `internal/domain/rlsvocab.csv` adds new_parser's extra tags and groups on top of it. Settings → Vocabulary (and Add to vocabulary on a release) adds and edits entries and removes listed ones at runtime (`internal/vocab`, stored in `release_vocab`), rebuilding the parser on each change
 
 - **`pkg/`**: Reusable packages and client libraries
   - Contains API clients for some trackers (`btn`, `ggn`, `ops`, `red`) and the Torznab feed client
