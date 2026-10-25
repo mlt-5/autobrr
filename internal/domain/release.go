@@ -115,6 +115,7 @@ type Release struct {
 	AdditionalRecordLabelCheckRequired bool                  `json:"-"`
 	IsDuplicate                        bool                  `json:"-"`
 	Favorite                           bool                  `json:"favorite"`
+	VocabGroup                         bool                  `json:"vocab_group"`
 	SkipDuplicateProfileID             int64                 `json:"-"`
 	SkipDuplicateProfileName           string                `json:"-"`
 	FilterID                           int                   `json:"-"`

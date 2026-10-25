@@ -211,6 +211,7 @@ func tagPattern(tag string) string {
 type VocabParser struct {
 	parser rls.Parser
 	groups taginfo.FindFunc
+	known  taginfo.FindFunc
 }
 
 // NewVocabParser builds a parser from rls's and autobrr's tags, the new_parser lists without the removed entries,
@@ -240,12 +241,18 @@ func NewVocabParser(custom []VocabEntry, removed []VocabKey) (*VocabParser, erro
 	return &VocabParser{
 		parser: rls.NewTagParser(taginfo.All(autobrrTagInfos, list, own), rls.DefaultLexers()...),
 		groups: taginfo.Find(groups...),
+		known:  taginfo.Find(slices.Concat(known["group"], own["group"])...),
 	}, nil
 }
 
 // UseVocabParser makes p the parser for every release name parsed from now on.
 func UseVocabParser(p *VocabParser) {
 	currentParser.Store(p)
+}
+
+// IsVocabGroup reports whether the vocabulary has the release group: a built-in, listed or custom one.
+func IsVocabGroup(group string) bool {
+	return group != "" && currentParser.Load().known(group) != nil
 }
 
 // Vocab lists every vocabulary entry: the built-in tags, the new_parser lists marked when removed, and the custom

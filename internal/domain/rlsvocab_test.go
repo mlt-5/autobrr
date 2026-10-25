@@ -222,3 +222,15 @@ func TestVocabParser_ListedTag(t *testing.T) {
 	_, err := NewVocabParser([]VocabEntry{{Kind: "group", Tag: "SubsPlease"}}, nil)
 	assert.ErrorContains(t, err, "already known")
 }
+
+func TestIsVocabGroup(t *testing.T) {
+	useVocab(t, []VocabEntry{{Kind: "group", Tag: "ZqFansubs", Aliases: []string{"Zq Subs"}}}, []VocabKey{{Kind: "group", Tag: "SubsPlease"}})
+
+	assert.True(t, IsVocabGroup("CODEX"), "a built-in group")
+	assert.True(t, IsVocabGroup("ToonsHub"), "a listed group")
+	assert.True(t, IsVocabGroup("zqfansubs"), "a custom group, in any case")
+	assert.True(t, IsVocabGroup("Zq Subs"), "a custom group's other spelling")
+	assert.False(t, IsVocabGroup("SubsPlease"), "a removed group")
+	assert.False(t, IsVocabGroup("NoSuchGroup"))
+	assert.False(t, IsVocabGroup(""))
+}
