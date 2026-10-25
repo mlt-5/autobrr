@@ -108,6 +108,10 @@ func (m *releaseServiceMock) Find(ctx context.Context, query domain.ReleaseQuery
 	return nil, errors.New("not implemented")
 }
 
+func (m *releaseServiceMock) Reparse(ctx context.Context) (*domain.ReparseResult, error) {
+	return &domain.ReparseResult{Checked: 12, Updated: 3}, nil
+}
+
 func (m *releaseServiceMock) Export(ctx context.Context, w io.Writer, params domain.ReleaseQueryParams, loc *time.Location) error {
 	m.lastExport = &params
 	m.lastExportLoc = loc
@@ -698,4 +702,21 @@ func TestReleaseHandler_Export(t *testing.T) {
 		resp.Body.Close()
 		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, query)
 	}
+}
+
+func TestReleaseHandler_Reparse(t *testing.T) {
+	t.Parallel()
+
+	testServer := httptest.NewServer(setupReleaseHandler(newReleaseServiceMock()))
+	defer testServer.Close()
+
+	resp, err := http.Post(testServer.URL+"/api/releases/reparse", "application/json", nil)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+
+	var result domain.ReparseResult
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&result))
+	assert.Equal(t, domain.ReparseResult{Checked: 12, Updated: 3}, result)
 }

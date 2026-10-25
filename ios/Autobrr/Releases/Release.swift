@@ -21,20 +21,34 @@ struct Release: Decodable, Identifiable, Hashable {
     let downloadUrl: String
     let name: String
     let size: UInt64
-    let title: String
+    var title: String
     let category: String
-    let season: Int
-    let episode: Int
-    let year: Int
-    let resolution: String
-    let source: String
-    let codec: [String]?
-    let container: String
-    let hdr: [String]?
-    let group: String
+    var season: Int
+    var episode: Int
+    var year: Int
+    var resolution: String
+    var source: String
+    var codec: [String]?
+    var container: String
+    var hdr: [String]?
+    var group: String
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
+
+    /// takeParsed copies the fields parsed from the name, for a release whose name was parsed again.
+    mutating func takeParsed(from other: Release) {
+        title = other.title
+        season = other.season
+        episode = other.episode
+        year = other.year
+        resolution = other.resolution
+        source = other.source
+        codec = other.codec
+        container = other.container
+        hdr = other.hdr
+        group = other.group
+    }
 }
 
 struct ActionStatus: Decodable, Identifiable, Hashable {
