@@ -234,3 +234,25 @@ func TestIsVocabGroup(t *testing.T) {
 	assert.False(t, IsVocabGroup("NoSuchGroup"))
 	assert.False(t, IsVocabGroup(""))
 }
+
+func TestVocabParser_GroupInAnyBracket(t *testing.T) {
+	useVocab(t, []VocabEntry{
+		{Kind: "group", Tag: "喵萌奶茶屋", Aliases: []string{}},
+		{Kind: "group", Tag: "ZqTrail", Aliases: []string{}},
+	}, nil)
+
+	rel := parseRelease("【喵萌奶茶屋】★10月新番★[学生会也有洞 / Seitokai ni mo Ana wa Aru!][04][1080p][简日双语]")
+	assert.Equal(t, "喵萌奶茶屋", rel.Group, "a group in full-width brackets")
+	assert.NotContains(t, rel.Title, "喵萌奶茶屋")
+
+	rel = parseRelease("Kami no Show - 05 [1080p][HEVC][ZqTrail]")
+	assert.Equal(t, "ZqTrail", rel.Group, "a group in a bracket further on")
+	assert.Equal(t, "Kami no Show", rel.Title)
+	assert.Equal(t, 5, rel.Episode)
+
+	rel = parseRelease("Show.S01E01.1080p.WEB.H264-ToonsHub [ZqTrail]")
+	assert.Equal(t, "ToonsHub", rel.Group, "a vocabulary group rls found stays")
+
+	rel = parseRelease("Kami no Show - 05 [1080p][HEVC][ZqNotListed]")
+	assert.NotEqual(t, "ZqNotListed", rel.Group, "brackets outside the vocabulary are left to rls")
+}

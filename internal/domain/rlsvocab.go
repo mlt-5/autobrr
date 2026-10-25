@@ -23,9 +23,9 @@ import (
 var rlsVocabCsv []byte
 
 var (
-	rlsVocab       = taginfo.MustLoadBytes(rlsVocabCsv)
-	leadingBracket = regexp.MustCompile(`^\s*\[([^\]]+)\]`)
-	tagSeparators  = regexp.MustCompile(`[-._ ]+`)
+	rlsVocab      = taginfo.MustLoadBytes(rlsVocabCsv)
+	bracketed     = regexp.MustCompile(`\[([^\[\]]+)\]|【([^【】]+)】`)
+	tagSeparators = regexp.MustCompile(`[-._ ]+`)
 
 	// autobrrTagInfos are autobrr's additions to rls's tags, set up in releasetags.go.
 	autobrrTagInfos map[string][]*taginfo.Taginfo
@@ -211,7 +211,6 @@ func tagPattern(tag string) string {
 type VocabParser struct {
 	parser rls.Parser
 	groups taginfo.FindFunc
-	known  taginfo.FindFunc
 }
 
 // NewVocabParser builds a parser from rls's and autobrr's tags, the new_parser lists without the removed entries,
@@ -236,12 +235,9 @@ func NewVocabParser(custom []VocabEntry, removed []VocabKey) (*VocabParser, erro
 		own[entry.Kind] = append(own[entry.Kind], info)
 	}
 
-	groups := slices.Concat(list["group"], own["group"])
-
 	return &VocabParser{
 		parser: rls.NewTagParser(taginfo.All(autobrrTagInfos, list, own), rls.DefaultLexers()...),
-		groups: taginfo.Find(groups...),
-		known:  taginfo.Find(slices.Concat(known["group"], own["group"])...),
+		groups: taginfo.Find(slices.Concat(known["group"], own["group"])...),
 	}, nil
 }
 
@@ -252,7 +248,7 @@ func UseVocabParser(p *VocabParser) {
 
 // IsVocabGroup reports whether the vocabulary has the release group: a built-in, listed or custom one.
 func IsVocabGroup(group string) bool {
-	return group != "" && currentParser.Load().known(group) != nil
+	return group != "" && currentParser.Load().groups(group) != nil
 }
 
 // Vocab lists every vocabulary entry: the built-in tags, the new_parser lists marked when removed, and the custom
@@ -306,34 +302,49 @@ func vocabEntry(source VocabSource, kind string, info *taginfo.Taginfo) VocabEnt
 	}
 }
 
-// Parse parses a release name.
+// Parse parses a release name. A vocabulary group in brackets, [Group] or 【Group】, is the group wherever it is in
+// the name, unless rls already found a vocabulary group.
 func (p *VocabParser) Parse(name string) rls.Release {
 	rel := p.parser.ParseRelease([]byte(name))
 
-	m := leadingBracket.FindStringSubmatch(name)
-	if m == nil {
-		return rel
+	for _, m := range bracketed.FindAllStringSubmatchIndex(name, -1) {
+		start, end := m[2], m[3]
+		if start < 0 {
+			start, end = m[4], m[5]
+		}
+
+		group := strings.Trim(name[start:end], "\t\n\f\r ")
+		if group == "" || p.groups(group) == nil {
+			continue
+		}
+
+		leading := strings.TrimSpace(name[:m[0]]) == ""
+		if !leading && p.groups(rel.Group) != nil {
+			return rel
+		}
+
+		// Parse the name without the bracket: rls reads a bracket holding a known tag under 5 characters as plain
+		// text, which then becomes the title, and a bracket further on can end up in the title too
+		if rel.Site != group {
+			rest := name[m[1]:]
+			if !leading {
+				rest = name[:m[0]] + " " + rest
+			}
+			rel = p.parser.ParseRelease([]byte(rest))
+		}
+
+		return leadingGroup(rel, group)
 	}
 
-	group := strings.Trim(m[1], "\t\n\f\r ")
-	if group == "" || p.groups(group) == nil {
-		return rel
-	}
-
-	// rls reads a bracket holding a known tag under 5 characters as plain text, which then becomes the title
-	if rel.Site != group {
-		rel = p.parser.ParseRelease([]byte(name[len(m[0]):]))
-	}
-
-	return leadingGroup(rel, group)
+	return rel
 }
 
 func parseRelease(name string) rls.Release {
 	return currentParser.Load().Parse(name)
 }
 
-// leadingGroup takes a listed group in brackets at the start of a fansub name, such as
-// "[SubsPlease] Title - 04 (1080p)", as the group. rls reads that bracket as the site and looks for the group after
+// leadingGroup takes a vocabulary group in brackets, such as the start of "[SubsPlease] Title - 04 (1080p)", as the
+// group. rls reads that bracket as the site and looks for the group after
 // the last "-".
 func leadingGroup(rel rls.Release, group string) rls.Release {
 	rel.Group = group
