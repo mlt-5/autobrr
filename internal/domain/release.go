@@ -611,6 +611,8 @@ type ReleaseQueryParams struct {
 		Indexers   []string
 		PushStatus string
 		Favorite   bool
+		// VocabGroup keeps only releases whose group the vocabulary has when true, and only the others when false
+		VocabGroup *bool
 	}
 	Search string
 }

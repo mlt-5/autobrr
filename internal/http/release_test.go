@@ -753,4 +753,11 @@ func TestReleaseHandler_Favorite(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, do(http.MethodGet, "/export?favorite=true"))
 	assert.True(t, service.lastExport.Filters.Favorite, "the list and export take favorite=true")
+
+	assert.Equal(t, http.StatusOK, do(http.MethodGet, "/export?vocab_group=false"))
+	require.NotNil(t, service.lastExport.Filters.VocabGroup)
+	assert.False(t, *service.lastExport.Filters.VocabGroup)
+	assert.Equal(t, http.StatusOK, do(http.MethodGet, "/export"))
+	assert.Nil(t, service.lastExport.Filters.VocabGroup)
+	assert.Equal(t, http.StatusBadRequest, do(http.MethodGet, "/export?vocab_group=maybe"))
 }

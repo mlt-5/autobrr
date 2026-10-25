@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	"github.com/autobrr/rls"
@@ -212,6 +213,9 @@ type VocabParser struct {
 	parser rls.Parser
 	groups taginfo.FindFunc
 	known  taginfo.FindFunc
+
+	// isGroup caches IsVocabGroup's answer per group, since release lists can ask for every stored release
+	isGroup sync.Map
 }
 
 // NewVocabParser builds a parser from rls's and autobrr's tags, the new_parser lists without the removed entries,
@@ -252,7 +256,19 @@ func UseVocabParser(p *VocabParser) {
 
 // IsVocabGroup reports whether the vocabulary has the release group: a built-in, listed or custom one.
 func IsVocabGroup(group string) bool {
-	return group != "" && currentParser.Load().known(group) != nil
+	if group == "" {
+		return false
+	}
+
+	p := currentParser.Load()
+	if known, ok := p.isGroup.Load(group); ok {
+		return known.(bool)
+	}
+
+	known := p.known(group) != nil
+	p.isGroup.Store(group, known)
+
+	return known
 }
 
 // Vocab lists every vocabulary entry: the built-in tags, the new_parser lists marked when removed, and the custom

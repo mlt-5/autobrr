@@ -2139,3 +2139,51 @@ func TestReleaseRepo_Favorite(t *testing.T) {
 		})
 	}
 }
+
+func TestReleaseRepo_FindVocabGroup(t *testing.T) {
+	ctx := t.Context()
+
+	for dbType, testDb := range testDBs {
+		t.Run(dbType, func(t *testing.T) {
+			log := setupLoggerForTest()
+			repo := NewReleaseRepo(log, testDb.db)
+			filterRepo := NewFilterRepo(log, testDb.db)
+
+			filter := getMockFilter()
+			require.NoError(t, filterRepo.Store(ctx, filter))
+
+			store := func(name string) int64 {
+				rls := domain.NewRelease(domain.IndexerMinimal{Identifier: "nyaa"})
+				rls.ParseString(name)
+				rls.FilterID = filter.ID
+				require.NoError(t, repo.Store(ctx, rls))
+				return rls.ID
+			}
+			listed := store("[ToonsHub] HORROR COLLECTOR S01E03 1080p CR WEB-DL AAC2.0 H.264")
+			other := store("The.Penguin.S01E06.1080p.WEB.h264-ZqUnknown")
+			noGroup := store("[ZqNotListed] Kyoufu Collector - 03 (1080p) [ABCD1234].mkv")
+
+			t.Cleanup(func() {
+				_ = repo.Delete(ctx, &domain.DeleteReleaseRequest{OlderThan: 0})
+				_ = filterRepo.Delete(ctx, filter.ID)
+			})
+
+			ids := func(vocabGroup bool) []int64 {
+				params := domain.ReleaseQueryParams{Limit: 10}
+				params.Filters.VocabGroup = &vocabGroup
+				resp, err := repo.Find(ctx, params)
+				require.NoError(t, err)
+				assert.Equal(t, uint64(len(resp.Data)), resp.TotalCount)
+
+				var ids []int64
+				for _, r := range resp.Data {
+					ids = append(ids, r.ID)
+				}
+				return ids
+			}
+
+			assert.Equal(t, []int64{listed}, ids(true))
+			assert.ElementsMatch(t, []int64{other, noGroup}, ids(false), "the rest, including releases without a group")
+		})
+	}
+}

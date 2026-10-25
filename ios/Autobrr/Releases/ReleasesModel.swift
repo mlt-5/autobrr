@@ -15,6 +15,8 @@ final class ReleasesModel: ObservableObject {
         var status: PushStatus?
         var indexer: String?
         var favorites = false
+        /// vocabGroup shows only releases whose group the vocabulary has when true, and hides them when false.
+        var vocabGroup: Bool?
     }
 
     private static let pageSize = 50
@@ -154,6 +156,10 @@ final class ReleasesModel: ObservableObject {
 
         if query.favorites {
             items.append(URLQueryItem(name: "favorite", value: "true"))
+        }
+
+        if let vocabGroup = query.vocabGroup {
+            items.append(URLQueryItem(name: "vocab_group", value: String(vocabGroup)))
         }
 
         return items
