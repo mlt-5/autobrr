@@ -28,9 +28,9 @@ import (
 	"github.com/autobrr/go-torrent/bencode"
 	"github.com/autobrr/go-torrent/metainfo"
 
+	"github.com/autobrr/rls"
 	"github.com/avast/retry-go"
 	"github.com/dustin/go-humanize"
-	"github.com/moistari/rls"
 	"github.com/robfig/cron/v3"
 	"github.com/rs/xid"
 	"github.com/rs/zerolog/hlog"
@@ -283,7 +283,7 @@ func (r *Release) RepackStr() string {
 }
 
 func (r *Release) Raw(s string) rls.Release {
-	return rls.ParseString(s)
+	return parseRelease(s)
 }
 
 func (r *Release) ParseType(s string) {
@@ -678,7 +678,7 @@ func NewRelease(indexer IndexerMinimal) *Release {
 }
 
 func (r *Release) ParseString(title string) {
-	rel := rls.ParseString(title)
+	rel := parseRelease(title)
 
 	r.Type = rel.Type
 

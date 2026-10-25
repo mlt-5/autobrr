@@ -6,7 +6,7 @@ package domain
 import (
 	"testing"
 
-	"github.com/moistari/rls"
+	"github.com/autobrr/rls"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -1206,7 +1206,7 @@ func TestRelease_Hash(t *testing.T) {
 			fields: fields{
 				TorrentName: "That Movie 2008 1080p GBR Blu-ray AVC TrueHD 5.1",
 			},
-			want: "70bb23ff5da4209419b6d83628310a43",
+			want: "a4a9a1d5dc1e3b07a52b7328aa3644c6",
 		},
 		{
 			name: "24",

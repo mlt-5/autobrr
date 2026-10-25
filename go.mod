@@ -4,7 +4,7 @@ go 1.27.0
 
 replace github.com/r3labs/sse/v2 => github.com/autobrr/sse/v2 v2.0.0-20230520125637-530e06346d7d
 
-replace github.com/moistari/rls => github.com/autobrr/rls v0.8.1
+replace github.com/autobrr/rls => ./third_party/rls
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
@@ -12,6 +12,7 @@ require (
 	github.com/alphadose/haxmap v1.4.1
 	github.com/autobrr/go-cache v1.0.0-rc1
 	github.com/autobrr/go-torrent v1.1.1
+	github.com/autobrr/rls v0.10.0
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/dcarbone/zadapters/zstdlog v1.1.0
@@ -24,7 +25,6 @@ require (
 	github.com/lib/pq v1.12.3
 	github.com/maniartech/signals v1.3.1
 	github.com/mmcdole/gofeed v1.5.0
-	github.com/moistari/rls v0.6.0
 	github.com/pkg/errors v0.9.1
 	github.com/r3labs/sse/v2 v2.10.0
 	github.com/robfig/cron/v3 v3.0.1
@@ -52,7 +52,6 @@ require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/pprof v0.0.0-20260906184651-6331bc6350fe // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
