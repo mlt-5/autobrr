@@ -163,8 +163,6 @@ func TestVocab(t *testing.T) {
 			assert.False(t, entry.Removed)
 		case entry.Kind == "group" && entry.Tag == "ZqFansubs":
 			assert.Equal(t, VocabSourceCustom, entry.Source)
-		case entry.Kind == "collection" && entry.Tag == "MA":
-			assert.Equal(t, "(?-i:MA)", entry.Pattern, "a tag given by rls and autobrr is one entry")
 		}
 	}
 

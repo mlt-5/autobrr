@@ -237,19 +237,8 @@ func Vocab(custom []VocabEntry, removed []VocabKey) []VocabEntry {
 
 	builtin := taginfo.All(autobrrTagInfos)
 	for _, kind := range VocabKinds {
-		// autobrr gives some of rls's tags again with other spellings; they show as one entry
-		first := len(entries)
 		for _, info := range builtin[kind] {
-			i := slices.IndexFunc(entries[first:], func(e VocabEntry) bool { return e.Tag == info.Tag() })
-			if i < 0 {
-				entries = append(entries, vocabEntry(VocabSourceBuiltin, kind, info))
-				continue
-			}
-
-			entry := &entries[first+i]
-			if pattern := info.Regexp(); pattern != "" && !slices.Contains(strings.Split(entry.Pattern, "|"), pattern) {
-				entry.Pattern = strings.TrimPrefix(entry.Pattern+"|"+pattern, "|")
-			}
+			entries = append(entries, vocabEntry(VocabSourceBuiltin, kind, info))
 		}
 
 		for _, info := range rlsVocab[kind] {
