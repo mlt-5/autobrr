@@ -23,6 +23,9 @@ final class ReleasesModel: ObservableObject {
     @Published private(set) var error: String?
     @Published private(set) var hasLoaded = false
 
+    /// loadedQuery is the query the list was last loaded with.
+    private(set) var loadedQuery: Query?
+
     private var cursor: Int64?
     private var generation = 0
 
@@ -35,11 +38,13 @@ final class ReleasesModel: ObservableObject {
     func reload() async {
         generation += 1
         let current = generation
+        let query = self.query
 
         do {
             let page = try await fetch(cursor: 0)
             guard current == generation else { return }
 
+            loadedQuery = query
             releases = page.data.mergingActions()
             total = page.count
             cursor = page.data.isEmpty ? nil : page.nextCursor

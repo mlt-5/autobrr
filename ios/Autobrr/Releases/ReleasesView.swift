@@ -65,6 +65,10 @@ struct ReleasesView: View {
             }
             .refreshable { await model.reload() }
             .task(id: model.query) {
+                // The task also runs each time the list reappears, coming back from a release or another tab;
+                // reloading then would replace the scrolled list with its first page.
+                guard model.loadedQuery != model.query else { return }
+
                 if model.hasLoaded {
                     try? await Task.sleep(nanoseconds: 300_000_000)
                     guard !Task.isCancelled else { return }
