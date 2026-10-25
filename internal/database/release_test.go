@@ -1118,6 +1118,8 @@ func TestReleaseRepo_CheckIsDuplicateRelease(t *testing.T) {
 			releaseTitles []string
 			releaseTitle  string
 			profile       *domain.DuplicateReleaseProfile
+			// staleHash stores the releases with a hash from an older parser
+			staleHash bool
 		}
 
 		tests := []struct {
@@ -1622,6 +1624,30 @@ func TestReleaseRepo_CheckIsDuplicateRelease(t *testing.T) {
 				},
 				isDuplicate: true,
 			},
+			{
+				name: "40",
+				fields: fields{
+					releaseTitles: []string{
+						"That Movie 2008 1080p GBR Blu-ray AVC TrueHD 5.1-GROUP",
+					},
+					releaseTitle: "That Movie 2008 1080p GBR Blu-ray AVC TrueHD 5.1-GROUP",
+					profile:      &domain.DuplicateReleaseProfile{ReleaseName: true, Hash: true},
+					staleHash:    true,
+				},
+				isDuplicate: true,
+			},
+			{
+				name: "41",
+				fields: fields{
+					releaseTitles: []string{
+						"That Movie 2008 1080p GBR Blu-ray AVC TrueHD 5.1-GROUP",
+					},
+					releaseTitle: "That.Movie.2008.1080p.GBR.Blu-ray.AVC.TrueHD.5.1-GROUP",
+					profile:      &domain.DuplicateReleaseProfile{ReleaseName: true, Hash: true},
+					staleHash:    true,
+				},
+				isDuplicate: false,
+			},
 		}
 
 		for _, tt := range tests {
@@ -1633,6 +1659,9 @@ func TestReleaseRepo_CheckIsDuplicateRelease(t *testing.T) {
 					mockRel.ParseString(rel)
 
 					mockRel.FilterID = filterMock.ID
+					if tt.fields.staleHash {
+						mockRel.NormalizedHash = "00000000000000000000000000000000"
+					}
 
 					err = releaseRepo.Store(ctx, mockRel)
 					require.NoError(t, err)

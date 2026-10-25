@@ -1590,8 +1590,12 @@ func (repo *ReleaseRepo) CheckIsDuplicateRelease(ctx context.Context, profile *d
 		Where("ras.status = 'PUSH_APPROVED'")
 
 	if profile.ReleaseName && profile.Hash {
-		//queryBuilder = queryBuilder.Where(sq.Like{"r.torrent_name": release.TorrentName})
-		queryBuilder = queryBuilder.Where(sq.Eq{"r.normalized_hash": release.NormalizedHash})
+		// The hash comes from parsed fields, so a parser update changes it for some names. The exact name still
+		// matches releases stored before the update.
+		queryBuilder = queryBuilder.Where(sq.Or{
+			sq.Eq{"r.normalized_hash": release.NormalizedHash},
+			sq.Eq{"r.torrent_name": release.TorrentName},
+		})
 	} else {
 		if profile.Title {
 			queryBuilder = queryBuilder.Where(sq.Like{"r.title": release.Title})
