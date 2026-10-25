@@ -3,6 +3,11 @@
 
 import Foundation
 
+extension Notification.Name {
+    /// releasesChanged is posted when stored releases or the vocabulary change, so release lists load again.
+    static let releasesChanged = Notification.Name("autobrr.releasesChanged")
+}
+
 @MainActor
 final class ReleasesModel: ObservableObject {
     struct Query: Equatable {
@@ -34,6 +39,11 @@ final class ReleasesModel: ObservableObject {
     }
 
     var hasMore: Bool { cursor != nil }
+
+    /// invalidate makes the list load again the next time it appears.
+    func invalidate() {
+        loadedQuery = nil
+    }
 
     func reload() async {
         generation += 1

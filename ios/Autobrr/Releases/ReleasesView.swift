@@ -77,6 +77,9 @@ struct ReleasesView: View {
                 await model.reload()
             }
             .task { await model.loadIndexers() }
+            .onReceive(NotificationCenter.default.publisher(for: .releasesChanged)) { _ in
+                model.invalidate()
+            }
             .sheet(item: $exported) { file in
                 ShareSheet(items: [file.url])
             }
