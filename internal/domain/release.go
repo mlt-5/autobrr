@@ -114,6 +114,7 @@ type Release struct {
 	AdditionalUploaderCheckRequired    bool                  `json:"-"`
 	AdditionalRecordLabelCheckRequired bool                  `json:"-"`
 	IsDuplicate                        bool                  `json:"-"`
+	Favorite                           bool                  `json:"favorite"`
 	SkipDuplicateProfileID             int64                 `json:"-"`
 	SkipDuplicateProfileName           string                `json:"-"`
 	FilterID                           int                   `json:"-"`
@@ -608,6 +609,7 @@ type ReleaseQueryParams struct {
 	Filters struct {
 		Indexers   []string
 		PushStatus string
+		Favorite   bool
 	}
 	Search string
 }

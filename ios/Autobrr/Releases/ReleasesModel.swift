@@ -9,6 +9,7 @@ final class ReleasesModel: ObservableObject {
         var search = ""
         var status: PushStatus?
         var indexer: String?
+        var favorites = false
     }
 
     private static let pageSize = 50
@@ -73,6 +74,22 @@ final class ReleasesModel: ObservableObject {
         }
     }
 
+    /// setFavorite marks or unmarks a release as a favourite and updates the list.
+    func setFavorite(_ release: Release, _ favorite: Bool) async throws {
+        try await client.request(favorite ? .post : .delete, "release/\(release.id)/favorite")
+        favoriteChanged(id: release.id, favorite)
+    }
+
+    /// favoriteChanged updates the list after a release was marked or unmarked elsewhere.
+    func favoriteChanged(id: Int64, _ favorite: Bool) {
+        if query.favorites && !favorite {
+            releases.removeAll { $0.id == id }
+            total = max(total - 1, 0)
+        } else if let index = releases.firstIndex(where: { $0.id == id }) {
+            releases[index].favorite = favorite
+        }
+    }
+
     func loadIndexers() async {
         indexers = (try? await client.get("release/indexers")) ?? []
     }
@@ -118,6 +135,10 @@ final class ReleasesModel: ObservableObject {
 
         if let indexer = query.indexer {
             items.append(URLQueryItem(name: "indexer", value: indexer))
+        }
+
+        if query.favorites {
+            items.append(URLQueryItem(name: "favorite", value: "true"))
         }
 
         return items

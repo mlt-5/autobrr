@@ -253,6 +253,10 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 		}
 	}
 
+	if params.Filters.Favorite {
+		whereQueryBuilder = append(whereQueryBuilder, sq.Eq{"r.favorite": true})
+	}
+
 	if params.Filters.Indexers != nil {
 		filter := sq.Or{}
 		for _, v := range params.Filters.Indexers {
@@ -346,6 +350,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			"r.media_processing",
 			"r.type",
 			"r.timestamp",
+			"r.favorite",
 			"ras.id", "ras.status", "ras.action", "ras.action_id", "ras.type", "ras.client", "ras.filter", "ras.filter_id", "ras.release_id", "ras.rejections", "ras.timestamp",
 		).
 		Column(sq.Alias(countQuery, "page_total")).
@@ -435,6 +440,7 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			&mediaProcessing,
 			&rlsType,
 			&rls.Timestamp,
+			&rls.Favorite,
 			&rasId, &rasStatus, &rasAction, &rasActionId, &rasType, &rasClient, &rasFilter, &rasFilterId, &rasReleaseId, pq.Array(&rasRejections), &rasTimestamp, &resp.TotalCount,
 		); err != nil {
 			return resp, errors.Wrap(err, "error scanning row")
@@ -706,6 +712,7 @@ func (repo *ReleaseRepo) Get(ctx context.Context, req *domain.GetReleaseRequest)
 			"r.pre_time",
 			"r.other",
 			"r.timestamp",
+			"r.favorite",
 		).
 		From("release r").
 		OrderBy("r.id DESC").
@@ -779,6 +786,7 @@ func (repo *ReleaseRepo) Get(ctx context.Context, req *domain.GetReleaseRequest)
 		&preTime,
 		pq.Array(&rls.Other),
 		&rls.Timestamp,
+		&rls.Favorite,
 	); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, domain.ErrRecordNotFound
@@ -1378,7 +1386,8 @@ func (repo *ReleaseRepo) Delete(ctx context.Context, req *domain.DeleteReleaseRe
 		}
 	}()
 
-	qb := repo.db.squirrel.Delete("release")
+	// favourites are kept until they are unmarked
+	qb := repo.db.squirrel.Delete("release").Where(sq.Eq{"favorite": false})
 
 	if req.OlderThan > 0 {
 		qb = qb.Where(fmt.Sprintf("datetime(timestamp) < datetime('now','-%d hours')", req.OlderThan))
@@ -2096,6 +2105,31 @@ func (r *ReleaseRepo) DeleteCleanupJob(ctx context.Context, id int) error {
 	}
 
 	r.log.Debug().Int("id", id).Msg("successfully deleted release cleanup job")
+
+	return nil
+}
+
+// SetFavorite marks or unmarks a release as a favourite.
+func (repo *ReleaseRepo) SetFavorite(ctx context.Context, id int64, favorite bool) error {
+	query, args, err := repo.db.squirrel.
+		Update("release").
+		Set("favorite", favorite).
+		Where(sq.Eq{"id": id}).
+		ToSql()
+	if err != nil {
+		return errors.Wrap(err, "error building query")
+	}
+
+	result, err := repo.db.Handler.ExecContext(ctx, query, args...)
+	if err != nil {
+		return errors.Wrap(err, "error executing query")
+	}
+
+	if n, err := result.RowsAffected(); err != nil {
+		return errors.Wrap(err, "error getting rows affected")
+	} else if n == 0 {
+		return domain.ErrRecordNotFound
+	}
 
 	return nil
 }

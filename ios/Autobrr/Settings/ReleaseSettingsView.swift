@@ -27,7 +27,7 @@ struct ReleaseSettingsView: View {
                     DuplicateProfilesView(client: client)
                 }
             } footer: {
-                Text("Cleanup jobs delete old releases on a schedule. Duplicate profiles let a filter skip releases it already pushed.")
+                Text("Cleanup jobs delete old releases on a schedule, keeping favourites. Duplicate profiles let a filter skip releases it already pushed.")
             }
 
             DeleteReleasesSection(client: client, indexers: indexers)
@@ -152,7 +152,7 @@ private struct DeleteReleasesSection: View {
         } header: {
             Text("Delete releases")
         } footer: {
-            Text("Leave indexers and statuses empty to match all of them.")
+            Text("Leave indexers and statuses empty to match all of them. Favourites are kept.")
         }
         .confirmationDialog("Delete the matching releases?", isPresented: $confirming, titleVisibility: .visible) {
             Button("Delete", role: .destructive) { delete() }

@@ -5,15 +5,18 @@ import SwiftUI
 
 struct ReleaseDetailView: View {
     let client: EngineClient
+    var onFavoriteChange: (Bool) -> Void = { _ in }
 
     @State private var release: Release
 
     @State private var retrying: Int64?
     @State private var message: String?
     @State private var addingVocab = false
+    @State private var savingFavorite = false
 
-    init(release: Release, client: EngineClient) {
+    init(release: Release, client: EngineClient, onFavoriteChange: @escaping (Bool) -> Void = { _ in }) {
         self.client = client
+        self.onFavoriteChange = onFavoriteChange
         _release = State(initialValue: release)
     }
 
@@ -79,13 +82,42 @@ struct ReleaseDetailView: View {
         }
         .navigationTitle(release.title.isEmpty ? "Release" : release.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    toggleFavorite()
+                } label: {
+                    Image(systemName: release.favorite ? "star.fill" : "star")
+                }
+                .tint(.yellow)
+                .disabled(savingFavorite)
+                .accessibilityLabel(release.favorite ? "Remove from favourites" : "Add to favourites")
+            }
+        }
         .sheet(isPresented: $addingVocab, onDismiss: { Task { await reload() } }) {
             VocabAddSheet(client: client, releaseName: release.name)
         }
-        .alert("Retry", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } }), presenting: message) { _ in
+        .alert("Release", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } }), presenting: message) { _ in
             Button("OK") { message = nil }
         } message: {
             Text($0)
+        }
+    }
+
+    private func toggleFavorite() {
+        let favorite = !release.favorite
+        savingFavorite = true
+
+        Task {
+            defer { savingFavorite = false }
+
+            do {
+                try await client.request(favorite ? .post : .delete, "release/\(release.id)/favorite")
+                release.favorite = favorite
+                onFavoriteChange(favorite)
+            } catch {
+                message = error.localizedDescription
+            }
         }
     }
 

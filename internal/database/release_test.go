@@ -2076,3 +2076,66 @@ func TestReleaseCleanupJobRepo_Delete(t *testing.T) {
 		})
 	}
 }
+
+func TestReleaseRepo_Favorite(t *testing.T) {
+	ctx := t.Context()
+
+	for dbType, testDb := range testDBs {
+		t.Run(dbType, func(t *testing.T) {
+			log := setupLoggerForTest()
+			repo := NewReleaseRepo(log, testDb.db)
+			filterRepo := NewFilterRepo(log, testDb.db)
+
+			filter := getMockFilter()
+			require.NoError(t, filterRepo.Store(ctx, filter))
+
+			store := func(name string) int64 {
+				rls := domain.NewRelease(domain.IndexerMinimal{Identifier: "btn"})
+				rls.ParseString(name)
+				rls.FilterID = filter.ID
+				require.NoError(t, repo.Store(ctx, rls))
+				return rls.ID
+			}
+			favorite := store("The.Penguin.S01E06.1080p.WEB.h264-ETHEL")
+			other := store("Dune.Part.Two.2024.2160p.UHD.BluRay.x265-GROUP")
+
+			t.Cleanup(func() {
+				_ = repo.SetFavorite(ctx, favorite, false)
+				_ = repo.Delete(ctx, &domain.DeleteReleaseRequest{OlderThan: 0})
+				_ = filterRepo.Delete(ctx, filter.ID)
+			})
+
+			require.NoError(t, repo.SetFavorite(ctx, favorite, true))
+			assert.ErrorIs(t, repo.SetFavorite(ctx, other+100, true), domain.ErrRecordNotFound)
+
+			params := domain.ReleaseQueryParams{Limit: 10}
+			params.Filters.Favorite = true
+			resp, err := repo.Find(ctx, params)
+			require.NoError(t, err)
+			require.Len(t, resp.Data, 1)
+			assert.Equal(t, favorite, resp.Data[0].ID)
+			assert.True(t, resp.Data[0].Favorite)
+			assert.Equal(t, uint64(1), resp.TotalCount)
+
+			params.Search = "penguin"
+			resp, err = repo.Find(ctx, params)
+			require.NoError(t, err)
+			assert.Len(t, resp.Data, 1, "the favourite filter combines with a search")
+
+			rls, err := repo.Get(ctx, &domain.GetReleaseRequest{Id: int(favorite)})
+			require.NoError(t, err)
+			assert.True(t, rls.Favorite)
+
+			require.NoError(t, repo.Delete(ctx, &domain.DeleteReleaseRequest{OlderThan: 0}))
+			_, err = repo.Get(ctx, &domain.GetReleaseRequest{Id: int(favorite)})
+			assert.NoError(t, err, "deleting releases keeps favourites")
+			_, err = repo.Get(ctx, &domain.GetReleaseRequest{Id: int(other)})
+			assert.ErrorIs(t, err, domain.ErrRecordNotFound)
+
+			require.NoError(t, repo.SetFavorite(ctx, favorite, false))
+			require.NoError(t, repo.Delete(ctx, &domain.DeleteReleaseRequest{OlderThan: 0}))
+			_, err = repo.Get(ctx, &domain.GetReleaseRequest{Id: int(favorite)})
+			assert.ErrorIs(t, err, domain.ErrRecordNotFound, "an unmarked favourite can be deleted")
+		})
+	}
+}

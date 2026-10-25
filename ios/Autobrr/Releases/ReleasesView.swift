@@ -8,6 +8,7 @@ struct ReleasesView: View {
     @State private var exporting = false
     @State private var exported: ExportedFile?
     @State private var exportError: String?
+    @State private var favoriteError: String?
 
     init(client: EngineClient) {
         _model = StateObject(wrappedValue: ReleasesModel(client: client))
@@ -20,6 +21,14 @@ struct ReleasesView: View {
                     NavigationLink(value: release) {
                         ReleaseRow(release: release)
                     }
+                    .swipeActions(edge: .leading) {
+                        Button {
+                            toggleFavorite(release)
+                        } label: {
+                            Label(release.favorite ? "Unfavourite" : "Favourite", systemImage: release.favorite ? "star.slash" : "star")
+                        }
+                        .tint(.yellow)
+                    }
                 }
 
                 if model.hasMore {
@@ -30,10 +39,22 @@ struct ReleasesView: View {
                 }
             }
             .listStyle(.plain)
+            .safeAreaInset(edge: .top) {
+                Picker("Show", selection: $model.query.favorites) {
+                    Text("All").tag(false)
+                    Text("Favourites").tag(true)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+                .background(.bar)
+            }
             .overlay { placeholder }
             .navigationTitle("Releases")
             .navigationDestination(for: Release.self) { release in
-                ReleaseDetailView(release: release, client: model.client)
+                ReleaseDetailView(release: release, client: model.client) { favorite in
+                    model.favoriteChanged(id: release.id, favorite)
+                }
             }
             .searchable(text: $model.query.search, prompt: "Name, group, codec, resolution…")
             .autocorrectionDisabled()
@@ -54,6 +75,11 @@ struct ReleasesView: View {
             .task { await model.loadIndexers() }
             .sheet(item: $exported) { file in
                 ShareSheet(items: [file.url])
+            }
+            .alert("Favourites", isPresented: Binding(get: { favoriteError != nil }, set: { if !$0 { favoriteError = nil } })) {
+                Button("OK") { favoriteError = nil }
+            } message: {
+                Text(favoriteError ?? "")
             }
             .alert("Export", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
                 Button("OK") { exportError = nil }
@@ -108,12 +134,22 @@ struct ReleasesView: View {
                 Image(systemName: model.error == nil ? "tray" : "exclamationmark.triangle")
                     .font(.largeTitle)
                     .foregroundStyle(.secondary)
-                Text(model.error ?? "No releases")
+                Text(model.error ?? (model.query.favorites ? "No favourites. Tap the star on a release, or swipe it right, to add it." : "No releases"))
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
             .padding()
+        }
+    }
+
+    private func toggleFavorite(_ release: Release) {
+        Task {
+            do {
+                try await model.setFavorite(release, !release.favorite)
+            } catch {
+                favoriteError = error.localizedDescription
+            }
         }
     }
 
@@ -148,9 +184,17 @@ private struct ReleaseRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(release.name)
-                .font(.subheadline)
-                .lineLimit(2)
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                if release.favorite {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundStyle(.yellow)
+                        .accessibilityLabel("Favourite")
+                }
+                Text(release.name)
+                    .font(.subheadline)
+                    .lineLimit(2)
+            }
 
             HStack(spacing: 6) {
                 Text(release.indexer.name.isEmpty ? release.indexer.identifier : release.indexer.name)
