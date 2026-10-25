@@ -149,6 +149,7 @@ final class VocabularyModel: ObservableObject {
         } else {
             let _: VocabEntry = try await client.send(.post, "vocab", body: draft)
         }
+        NotificationCenter.default.post(name: .releasesChanged, object: nil)
         await load()
     }
 
@@ -156,6 +157,7 @@ final class VocabularyModel: ObservableObject {
     func reparse() async throws -> String {
         let data = try await client.request(.post, "release/reparse")
         let result = try JSON.decoder.decode(ReparseResult.self, from: data)
+        NotificationCenter.default.post(name: .releasesChanged, object: nil)
         return "Updated \(result.updated) of \(result.checked) releases."
     }
 
@@ -182,6 +184,7 @@ final class VocabularyModel: ObservableObject {
     private func change(_ request: @escaping () async throws -> Void) async {
         do {
             try await request()
+            NotificationCenter.default.post(name: .releasesChanged, object: nil)
             await load()
         } catch {
             self.error = error.localizedDescription
@@ -726,12 +729,19 @@ struct VocabFormView: View {
         Task {
             defer { busy = false }
 
+            // SwiftUI drops an alert presented while the previous one is still dismissing, so a quick update left the
+            // form open with no result
+            async let pause: Void? = try? Task.sleep(nanoseconds: 600_000_000)
+
+            let message: String
             do {
-                let summary = try await model.reparse()
-                prompt = .updated(summary)
+                message = try await model.reparse()
             } catch {
-                prompt = .updated(error.localizedDescription)
+                message = error.localizedDescription
             }
+
+            _ = await pause
+            prompt = .updated(message)
         }
     }
 
