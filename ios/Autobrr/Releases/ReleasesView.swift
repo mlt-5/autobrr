@@ -143,23 +143,6 @@ struct ReleasesView: View {
     }
 }
 
-private struct ExportedFile: Identifiable {
-    let url: URL
-
-    var id: URL { url }
-}
-
-/// ShareSheet presents the system share sheet, so a file can be saved to Files or sent to another app.
-private struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
-}
-
 private struct ReleaseRow: View {
     let release: Release
 

@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -25,6 +26,13 @@ type vocabServiceMock struct {
 	deleted  int64
 	removed  domain.VocabKey
 	restored domain.VocabKey
+	exported [2]string
+}
+
+func (m *vocabServiceMock) Export(ctx context.Context, w io.Writer, kind, search string) error {
+	m.exported = [2]string{kind, search}
+	_, err := io.WriteString(w, "workbook")
+	return err
 }
 
 func (m *vocabServiceMock) List(ctx context.Context) ([]domain.VocabEntry, error) {
@@ -88,6 +96,16 @@ func TestVocabHandler(t *testing.T) {
 	assert.Len(t, list.Entries, 1)
 	assert.Contains(t, list.Kinds, "group")
 	assert.Contains(t, list.ReleaseTypes, "movie")
+	assert.Equal(t, "Release group", list.KindTitles["group"])
+
+	resp = do(http.MethodGet, "/export?kind=group&q=subs", nil)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", resp.Header.Get("Content-Type"))
+	assert.Regexp(t, `^attachment; filename="autobrr-vocabulary-\d{4}-\d{2}-\d{2}\.xlsx"$`, resp.Header.Get("Content-Disposition"))
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.Equal(t, "workbook", string(body))
+	assert.Equal(t, [2]string{"group", "subs"}, service.exported)
 
 	resp = do(http.MethodPost, "/", map[string]any{"kind": "group", "tag": "ZqFansubs", "aliases": []string{"Zq Subs"}})
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)

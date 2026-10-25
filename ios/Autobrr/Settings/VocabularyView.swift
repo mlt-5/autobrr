@@ -3,18 +3,6 @@
 
 import SwiftUI
 
-private let kindTitles = [
-    "arch": "Architecture", "audio": "Audio", "bitdepth": "Bit depth", "channels": "Audio channels",
-    "codec": "Codec", "collection": "Streaming service", "container": "Container", "cut": "Cut",
-    "edition": "Edition", "ext": "File extension", "genre": "Genre", "group": "Release group", "hdr": "HDR",
-    "language": "Language", "other": "Other", "platform": "Platform", "region": "Region",
-    "resolution": "Resolution", "size": "Size", "source": "Source",
-]
-
-private func kindTitle(_ kind: String) -> String {
-    kindTitles[kind] ?? kind
-}
-
 struct VocabEntry: Decodable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case recordID = "id"
@@ -34,8 +22,8 @@ struct VocabEntry: Decodable, Identifiable {
 
     var id: String { "\(source)/\(kind)/\(tag)" }
 
-    var summary: String {
-        ([kindTitle(kind), title] + aliases).filter { !$0.isEmpty }.joined(separator: " · ")
+    func summary(kindTitle: String) -> String {
+        ([kindTitle, title] + aliases).filter { !$0.isEmpty }.joined(separator: " · ")
     }
 
     func matches(_ search: String) -> Bool {
@@ -47,6 +35,7 @@ struct VocabEntry: Decodable, Identifiable {
 private struct VocabList: Decodable {
     let entries: [VocabEntry]
     let kinds: [String]
+    let kindTitles: [String: String]
     let releaseTypes: [String]
 }
 
@@ -69,6 +58,7 @@ private struct NewVocabEntry: Encodable {
 final class VocabularyModel: ObservableObject {
     @Published private(set) var entries: [VocabEntry] = []
     @Published private(set) var kinds: [String] = []
+    @Published private(set) var kindTitles: [String: String] = [:]
     @Published private(set) var releaseTypes: [String] = []
     @Published private(set) var hasLoaded = false
     @Published var error: String?
@@ -84,6 +74,7 @@ final class VocabularyModel: ObservableObject {
             let list: VocabList = try await client.get("vocab")
             entries = list.entries
             kinds = list.kinds
+            kindTitles = list.kindTitles
             releaseTypes = list.releaseTypes
         } catch is CancellationError {
             return
@@ -92,6 +83,26 @@ final class VocabularyModel: ObservableObject {
         }
 
         hasLoaded = true
+    }
+
+    func kindTitle(_ kind: String) -> String {
+        kindTitles[kind] ?? kind
+    }
+
+    /// export writes the entries of kind (or every kind when empty) that match search to a workbook in the temporary
+    /// directory.
+    func export(kind: String, search: String) async throws -> URL {
+        let query = [URLQueryItem(name: "kind", value: kind), URLQueryItem(name: "q", value: search)]
+        let data = try await client.request(.get, "vocab/export", query: query)
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("autobrr-vocabulary-\(formatter.string(from: Date())).xlsx")
+        try data.write(to: url, options: .atomic)
+
+        return url
     }
 
     fileprivate func add(_ entry: NewVocabEntry) async throws {
@@ -129,6 +140,9 @@ struct VocabularyView: View {
     @State private var search = ""
     @State private var kind = ""
     @State private var adding = false
+    @State private var exporting = false
+    @State private var exported: ExportedFile?
+    @State private var exportError: String?
 
     init(client: EngineClient) {
         _model = StateObject(wrappedValue: VocabularyModel(client: client))
@@ -227,12 +241,24 @@ struct VocabularyView: View {
                 Menu {
                     Picker("Kind", selection: $kind) {
                         Text("All kinds").tag("")
-                        ForEach(model.kinds, id: \.self) { Text(kindTitle($0)).tag($0) }
+                        ForEach(model.kinds, id: \.self) { Text(model.kindTitle($0)).tag($0) }
                     }
                 } label: {
                     Image(systemName: kind.isEmpty ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
                 }
                 .accessibilityLabel("Kind")
+
+                if exporting {
+                    ProgressView()
+                } else {
+                    Button {
+                        export(isEmpty: visible.isEmpty)
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .accessibilityLabel("Export to Excel")
+                    .disabled(!model.hasLoaded)
+                }
 
                 Button {
                     adding = true
@@ -247,6 +273,14 @@ struct VocabularyView: View {
                 VocabAddView(model: model, kind: kind.isEmpty ? "group" : kind)
             }
         }
+        .sheet(item: $exported) { file in
+            ShareSheet(items: [file.url])
+        }
+        .alert("Export", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
+            Button("OK") { exportError = nil }
+        } message: {
+            Text(exportError ?? "")
+        }
         .alert("Vocabulary", isPresented: Binding(get: { model.error != nil && model.hasLoaded && !model.entries.isEmpty }, set: { if !$0 { model.error = nil } })) {
             Button("OK") { model.error = nil }
         } message: {
@@ -256,13 +290,33 @@ struct VocabularyView: View {
         .task { await model.load() }
     }
 
+    private func export(isEmpty: Bool) {
+        guard !isEmpty else {
+            exportError = "No entries match the current search and kind."
+            return
+        }
+
+        exporting = true
+
+        Task {
+            defer { exporting = false }
+
+            do {
+                let url = try await model.export(kind: kind, search: search)
+                exported = ExportedFile(url: url)
+            } catch {
+                exportError = error.localizedDescription
+            }
+        }
+    }
+
     private func row(_ entry: VocabEntry) -> some View {
         NavigationLink {
             VocabEntryView(entry: entry, model: model)
         } label: {
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.tag)
-                Text(entry.summary)
+                Text(entry.summary(kindTitle: model.kindTitle(entry.kind)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -280,7 +334,7 @@ private struct VocabEntryView: View {
     var body: some View {
         Form {
             Section {
-                LabeledContent("Kind", value: kindTitle(entry.kind))
+                LabeledContent("Kind", value: model.kindTitle(entry.kind))
                 LabeledContent("Tag", value: entry.tag)
                 if !entry.title.isEmpty {
                     LabeledContent("Title", value: entry.title)
@@ -356,7 +410,7 @@ private struct VocabAddView: View {
         Form {
             Section {
                 Picker("Kind", selection: $entry.kind) {
-                    ForEach(model.kinds, id: \.self) { Text(kindTitle($0)).tag($0) }
+                    ForEach(model.kinds, id: \.self) { Text(model.kindTitle($0)).tag($0) }
                 }
                 TextField("Tag", text: $entry.tag)
                     .autocorrectionDisabled()

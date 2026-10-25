@@ -6,6 +6,10 @@
 package vocab
 
 import (
+	"archive/zip"
+	"bytes"
+	"encoding/xml"
+	"io"
 	"testing"
 
 	"github.com/autobrr/autobrr/internal/database"
@@ -94,4 +98,72 @@ func TestService(t *testing.T) {
 	require.NoError(t, service.Delete(ctx, entry.ID))
 	assert.Empty(t, parse(fansub).Group)
 	assert.ErrorIs(t, service.Delete(ctx, entry.ID), domain.ErrRecordNotFound)
+}
+
+// readSheet returns the first sheet's rows as text.
+func readSheet(t *testing.T, data []byte) [][]string {
+	t.Helper()
+
+	r, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
+	require.NoError(t, err)
+
+	f, err := r.Open("xl/worksheets/sheet1.xml")
+	require.NoError(t, err)
+	content, err := io.ReadAll(f)
+	require.NoError(t, err)
+
+	var sheet struct {
+		Rows []struct {
+			Cells []struct {
+				Ref  string `xml:"r,attr"`
+				Text string `xml:"is>t"`
+			} `xml:"c"`
+		} `xml:"sheetData>row"`
+	}
+	require.NoError(t, xml.Unmarshal(content, &sheet))
+
+	var rows [][]string
+	for _, row := range sheet.Rows {
+		cells := make([]string, len(exportColumns))
+		for _, c := range row.Cells {
+			cells[int(c.Ref[0]-'A')] = c.Text
+		}
+		rows = append(rows, cells)
+	}
+	return rows
+}
+
+func TestService_Export(t *testing.T) {
+	ctx := t.Context()
+	log := logger.New(&domain.Config{LogLevel: "ERROR"}, nil)
+
+	db, err := database.NewDB(&domain.Config{LogLevel: "ERROR", DatabaseDSN: ":memory:"}, log)
+	require.NoError(t, err)
+	require.NoError(t, db.Open())
+	require.NoError(t, db.Migrate())
+	t.Cleanup(func() { _ = db.Close() })
+
+	service := NewService(log.With().Logger(), database.NewVocabRepo(log.With().Logger(), db))
+	t.Cleanup(func() {
+		p, err := domain.NewVocabParser(nil, nil)
+		require.NoError(t, err)
+		domain.UseVocabParser(p)
+	})
+
+	require.NoError(t, service.Store(ctx, &domain.VocabEntry{Kind: "group", Tag: "ZqSubs", Aliases: []string{"Zq Fansubs"}}))
+	require.NoError(t, service.Remove(ctx, domain.VocabKey{Kind: "group", Tag: "SubsPlease"}))
+
+	var buf bytes.Buffer
+	require.NoError(t, service.Export(ctx, &buf, "group", "subs"))
+
+	rows := readSheet(t, buf.Bytes())
+	require.Len(t, rows, 3, "the header, SubsPlease and ZqSubs")
+	assert.Equal(t, []string{"Kind", "Tag", "Title", "Other spellings", "Pattern", "Release type", "Only for this type", "Source", "Removed"}, rows[0])
+	assert.Equal(t, []string{"Release group", "SubsPlease", "", "", `\QSubsPlease\E`, "", "", "List", "Yes"}, rows[1])
+	assert.Equal(t, []string{"Release group", "ZqSubs", "", "Zq Fansubs", "", "", "", "Added", ""}, rows[2])
+
+	buf.Reset()
+	require.NoError(t, service.Export(ctx, &buf, "", ""))
+	rows = readSheet(t, buf.Bytes())
+	assert.Greater(t, len(rows), 1000, "every entry without a filter")
 }

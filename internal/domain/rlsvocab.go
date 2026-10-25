@@ -50,6 +50,15 @@ var VocabKinds = []string{
 	"group", "hdr", "language", "other", "platform", "region", "resolution", "size", "source",
 }
 
+// VocabKindTitles are readable names for the kinds.
+var VocabKindTitles = map[string]string{
+	"arch": "Architecture", "audio": "Audio", "bitdepth": "Bit depth", "channels": "Audio channels",
+	"codec": "Codec", "collection": "Streaming service", "container": "Container", "cut": "Cut",
+	"edition": "Edition", "ext": "File extension", "genre": "Genre", "group": "Release group", "hdr": "HDR",
+	"language": "Language", "other": "Other", "platform": "Platform", "region": "Region",
+	"resolution": "Resolution", "size": "Size", "source": "Source",
+}
+
 // VocabReleaseTypes are the release types a vocabulary entry can point to.
 var VocabReleaseTypes = []string{
 	"movie", "episode", "series", "music", "game", "app", "book", "audiobook", "comic", "education", "magazine",
@@ -67,6 +76,15 @@ type VocabEntry struct {
 	ReleaseType string      `json:"release_type"`
 	Exclusive   bool        `json:"exclusive"`
 	Removed     bool        `json:"removed"`
+}
+
+// Matches reports whether search is in the entry's tag, title, pattern or other spellings, ignoring case. An empty
+// search matches every entry.
+func (e *VocabEntry) Matches(search string) bool {
+	search = strings.ToLower(search)
+	return slices.ContainsFunc(append([]string{e.Tag, e.Title, e.Pattern}, e.Aliases...), func(s string) bool {
+		return strings.Contains(strings.ToLower(s), search)
+	})
 }
 
 // VocabKey names an entry in the new_parser lists.

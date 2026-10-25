@@ -4,9 +4,13 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"time"
 
 	"github.com/autobrr/autobrr/internal/domain"
 	"github.com/autobrr/autobrr/pkg/errors"
@@ -20,6 +24,7 @@ type vocabService interface {
 	Delete(ctx context.Context, id int64) error
 	Remove(ctx context.Context, key domain.VocabKey) error
 	Restore(ctx context.Context, key domain.VocabKey) error
+	Export(ctx context.Context, w io.Writer, kind, search string) error
 }
 
 type vocabHandler struct {
@@ -37,6 +42,7 @@ func newVocabHandler(encoder encoder, service vocabService) *vocabHandler {
 func (h vocabHandler) Routes(r chi.Router) {
 	r.Get("/", h.list)
 	r.Post("/", h.store)
+	r.Get("/export", h.export)
 	r.Delete("/{vocabID}", h.delete)
 
 	r.Post("/removed", h.remove)
@@ -46,6 +52,7 @@ func (h vocabHandler) Routes(r chi.Router) {
 type vocabResponse struct {
 	Entries      []domain.VocabEntry `json:"entries"`
 	Kinds        []string            `json:"kinds"`
+	KindTitles   map[string]string   `json:"kind_titles"`
 	ReleaseTypes []string            `json:"release_types"`
 }
 
@@ -59,8 +66,22 @@ func (h vocabHandler) list(w http.ResponseWriter, r *http.Request) {
 	h.encoder.StatusResponse(w, http.StatusOK, vocabResponse{
 		Entries:      entries,
 		Kinds:        domain.VocabKinds,
+		KindTitles:   domain.VocabKindTitles,
 		ReleaseTypes: domain.VocabReleaseTypes,
 	})
+}
+
+func (h vocabHandler) export(w http.ResponseWriter, r *http.Request) {
+	var buf bytes.Buffer
+	if err := h.service.Export(r.Context(), &buf, r.URL.Query().Get("kind"), r.URL.Query().Get("q")); err != nil {
+		h.encoder.Error(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="autobrr-vocabulary-%s.xlsx"`, time.Now().Format("2006-01-02")))
+	w.WriteHeader(http.StatusOK)
+	_, _ = buf.WriteTo(w)
 }
 
 func (h vocabHandler) store(w http.ResponseWriter, r *http.Request) {
