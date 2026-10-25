@@ -247,6 +247,68 @@ func TestReleaseRepo_Find(t *testing.T) {
 	}
 }
 
+func TestReleaseRepo_FindSearch(t *testing.T) {
+	ctx := t.Context()
+
+	for dbType, testDb := range testDBs {
+		t.Run(dbType, func(t *testing.T) {
+			log := setupLoggerForTest()
+			repo := NewReleaseRepo(log, testDb.db)
+			filterRepo := NewFilterRepo(log, testDb.db)
+
+			filter := getMockFilter()
+			require.NoError(t, filterRepo.Store(ctx, filter))
+			t.Cleanup(func() {
+				_ = repo.Delete(ctx, &domain.DeleteReleaseRequest{OlderThan: 0})
+				_ = filterRepo.Delete(ctx, filter.ID)
+			})
+
+			for _, name := range []string{
+				"The.Penguin.S01E06.1080p.WEB.h264-ETHEL",
+				"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX",
+				"Dune.Part.Two.2024.2160p.UHD.BluRay.x265-GROUP",
+				"[SubsPlease] Kusuriya no Hitorigoto - 30 (1080p) [ABCD1234].mkv",
+			} {
+				rls := domain.NewRelease(domain.IndexerMinimal{Identifier: "btn"})
+				rls.ParseString(name)
+				rls.FilterName = "Weekly shows"
+				rls.FilterID = filter.ID
+				require.NoError(t, repo.Store(ctx, rls))
+			}
+
+			for _, tt := range []struct {
+				search string
+				want   []string
+			}{
+				{search: "ETHEL", want: []string{"The.Penguin.S01E06.1080p.WEB.h264-ETHEL"}},
+				{search: "1080p", want: []string{"[SubsPlease] Kusuriya no Hitorigoto - 30 (1080p) [ABCD1234].mkv", "The.Penguin.S01E06.1080p.WEB.h264-ETHEL"}},
+				{search: "penguin 2160p", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "the penguin", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX", "The.Penguin.S01E06.1080p.WEB.h264-ETHEL"}},
+				{search: "The.Penguin flux", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "subsplease", want: []string{"[SubsPlease] Kusuriya no Hitorigoto - 30 (1080p) [ABCD1234].mkv"}},
+				{search: "x265 bluray", want: []string{"Dune.Part.Two.2024.2160p.UHD.BluRay.x265-GROUP"}},
+				{search: "HDR", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "DDP", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "amzn", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "group:flux", want: []string{"The.Penguin.S01E06.2160p.AMZN.WEB-DL.DDP5.1.HDR.H.265-FLUX"}},
+				{search: "group:flux 1080p", want: nil},
+				{search: "penguin nothing", want: nil},
+				{search: "weekly x265", want: []string{"Dune.Part.Two.2024.2160p.UHD.BluRay.x265-GROUP"}},
+			} {
+				resp, err := repo.Find(ctx, domain.ReleaseQueryParams{Limit: 10, Search: tt.search})
+				require.NoError(t, err, tt.search)
+
+				var got []string
+				for _, rls := range resp.Data {
+					got = append(got, rls.TorrentName)
+				}
+				assert.Equal(t, tt.want, got, tt.search)
+				assert.Equal(t, uint64(len(tt.want)), resp.TotalCount, "%s: total", tt.search)
+			}
+		})
+	}
+}
+
 func TestReleaseRepo_FindRecent(t *testing.T) {
 	ctx := t.Context()
 

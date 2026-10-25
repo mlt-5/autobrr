@@ -208,6 +208,14 @@ var reservedSearch = map[string]*regexp.Regexp{
 	"r.filter":        regexp.MustCompile(`(?i)(?:` + `filter` + `:)(?P<value>'.*?'|".*?"|\S+)`),
 }
 
+// releaseSearchColumns are where the plain words of a release search are looked for: the name and what the parser
+// and the filters found in it.
+var releaseSearchColumns = []string{
+	"r.torrent_name", "r.title", "r.sub_title", "r.release_group", "r.category", "r.resolution", "r.source",
+	"r.codec", "r.container", "r.hdr", "r.audio", "r.audio_channels", "r.region", "r.language", "r.edition",
+	"r.cut", "r.website", "r.media_processing", "r.type", "r.other", "r.tags", "r.filter", "r.indexer",
+}
+
 func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error) {
 	whereQueryBuilder := sq.And{}
 	if params.Cursor > 0 {
@@ -232,12 +240,16 @@ func (repo *ReleaseRepo) findReleases(ctx context.Context, tx *Tx, params domain
 			}
 		}
 
-		if len(search) != 0 {
-			if len(whereQueryBuilder) > 1 {
-				whereQueryBuilder = append(whereQueryBuilder, sq.Like{"r.torrent_name": "%" + search + "%"})
-			} else {
-				whereQueryBuilder = append(whereQueryBuilder, sq.Like{"r.torrent_name": search + "%"})
+		// every word must be somewhere in the release; a dot matches any character, so The.Penguin also finds
+		// "The Penguin"
+		for _, word := range strings.Fields(search) {
+			pattern := "%" + strings.ReplaceAll(word, ".", "_") + "%"
+
+			anyColumn := sq.Or{}
+			for _, column := range releaseSearchColumns {
+				anyColumn = append(anyColumn, sq.Like{column: pattern})
 			}
+			whereQueryBuilder = append(whereQueryBuilder, anyColumn)
 		}
 	}
 
