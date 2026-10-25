@@ -220,7 +220,7 @@ private struct ReleaseRow: View {
     /// name is the release name with the group in green when the vocabulary has it.
     private var name: AttributedString {
         var name = AttributedString(release.name)
-        if release.vocabGroup, !release.group.isEmpty,
+        if release.vocabGroup == true, !release.group.isEmpty,
            let range = name.range(of: release.group, options: [.caseInsensitive, .backwards]) {
             name[range].foregroundColor = .green
         }

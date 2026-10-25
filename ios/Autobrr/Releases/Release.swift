@@ -32,8 +32,8 @@ struct Release: Decodable, Identifiable, Hashable {
     var container: String
     var hdr: [String]?
     var group: String
-    /// vocabGroup is true when the vocabulary has the group.
-    var vocabGroup: Bool
+    /// vocabGroup is true when the vocabulary has the group. An engine built before it existed leaves it out.
+    var vocabGroup: Bool?
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
