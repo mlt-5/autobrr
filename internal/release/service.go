@@ -122,11 +122,27 @@ func NewService(log zerolog.Logger, eventBus eventBus, repo releaseRepo, actionS
 }
 
 func (s *Service) Find(ctx context.Context, query domain.ReleaseQueryParams) (*domain.FindReleasesResponse, error) {
-	return s.repo.Find(ctx, query)
+	resp, err := s.repo.Find(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range resp.Data {
+		r.VocabGroup = domain.IsVocabGroup(r.Group)
+	}
+
+	return resp, nil
 }
 
 func (s *Service) Get(ctx context.Context, req *domain.GetReleaseRequest) (*domain.Release, error) {
-	return s.repo.Get(ctx, req)
+	r, err := s.repo.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	r.VocabGroup = domain.IsVocabGroup(r.Group)
+
+	return r, nil
 }
 
 // SetFavorite marks or unmarks a release as a favourite. Favourites are kept when releases are deleted.

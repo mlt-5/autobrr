@@ -32,6 +32,8 @@ struct Release: Decodable, Identifiable, Hashable {
     var container: String
     var hdr: [String]?
     var group: String
+    /// vocabGroup is true when the vocabulary has the group.
+    var vocabGroup: Bool
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
@@ -49,6 +51,7 @@ struct Release: Decodable, Identifiable, Hashable {
         container = other.container
         hdr = other.hdr
         group = other.group
+        vocabGroup = other.vocabGroup
     }
 }
 

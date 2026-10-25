@@ -195,7 +195,7 @@ private struct ReleaseRow: View {
                         .foregroundStyle(.yellow)
                         .accessibilityLabel("Favourite")
                 }
-                Text(release.name)
+                Text(name)
                     .font(.subheadline)
                     .lineLimit(2)
             }
@@ -212,6 +212,16 @@ private struct ReleaseRow: View {
             .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
+    }
+
+    /// name is the release name with the group in green when the vocabulary has it.
+    private var name: AttributedString {
+        var name = AttributedString(release.name)
+        if release.vocabGroup, !release.group.isEmpty,
+           let range = name.range(of: release.group, options: [.caseInsensitive, .backwards]) {
+            name[range].foregroundColor = .green
+        }
+        return name
     }
 }
 
