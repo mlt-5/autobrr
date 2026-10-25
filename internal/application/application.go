@@ -27,6 +27,7 @@ import (
 	"github.com/autobrr/autobrr/internal/proxy"
 	"github.com/autobrr/autobrr/internal/release"
 	"github.com/autobrr/autobrr/internal/scheduler"
+	"github.com/autobrr/autobrr/internal/vocab"
 	"github.com/autobrr/autobrr/pkg/errors"
 	"github.com/autobrr/autobrr/pkg/featureflags"
 
@@ -64,6 +65,7 @@ type App struct {
 	scheduler           *scheduler.Service
 	listService         *list.Service
 	proxyService        *proxy.Service
+	vocabService        *vocab.Service
 }
 
 // New loads the config and builds the parts that need no database. The host,
@@ -153,6 +155,12 @@ func (app *App) Run(ctx context.Context) error {
 
 func (app *App) components() []component {
 	return []component{
+		// before anything that parses release names
+		{
+			name:     "vocabulary",
+			optional: true,
+			start:    app.vocabService.Start,
+		},
 		{
 			name:  "scheduler",
 			start: app.scheduler.Start,
@@ -273,9 +281,11 @@ func (app *App) setup(ctx context.Context) error {
 		inboxRepo        = database.NewNotificationInboxRepo(app.log, db)
 		releaseRepo      = database.NewReleaseRepo(app.log, db)
 		proxyRepo        = database.NewProxyRepo(app.log, db)
+		vocabRepo        = database.NewVocabRepo(app.log, db)
 	)
 
 	app.scheduler = scheduler.NewService(app.log)
+	app.vocabService = vocab.NewService(app.log, vocabRepo)
 	app.notificationService = notification.NewService(app.log, app.eventBus, app.sse, notificationRepo, inboxRepo, app.scheduler)
 	app.proxyService = proxy.NewService(app.log, app.eventBus, proxyRepo)
 	app.indexerAPIService = indexer.NewAPIService(app.log, app.proxyService)
@@ -306,6 +316,7 @@ func (app *App) setup(ctx context.Context) error {
 		ListService:         app.listService,
 		NotificationService: app.notificationService,
 		ProxyService:        app.proxyService,
+		VocabService:        app.vocabService,
 		ReleaseService:      app.releaseService,
 	})
 

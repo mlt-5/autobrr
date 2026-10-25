@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/autobrr/rls"
 	"github.com/autobrr/rls/taginfo"
 )
 
@@ -319,7 +318,13 @@ func init() {
 		extraTagInfos["collection"] = append(extraTagInfos["collection"], inf)
 	}
 
-	rls.DefaultParser = rls.NewTagParser(taginfo.All(extraTagInfos, rlsVocab), rls.DefaultLexers()...)
+	autobrrTagInfos = extraTagInfos
+
+	p, err := NewVocabParser(nil, nil)
+	if err != nil {
+		panic(err)
+	}
+	UseVocabParser(p)
 }
 
 type TagInfo struct {
