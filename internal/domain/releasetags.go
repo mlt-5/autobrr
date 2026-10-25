@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/autobrr/rls"
 	"github.com/autobrr/rls/taginfo"
 )
 
@@ -291,7 +290,6 @@ func init() {
 		{"FOD", "Fuji Television On Demand", "(?-i:FOD)", "", "", ""},
 		{"HIDIVE", "HIDIVE", "(?-i:HIDIVE)", "", "", ""},
 		{"ITVX", "ITVX aka ITV", "", "", "", ""},
-		{"MA", "Movies Anywhere", "(?-i:MA)", "", "", ""},
 		{"MY5", "MY5 aka Channel 5", "", "", "", ""},
 		{"MyCanal", "French Groupe Canal+", "(?-i:MyCanal)", "", "", ""},
 		{"NOW", "Now", "(?-i:NOW)", "", "", ""},
@@ -303,7 +301,6 @@ func init() {
 		{"TVING", "TVING", "(?-i:TVING)", "", "", ""},
 		{"VIU", "VIU", "(?-i:VIU)", "", "", ""},
 		{"VDL", "Videoland", "(?-i:VDL)", "", "", ""},
-		{"VRV", "VRV", "(?-i:VRV)", "", "", ""},
 		{"Pathe", "Pathé Thuis", "(?-i:Pathe)", "", "", ""},
 		{"SALTO", "SALTO", "(?-i:SALTO)", "", "", ""},
 		{"SHOWTIME", "SHOWTIME", "(?-i:SHO|SHOWTIME)", "", "", ""},
@@ -319,7 +316,13 @@ func init() {
 		extraTagInfos["collection"] = append(extraTagInfos["collection"], inf)
 	}
 
-	rls.DefaultParser = rls.NewTagParser(taginfo.All(extraTagInfos, rlsVocab), rls.DefaultLexers()...)
+	autobrrTagInfos = extraTagInfos
+
+	p, err := NewVocabParser(nil, nil)
+	if err != nil {
+		panic(err)
+	}
+	UseVocabParser(p)
 }
 
 type TagInfo struct {

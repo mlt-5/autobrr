@@ -32,6 +32,7 @@ type Server struct {
 	listService         listService
 	notificationService notificationService
 	proxyService        proxyService
+	vocabService        vocabService
 	releaseService      releaseService
 }
 
@@ -55,6 +56,7 @@ type Deps struct {
 	ListService         listService
 	NotificationService notificationService
 	ProxyService        proxyService
+	VocabService        vocabService
 	ReleaseService      releaseService
 }
 
@@ -79,6 +81,7 @@ func NewServer(deps Deps) *Server {
 		listService:         deps.ListService,
 		notificationService: deps.NotificationService,
 		proxyService:        deps.ProxyService,
+		vocabService:        deps.VocabService,
 		releaseService:      deps.ReleaseService,
 	}
 
@@ -112,6 +115,7 @@ func (s *Server) Handler() http.Handler {
 	apiRouter.Route("/notification", newNotificationHandler(encoder, s.notificationService).Routes)
 	apiRouter.Route("/proxy", newProxyHandler(encoder, s.proxyService).Routes)
 	apiRouter.Route("/release", newReleaseHandler(encoder, s.releaseService).Routes)
+	apiRouter.Route("/vocab", newVocabHandler(encoder, s.vocabService).Routes)
 
 	apiRouter.HandleFunc("/events", func(w http.ResponseWriter, r *http.Request) {
 		s.sse.Headers = map[string]string{

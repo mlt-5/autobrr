@@ -53,6 +53,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Releases", systemImage: "tray.full")
                     }
+                    NavigationLink {
+                        VocabularyView(client: client)
+                    } label: {
+                        Label("Vocabulary", systemImage: "character.book.closed")
+                    }
                 }
             }
             .navigationTitle("Settings")
