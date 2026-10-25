@@ -4,7 +4,7 @@ go 1.27.0
 
 replace github.com/r3labs/sse/v2 => github.com/autobrr/sse/v2 v2.0.0-20230520125637-530e06346d7d
 
-replace github.com/autobrr/rls => ./third_party/rls
+replace github.com/autobrr/rls => ./rls
 
 require (
 	github.com/Masterminds/sprig/v3 v3.3.0
