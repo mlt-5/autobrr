@@ -273,3 +273,21 @@ func TestVocabText_Resolution(t *testing.T) {
 		})
 	}
 }
+
+func TestVocabText_Codec(t *testing.T) {
+	tests := []struct {
+		name string
+		want []string
+	}{
+		{name: "[ASW] Yowaki Max - 04 [1080p HEVC x265 10Bit][AAC]", want: []string{"HEVC", "x265"}},
+		{name: "[ToonsHub] Dragon Ball Super Beerus S01E03 1080p iQ WEB-DL AAC2.0 H.264 (Multi-Subs)", want: []string{"H.264"}},
+		{name: "[ANi] Hotel Inhumans - 17 [1080P][Baha][WEB-DL][AAC AVC][CHT][MP4]", want: []string{"AVC"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := NewRelease(IndexerMinimal{})
+			r.ParseString(tt.name)
+			assert.ElementsMatch(t, tt.want, VocabText(tt.name, "codec", r.Codec))
+		})
+	}
+}
