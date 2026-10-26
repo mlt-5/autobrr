@@ -224,12 +224,18 @@ private struct ReleaseRow: View {
     }
 
     /// name is the release name with the group in green when the vocabulary has it, the HDR tags in pink, the
-    /// resolution in blue and the codecs in violet.
+    /// resolution in blue, the codecs in violet and the year, season and episode in yellow.
     private var name: AttributedString {
         var name = AttributedString(release.name)
         color(&name, release.hdrText, .pink)
         color(&name, release.resolutionText, .blue)
         color(&name, release.codecText, .purple)
+        for range in release.numberingRanges ?? [] where range.count == 2 && 0 <= range[0] && range[0] < range[1] && range[1] <= name.unicodeScalars.count {
+            let scalars = name.unicodeScalars
+            let start = scalars.index(scalars.startIndex, offsetBy: range[0])
+            let end = scalars.index(scalars.startIndex, offsetBy: range[1])
+            name[start..<end].foregroundColor = .yellow
+        }
         if release.vocabGroup, !release.group.isEmpty,
            let range = name.range(of: release.group, options: [.caseInsensitive, .backwards]) {
             name[range].foregroundColor = .green

@@ -119,6 +119,7 @@ type Release struct {
 	HDRText                            []string              `json:"hdr_text"`
 	ResolutionText                     []string              `json:"resolution_text"`
 	CodecText                          []string              `json:"codec_text"`
+	NumberingRanges                    [][2]int              `json:"numbering_ranges"`
 	SkipDuplicateProfileID             int64                 `json:"-"`
 	SkipDuplicateProfileName           string                `json:"-"`
 	FilterID                           int                   `json:"-"`

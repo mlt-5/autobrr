@@ -40,6 +40,9 @@ struct Release: Decodable, Identifiable, Hashable {
     var resolutionText: [String]?
     /// codecText is the text in the name the parser read as codecs.
     var codecText: [String]?
+    /// numberingRanges are where the year, season and episode are in the name, as [start, end) offsets in Unicode
+    /// scalars.
+    var numberingRanges: [[Int]]?
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
@@ -61,6 +64,7 @@ struct Release: Decodable, Identifiable, Hashable {
         hdrText = other.hdrText
         resolutionText = other.resolutionText
         codecText = other.codecText
+        numberingRanges = other.numberingRanges
     }
 }
 
