@@ -223,9 +223,16 @@ private struct ReleaseRow: View {
         .padding(.vertical, 2)
     }
 
-    /// name is the release name with the group in green when the vocabulary has it.
+    /// name is the release name with the group in green when the vocabulary has it, and the HDR tags in pink.
     private var name: AttributedString {
         var name = AttributedString(release.name)
+        for text in release.hdrText ?? [] {
+            var start = name.startIndex
+            while start < name.endIndex, let range = name[start...].range(of: text) {
+                name[range].foregroundColor = .pink
+                start = range.upperBound
+            }
+        }
         if release.vocabGroup, !release.group.isEmpty,
            let range = name.range(of: release.group, options: [.caseInsensitive, .backwards]) {
             name[range].foregroundColor = .green

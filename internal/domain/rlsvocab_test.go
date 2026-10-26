@@ -234,3 +234,24 @@ func TestIsVocabGroup(t *testing.T) {
 	assert.False(t, IsVocabGroup("NoSuchGroup"))
 	assert.False(t, IsVocabGroup(""))
 }
+
+func TestVocabText(t *testing.T) {
+	useVocab(t, []VocabEntry{{Kind: "hdr", Tag: "DV", Aliases: []string{"Dolby Vision HDR"}}}, nil)
+
+	tests := []struct {
+		name string
+		tags []string
+		want []string
+	}{
+		{name: "Dune.Part.Two.2024.2160p.UHD.BluRay.DV.HDR10+.x265-GROUP", tags: []string{"DV", "HDR10+"}, want: []string{"HDR10+", "DV"}},
+		{name: "Show.S01E01.2160p.WEB-DL.DDP5.1.DoVi.HDR.H.265-GRP", tags: []string{"DV", "HDR"}, want: []string{"HDR", "DoVi"}},
+		{name: "Movie.2020.2160p.Dolby.Vision.HDR.DVD.x265-GRP", tags: []string{"DV"}, want: []string{"Dolby.Vision.HDR", "Dolby.Vision"}},
+		{name: "Movie.2020.DVDRip.x264-GRP", tags: []string{"DV"}, want: nil},
+		{name: "Movie.2020.2160p.HDR.x265-GRP", tags: nil, want: nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ElementsMatch(t, tt.want, VocabText(tt.name, "hdr", tt.tags))
+		})
+	}
+}
