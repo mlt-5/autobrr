@@ -36,6 +36,8 @@ struct Release: Decodable, Identifiable, Hashable {
     var vocabGroup: Bool
     /// hdrText is the text in the name the parser read as HDR tags.
     var hdrText: [String]?
+    /// resolutionText is the text in the name the parser read as the resolution.
+    var resolutionText: [String]?
     let origin: String
     let uploader: String
     var actionStatus: [ActionStatus]?
@@ -55,6 +57,7 @@ struct Release: Decodable, Identifiable, Hashable {
         group = other.group
         vocabGroup = other.vocabGroup
         hdrText = other.hdrText
+        resolutionText = other.resolutionText
     }
 }
 

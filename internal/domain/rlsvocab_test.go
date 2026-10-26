@@ -255,3 +255,21 @@ func TestVocabText(t *testing.T) {
 		})
 	}
 }
+
+func TestVocabText_Resolution(t *testing.T) {
+	tests := []struct {
+		name       string
+		resolution string
+		want       []string
+	}{
+		{name: "[ANi] Hotel Inhumans - 17 [1080P][Baha][WEB-DL][AAC AVC][CHT][MP4]", resolution: "1080p", want: []string{"1080P"}},
+		{name: "Dune.Part.Two.2024.2160p.UHD.BluRay.x265-GROUP", resolution: "2160p", want: []string{"2160p", "UHD"}},
+		{name: "Old.Movie.1999.1234p.x264-GRP", resolution: "1234p", want: []string{"1234p"}},
+		{name: "Show.S01E01.10800p.x264-GRP", resolution: "1080p", want: nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.ElementsMatch(t, tt.want, VocabText(tt.name, "resolution", []string{tt.resolution}))
+		})
+	}
+}

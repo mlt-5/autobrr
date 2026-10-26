@@ -128,8 +128,7 @@ func (s *Service) Find(ctx context.Context, query domain.ReleaseQueryParams) (*d
 	}
 
 	for _, r := range resp.Data {
-		r.VocabGroup = domain.IsVocabGroup(r.Group)
-		r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
+		setVocabText(r)
 	}
 
 	return resp, nil
@@ -141,10 +140,19 @@ func (s *Service) Get(ctx context.Context, req *domain.GetReleaseRequest) (*doma
 		return nil, err
 	}
 
-	r.VocabGroup = domain.IsVocabGroup(r.Group)
-	r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
+	setVocabText(r)
 
 	return r, nil
+}
+
+// setVocabText sets what the release list shows in colour: whether the vocabulary has the group, and the text in the
+// name read as the HDR tags and the resolution.
+func setVocabText(r *domain.Release) {
+	r.VocabGroup = domain.IsVocabGroup(r.Group)
+	r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
+	if r.Resolution != "" {
+		r.ResolutionText = domain.VocabText(r.TorrentName, "resolution", []string{r.Resolution})
+	}
 }
 
 // SetFavorite marks or unmarks a release as a favourite. Favourites are kept when releases are deleted.
