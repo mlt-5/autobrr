@@ -289,18 +289,36 @@ func VocabText(name, kind string, tags []string) []string {
 
 	var texts []string
 	for _, info := range p.infos[kind] {
-		if !slices.Contains(tags, info.Tag()) {
+		if !slices.ContainsFunc(tags, func(tag string) bool { return isEntryTag(info, tag) }) {
 			continue
 		}
 
-		for _, m := range p.inNameRegexp(info).FindAllStringSubmatch(name, -1) {
-			if !slices.Contains(texts, m[1]) {
-				texts = append(texts, m[1])
+		// search on from the end of each spelling rather than the whole match, so the separator after one spelling
+		// can start the next, as in "2160p.UHD"
+		re := p.inNameRegexp(info)
+		for start := 0; start < len(name); {
+			m := re.FindStringSubmatchIndex(name[start:])
+			if m == nil {
+				break
 			}
+
+			if text := name[start+m[2] : start+m[3]]; !slices.Contains(texts, text) {
+				texts = append(texts, text)
+			}
+			start += max(m[3], 1)
 		}
 	}
 
 	return texts
+}
+
+// isEntryTag reports whether the parser reports tag for the entry. A tag with $1, such as resolution "$1p", is filled
+// in from what the entry matched, so "1234p" is one of its tags.
+func isEntryTag(info *taginfo.Taginfo, tag string) bool {
+	if strings.Contains(info.Tag(), "$") {
+		return info.Match(tag)
+	}
+	return info.Tag() == tag
 }
 
 // inNameRegexp matches the entry's spellings as a whole word anywhere in a name.
