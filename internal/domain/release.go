@@ -118,6 +118,7 @@ type Release struct {
 	VocabGroup                         bool                  `json:"vocab_group"`
 	HDRText                            []string              `json:"hdr_text"`
 	ResolutionText                     []string              `json:"resolution_text"`
+	CodecText                          []string              `json:"codec_text"`
 	SkipDuplicateProfileID             int64                 `json:"-"`
 	SkipDuplicateProfileName           string                `json:"-"`
 	FilterID                           int                   `json:"-"`

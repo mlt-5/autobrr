@@ -146,10 +146,11 @@ func (s *Service) Get(ctx context.Context, req *domain.GetReleaseRequest) (*doma
 }
 
 // setVocabText sets what the release list shows in colour: whether the vocabulary has the group, and the text in the
-// name read as the HDR tags and the resolution.
+// name read as the HDR tags, the resolution and the codecs.
 func setVocabText(r *domain.Release) {
 	r.VocabGroup = domain.IsVocabGroup(r.Group)
 	r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
+	r.CodecText = domain.VocabText(r.TorrentName, "codec", r.Codec)
 	if r.Resolution != "" {
 		r.ResolutionText = domain.VocabText(r.TorrentName, "resolution", []string{r.Resolution})
 	}
