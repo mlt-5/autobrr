@@ -116,6 +116,7 @@ type Release struct {
 	IsDuplicate                        bool                  `json:"-"`
 	Favorite                           bool                  `json:"favorite"`
 	VocabGroup                         bool                  `json:"vocab_group"`
+	HDRText                            []string              `json:"hdr_text"`
 	SkipDuplicateProfileID             int64                 `json:"-"`
 	SkipDuplicateProfileName           string                `json:"-"`
 	FilterID                           int                   `json:"-"`

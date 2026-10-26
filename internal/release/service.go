@@ -129,6 +129,7 @@ func (s *Service) Find(ctx context.Context, query domain.ReleaseQueryParams) (*d
 
 	for _, r := range resp.Data {
 		r.VocabGroup = domain.IsVocabGroup(r.Group)
+		r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
 	}
 
 	return resp, nil
@@ -141,6 +142,7 @@ func (s *Service) Get(ctx context.Context, req *domain.GetReleaseRequest) (*doma
 	}
 
 	r.VocabGroup = domain.IsVocabGroup(r.Group)
+	r.HDRText = domain.VocabText(r.TorrentName, "hdr", r.HDR)
 
 	return r, nil
 }

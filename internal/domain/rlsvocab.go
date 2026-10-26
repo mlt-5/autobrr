@@ -211,8 +211,12 @@ func tagPattern(tag string) string {
 // VocabParser is the release-name parser built from a vocabulary.
 type VocabParser struct {
 	parser rls.Parser
+	infos  map[string][]*taginfo.Taginfo
 	groups taginfo.FindFunc
 	known  taginfo.FindFunc
+
+	// inName caches a regexp per entry that finds its spellings inside a release name
+	inName sync.Map
 
 	// isGroup caches IsVocabGroup's answer per group, since release lists can ask for every stored release
 	isGroup sync.Map
@@ -242,8 +246,11 @@ func NewVocabParser(custom []VocabEntry, removed []VocabKey) (*VocabParser, erro
 
 	groups := slices.Concat(list["group"], own["group"])
 
+	infos := taginfo.All(autobrrTagInfos, list, own)
+
 	return &VocabParser{
-		parser: rls.NewTagParser(taginfo.All(autobrrTagInfos, list, own), rls.DefaultLexers()...),
+		parser: rls.NewTagParser(infos, rls.DefaultLexers()...),
+		infos:  infos,
 		groups: taginfo.Find(groups...),
 		known:  taginfo.Find(slices.Concat(known["group"], own["group"])...),
 	}, nil
@@ -269,6 +276,43 @@ func IsVocabGroup(group string) bool {
 	p.isGroup.Store(group, known)
 
 	return known
+}
+
+// VocabText returns the text in a release name that the parser read as the given tags of a kind, such as "DoVi" and
+// "HDR10" for the hdr tags DV and HDR10, so the name can show where they are.
+func VocabText(name, kind string, tags []string) []string {
+	if len(tags) == 0 {
+		return nil
+	}
+
+	p := currentParser.Load()
+
+	var texts []string
+	for _, info := range p.infos[kind] {
+		if !slices.Contains(tags, info.Tag()) {
+			continue
+		}
+
+		for _, m := range p.inNameRegexp(info).FindAllStringSubmatch(name, -1) {
+			if !slices.Contains(texts, m[1]) {
+				texts = append(texts, m[1])
+			}
+		}
+	}
+
+	return texts
+}
+
+// inNameRegexp matches the entry's spellings as a whole word anywhere in a name.
+func (p *VocabParser) inNameRegexp(info *taginfo.Taginfo) *regexp.Regexp {
+	if re, ok := p.inName.Load(info); ok {
+		return re.(*regexp.Regexp)
+	}
+
+	re := regexp.MustCompile(`(?i)(?:^|[^\pL\pN])(` + info.RE() + `)(?:[^\pL\pN]|$)`)
+	p.inName.Store(info, re)
+
+	return re
 }
 
 // Vocab lists every vocabulary entry: the built-in tags, the new_parser lists marked when removed, and the custom
